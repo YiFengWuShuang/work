@@ -13,7 +13,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5", "poId":"122", "companyId":"123" }'
+			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poAnswerId":"", "vendorId":"", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -81,7 +81,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"interfaceVersion":"1","mobileModel":"1","sourcePage":"1","mobileSysVersion":"1","dataSource":"1"},"companyId":"10000001","customerId":"10000002","cTaxId":"1"}'
+			        "param": '{"serviceId":"B01_findTaxList","companyIdList":["10000008"],"token":"12222"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -139,7 +139,7 @@ define(function(require, exports, module){
 		submitFn: function(){
 			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":""';
 			$.ajax({
 				type:"POST",
                 //dataType: "json",

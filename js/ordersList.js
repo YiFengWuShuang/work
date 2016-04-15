@@ -69,9 +69,8 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data){
-                		console.log(data)
+                		$('.ball-clip-rotate').remove();
                 		var orderInfo = data.poAnswerOrderInfo;
-                		console.log(orderInfo)
                 		html = '<h2 class="m-title">基本信息</h2>';
                 		for(var i=0, len = orderInfo.length; i<len; i++){
 	                		html +='<div class="item-wrap">'
@@ -171,6 +170,9 @@ define(function(require, exports, module){
                 //dataType: "json",
                 async:false,
                 url:config.serviceUrl,
+                data:{
+                	"param": '{"serviceId":"B01_getProdByCustomerProd","token":"9688c18171cb42021bc29c34d9d422b9" ,"secretNumber":"3137ca58844ec8d584404df96bf3bed6","vendorId":"10000001","cProdCode":"002","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"/zhl/supply/supply_add","sourceSystem":"1"},"customerId":"10000002"}'
+                }
                 success:function(data){
                 	$('.ball-clip-rotate').remove();
                 	data = data || {};
@@ -530,7 +532,7 @@ define(function(require, exports, module){
 			}
 
 			//入参字符串
-			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_getPurchaseOrderInfo"';
+			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo"';
 			console.log(inParams)
 			$.ajax({
 				type:"POST",

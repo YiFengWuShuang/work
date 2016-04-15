@@ -17,7 +17,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"29baaa55788d0c7117fb18a45115b5aa","secretNumber":"a03f0b1eb387cf299a62f61d796525ea","serviceId":"B03_submitAnswerPo", "poId":"12345678", "companyId":"23427592931" }'
+			        "param": '{"token":"","serviceId":"B03_findPoAnswerLineList","poAnswerId":"","secretNumber":"","venderId":"","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"} }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -187,7 +187,7 @@ define(function(require, exports, module){
 		submitFn: function(){
 			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":""';
 			$.ajax({
 				type:"POST",
                 //dataType: "json",

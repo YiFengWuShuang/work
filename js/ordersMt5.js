@@ -19,7 +19,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_findCompanyConditionList","token":"7a5c5403be1131c6f9a131d532c44144","companyId":"10000001"}'
+			        "param": '{"serviceId":"B03_getPurchaseOrderAnswerInfo","poAnswerId":"10000002","vendorId":"","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"}}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -200,7 +200,7 @@ define(function(require, exports, module){
 				"logisticsType":value2,
 				"payWayName":value3
 			}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":""';
 
 			$.ajax({
 				type:"POST",
