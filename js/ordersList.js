@@ -69,7 +69,9 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data){
+                		console.log(data)
                 		var orderInfo = data.poAnswerOrderInfo;
+                		console.log(orderInfo)
                 		html = '<h2 class="m-title">基本信息</h2>';
                 		for(var i=0, len = orderInfo.length; i<len; i++){
 	                		html +='<div class="item-wrap">'
