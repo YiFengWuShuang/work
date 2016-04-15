@@ -64,21 +64,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{
-			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
-			            "poAnswerId": "100001000000052",
-			            "vendorId": "10000021",
-			            "commonParam": {
-			                "dataSource": "1",
-			                "interfaceVersion": "",
-			                "mobileModel": "",
-			                "mobileSysVersion": "",
-			                "sourcePage": "/",
-			                "sourceSystem": "1"
-			            },
-			            "token": "73f76eb17d98e3ead409c987e5e1511b",
-			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
-			        }'
+			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -115,21 +101,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{
-			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
-			            "poAnswerId": "100001000000052",
-			            "vendorId": "10000021",
-			            "commonParam": {
-			                "dataSource": "1",
-			                "interfaceVersion": "",
-			                "mobileModel": "",
-			                "mobileSysVersion": "",
-			                "sourcePage": "/",
-			                "sourceSystem": "1"
-			            },
-			            "token": "73f76eb17d98e3ead409c987e5e1511b",
-			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
-			        }'
+			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -150,21 +122,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{
-			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
-			            "poAnswerId": "100001000000052",
-			            "vendorId": "10000021",
-			            "commonParam": {
-			                "dataSource": "1",
-			                "interfaceVersion": "",
-			                "mobileModel": "",
-			                "mobileSysVersion": "",
-			                "sourcePage": "/",
-			                "sourceSystem": "1"
-			            },
-			            "token": "73f76eb17d98e3ead409c987e5e1511b",
-			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
-			        }'
+			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -311,21 +269,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{
-			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
-			            "poAnswerId": "100001000000052",
-			            "vendorId": "10000021",
-			            "commonParam": {
-			                "dataSource": "1",
-			                "interfaceVersion": "",
-			                "mobileModel": "",
-			                "mobileSysVersion": "",
-			                "sourcePage": "/",
-			                "sourceSystem": "1"
-			            },
-			            "token": "73f76eb17d98e3ead409c987e5e1511b",
-			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
-			        }'
+			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
 			    },
                 success:function(data){
                 	data = data || {};
