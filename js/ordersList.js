@@ -62,9 +62,25 @@ define(function(require, exports, module){
 				type:"GET",
                 dataType: "json",
                 async:false,
-                url:'http://172.31.10.164/json/answerOrderInfo.json?param={ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001" }',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{
+			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
+			            "poAnswerId": "100001000000052",
+			            "vendorId": "10000021",
+			            "commonParam": {
+			                "dataSource": "1",
+			                "interfaceVersion": "",
+			                "mobileModel": "",
+			                "mobileSysVersion": "",
+			                "sourcePage": "/",
+			                "sourceSystem": "1"
+			            },
+			            "token": "73f76eb17d98e3ead409c987e5e1511b",
+			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
+			        }'
+			    },
                 success:function(data){
-                	$('.ball-clip-rotate').remove();
                 	data = data || {};
                 	if(data){
                 		var orderInfo = data.poAnswerOrderInfo;
@@ -97,7 +113,24 @@ define(function(require, exports, module){
 				type:"GET",
                 dataType: "json",
                 async:false,
-                url:'http://172.31.10.164/json/fileList.json?param={"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"PO"}',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{
+			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
+			            "poAnswerId": "100001000000052",
+			            "vendorId": "10000021",
+			            "commonParam": {
+			                "dataSource": "1",
+			                "interfaceVersion": "",
+			                "mobileModel": "",
+			                "mobileSysVersion": "",
+			                "sourcePage": "/",
+			                "sourceSystem": "1"
+			            },
+			            "token": "73f76eb17d98e3ead409c987e5e1511b",
+			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
+			        }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -115,7 +148,24 @@ define(function(require, exports, module){
 				type:"GET",
                 dataType: "json",
                 async:false,
-                url:'http://172.31.10.164/json/orderAnswer.json?param={ "token":"", "serviceId":"", "secretNumber":"", "poId":"", "companyId":"" }',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{
+			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
+			            "poAnswerId": "100001000000052",
+			            "vendorId": "10000021",
+			            "commonParam": {
+			                "dataSource": "1",
+			                "interfaceVersion": "",
+			                "mobileModel": "",
+			                "mobileSysVersion": "",
+			                "sourcePage": "/",
+			                "sourceSystem": "1"
+			            },
+			            "token": "73f76eb17d98e3ead409c987e5e1511b",
+			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
+			        }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -153,14 +203,14 @@ define(function(require, exports, module){
 		editResponse: function(item,index){
 			var that = this;
 			var lineLists = that._lineLists;
-			var myProdCode, myProdName, myProdScale;
+			var myProdCode, myProdName, myProdScale, vProdCode = lineLists[index].vProdCode;
 			fnTip.loading();
 			//根据对方物料编码获取我方产品
 			$.ajax({
 				type:"GET",
                 dataType: "json",
                 async:false,
-                url:'http://172.31.10.164/json/customerProd.json?param={"serviceId":"B01_getProdByCustomerProd","token":"9688c18171cb42021bc29c34d9d422b9" ,"secretNumber":"3137ca58844ec8d584404df96bf3bed6","vendorId":"10000001","cProdCode":"002","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":'+lineLists[index].vProdCode+'}',
+                url:config.serviceUrl,
                 success:function(data){
                 	$('.ball-clip-rotate').remove();
                 	data = data || {};
@@ -259,7 +309,24 @@ define(function(require, exports, module){
 				type:"GET",
                 dataType: "json",
                 async:false,
-                url:'http://172.31.10.164/json/otherCostList.json?param={ "token":"令牌", "secretNumber":"序列号", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"100001000000001", "vendorId":"10000021", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{
+			            "serviceId": "B03_getPurchaseOrderAnswerInfo",
+			            "poAnswerId": "100001000000052",
+			            "vendorId": "10000021",
+			            "commonParam": {
+			                "dataSource": "1",
+			                "interfaceVersion": "",
+			                "mobileModel": "",
+			                "mobileSysVersion": "",
+			                "sourcePage": "/",
+			                "sourceSystem": "1"
+			            },
+			            "token": "73f76eb17d98e3ead409c987e5e1511b",
+			            "secretNumber": "914cffe03c001b4880eb5ad2997d65ab"
+			        }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -517,13 +584,13 @@ define(function(require, exports, module){
 			}
 
 			//入参字符串
-			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList);
+			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_getPurchaseOrderInfo"';
 			console.log(inParams)
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:config.serviceUrl + '?param={ "serviceId":"B03_getPurchaseOrderInfo"}',
-                data:{param:inParams},
+                url:config.serviceUrl,
+                data:{"param":inParams},
                 success:function(data){
                 	fnTip.success(2000);
                 	setTimeout(window.location.reload(),2000);
