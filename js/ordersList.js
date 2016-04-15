@@ -13,7 +13,7 @@ define(function(require, exports, module){
 			that.vStatus = [];
 			that.totals = 0;
 			// that.vTotals = 0;
-
+			fnTip.loading();
 			that.start();
 			//答交
 			$('.contarin').on('click','span.edit',function(){
@@ -64,6 +64,7 @@ define(function(require, exports, module){
                 async:false,
                 url:'http://172.31.10.164/json/answerOrderInfo.json?param={ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001" }',
                 success:function(data){
+                	$('.ball-clip-rotate').remove();
                 	data = data || {};
                 	if(data){
                 		var orderInfo = data.poAnswerOrderInfo;

@@ -51,6 +51,18 @@ function getQueryString(name) {
     return null;
 }
 
+//公共参数
+function commonParam() {
+    return {
+            dataSource:"1",
+            interfaceVersion:"",
+            mobileModel:"",
+            mobileSysVersion:"",
+            sourcePage:window.location.pathname,
+            sourceSystem:"1"
+        };
+};
+
 //checkbox自定义样式
 (function resetCheckbox(){
 	$('.checkbox input').live('change',function(){
