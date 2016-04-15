@@ -59,7 +59,7 @@ define(function(require, exports, module){
 		orderBaseInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
                 async:false,
                 url:config.serviceUrl,
@@ -110,7 +110,7 @@ define(function(require, exports, module){
 		fileList: function(){
 			var that = this;
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
                 async:false,
                 url:config.serviceUrl,
@@ -145,7 +145,7 @@ define(function(require, exports, module){
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
                 async:false,
                 url:config.serviceUrl,
@@ -207,7 +207,7 @@ define(function(require, exports, module){
 			fnTip.loading();
 			//根据对方物料编码获取我方产品
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
                 async:false,
                 url:config.serviceUrl,
@@ -306,7 +306,7 @@ define(function(require, exports, module){
 		othersCost: function(){
 			var that=this, html='', subtotal=0, resubtotal=0, _responseCost=false;
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
                 async:false,
                 url:config.serviceUrl,
