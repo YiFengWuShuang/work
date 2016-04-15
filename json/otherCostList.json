@@ -1,0 +1,41 @@
+{
+    "serviceStatus": "",
+    "success": "",
+    "errorMsg": "",
+    "errorCode": "",
+    "poOtherCostList": [
+        {
+            "costName": "物流费用",
+            "remark": "",
+            "poOtherCostId": "",
+            "costAmount": "100",
+            "lineNo": "测试内容9745",
+            "status": "测试内容72ew",
+            "vRemark": "测试内容b15g",
+            "vCostAmount": "",
+            "costSource": "测试内容gs26"
+        },
+        {
+            "costName": "保管费用",
+            "remark": "",
+            "poOtherCostId": "",
+            "costAmount": "100",
+            "lineNo": "测试内容9745",
+            "status": "测试内容72ew",
+            "vRemark": "测试内容b15g",
+            "vCostAmount": "200",
+            "costSource": "测试内容gs26"
+        },
+        {
+            "costName": "仓储费用",
+            "remark": "",
+            "poOtherCostId": "",
+            "costAmount": "100",
+            "lineNo": "测试内容9745",
+            "status": "测试内容72ew",
+            "vRemark": "测试内容b15g",
+            "vCostAmount": "",
+            "costSource": "测试内容gs26"
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "errorCode": "测试内容dd8w",
+    "errorMsg": "测试内容l847",
+    "success": "测试内容qx1h",
+    "serviceStatus": "测试内容j3x3",
+    "fileList": [
+        {
+            "id": "测试内容12lj",
+            "fileKey": "测试内容3ey7",
+            "fileUrl": "#",
+            "fileName": "产品规格说明书.doc",
+            "fileSize": "测试内容5093",
+            "lineNo": "测试内容ljy7",
+            "status": "测试内容265i",
+            "remark": "测试内容qlf1"
+        },
+        {
+            "id": "测试内容12lj",
+            "fileKey": "测试内容3ey7",
+            "fileUrl": "#",
+            "fileName": "产品规格.jpg",
+            "fileSize": "测试内容5093",
+            "lineNo": "测试内容ljy7",
+            "status": "测试内容265i",
+            "remark": "测试内容qlf1"
+        }
+    ]
+}

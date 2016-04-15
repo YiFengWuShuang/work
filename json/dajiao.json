@@ -1,0 +1,82 @@
+{
+	"secretNumber": "ee328023b718bb88135f3a403d6e3290",
+	"token": "df3a70070279dd2d79e1407e39738e50",
+	"serviceId": "B03_saveAnswerPo",
+	"poAnswerId": "100002000000005",
+	"vendorId": "10000145",
+	"vRemark": "供应商答交备注",
+	"vStatus": "2",
+	"addPoFileList": [{
+		"lineNo": "1",
+		"fileName": "修改答交",
+		"fileSize": "20",
+		"remark": "修改答交新增备注",
+		"fileUrl": "修改答交附件URL",
+		"fileKey": "修改答交文件关键字"
+	}],
+	"addPoOtherCostList": [{
+		"vCostAmount": "32",
+		"costName": "修改答交新增费用名称",
+		"lineNo": "2",
+		"vRemark": "修改答交新增备注"
+	}],
+	"commonParam": {
+		"mobileSysVersion": "12",
+		"sourcePage": "21",
+		"mobileModel": "1",
+		"sourceSystem": "1",
+		"interfaceVersion": "1",
+		"dataSource": "1"
+	},
+	"modiPoOthreCostList": [{
+		"costId": "100002000000008",
+		"vCostAmount": "20",
+		"vRemark": "修改答交供应商备注"
+	}],
+	"vFeeInfo": {
+		"vTotal": "20",
+		"vOtherCostTotal": "30",
+		"vTaxTotal": "55",
+		"vTotalAmount": "21"
+	},
+	"modiPoLineList": [{
+		"vProdCode": "25",
+		"vValuationUnitName": "47",
+		"vProdDesc": "修改答交供应商产品描述",
+		"vProdScale": "修改答交供应商产品规格",
+		"delPoSubLineList": [],
+		"vProdName": "修改答交产品名称",
+		"vPurchaseUnitName": "修改答交采购单位名称",
+		"addPoLineFileList": [{
+			"fileName": "修改答交文件名称",
+			"fileSize": "20",
+			"lineNo": "1",
+			"fileUrl": "修改答交附件URL",
+			"fileKey": "修改答交文件关键字",
+			"remark": "修改答交备注"
+		}],
+		"addPoSubLineList": [{
+			"expectedDelivery": "1457920800000",
+			"lineNo": "20",
+			"purchaseQty": "10",
+			"remark": "备注",
+			"valuationQty": "50"
+		}],
+		"vPrice": "25",
+		"vExpectedDelivery": "2016-02-15",
+		"poAnswerLineId": "100002000000016",
+		"isBatchAnswer": "1",
+		"vTaxLineTotal": "45",
+		"vProdId": "2500",
+		"vPurchaseQty": "52",
+		"vValuationQty": "12",
+		"delPoLineFileList": [],
+		"vTaxPrice": "17",
+		"vRemark": "供应商备注",
+		"vLineAmount": "25",
+		"modiPoSubLineList": []
+	}],
+	"delPoOthreCostLis": [],
+	"delPoFileList": [],
+	"delPoOthreCostList": []
+}

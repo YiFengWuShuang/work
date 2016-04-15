@@ -1,0 +1,160 @@
+ {
+ 	"token": "61b95c2482395fac7330523bcfd701a0",
+ 	"secretNumber": "41666b2ea22e0b61639b8b1bc38a6879",
+ 	"serviceId": "B03_addSaveOrSubmitPurchaseOrder",
+ 	"agreement": "协议条款",
+ 	"exchangeRate": "35.4",
+ 	"pCurrencyCode": "1245",
+ 	"pCurrencyName": "平台币种名称",
+ 	"poInsideNo": "内部单号",
+ 	"poFormDate": "1457940383860",
+ 	"remark": "订单备注",
+ 	"status": "1",
+ 	"commonParam": {
+ 		"joinUpCode": "接入编码",
+ 		"secretKey": "接入密钥",
+ 		"mobileSysVersion": "1",
+ 		"sourcePage": "www.baidu.com",
+ 		"mobileModel": "2",
+ 		"sourceSystem": "1",
+ 		"interfaceVersion": "1",
+ 		"dataSource": "1"
+ 	},
+ 	"companyInfo": {
+ 		"companyCode": "企业编码",
+ 		"companyAbbr": "企业简称",
+ 		"companyName": "企业名称",
+ 		"companyId": "10000001"
+ 	},
+ 	"vendorInfo": {
+ 		"vendorAbbr": "供应商简称",
+ 		"vendorId": "10000009",
+ 		"vendorName": "供应商名称",
+ 		"vendorCode": "供应商编码"
+ 	},
+ 	"poManInfo": {
+ 		"poManPid": "1",
+ 		"poManId": "1",
+ 		"poManName": "采购业务员名称",
+ 		"poManCode": "采购业务员编码"
+ 	},
+ 	"conditionInfo": {
+ 		"conditionId": "104",
+ 		"conditionName": "交易条件名称",
+ 		"conditionCode": "交易条件编码"
+ 	},
+ 	"companyFeeInfo": {
+ 		"cTotal": "44",
+ 		"cTaxTotal": "45",
+ 		"cTotalAmount": "46",
+ 		"cOtherCostTotal": "47"
+ 	},
+ 	"currencyInfo": {
+ 		"currencyId": "124",
+ 		"currencyCode": "RMB",
+ 		"currencyName": "人民币"
+ 	},
+ 	"addressInfo": {
+ 		"address": "数码科技广场",
+ 		"districtCode": "0421",
+ 		"districtName": "保定",
+ 		"provinceCode": "021",
+ 		"cityCode": "124",
+ 		"mobile": "18910358924",
+ 		"contactPerson": "崔佳彬",
+ 		"addressId": "1254",
+ 		"cityName": "保定",
+ 		"insideAddressCode": "4287",
+ 		"countryCode": "China",
+ 		"invId": "1005",
+ 		"countryName": "中国",
+ 		"provinceName": "河北省",
+ 		"invName": "大仓库",
+ 		"invCode": "2115"
+ 	},
+ 	"invoiceInfo": {
+ 		"invoiceHeader": "发票抬头",
+ 		"invoiceContent": "发票内容",
+ 		"invoiceName": "发票名称",
+ 		"invoiceType": "1",
+ 		"invoiceAccount": "发票账号",
+ 		"invoiceTel": "18910358912",
+ 		"invoiceAddress": "发票地址",
+ 		"invoice": "2",
+ 		"invoicePayMark": "发票纳税人识别码",
+ 		"invoiceBank": "发票开户行"
+ 	},
+ 	"payInfo": {
+ 		"payWayId": "3",
+ 		"payWayName": "付款条件名称",
+ 		"payWayCode": "352",
+ 		"paymentType": "1"
+ 	},
+ 	"logisticsInfo": {
+ 		"logisticsName": "物流商名称",
+ 		"logisticsCode": "物流商编码",
+ 		"logisticsType": "1"
+ 	},
+ 	"localCurrencyInfo": {
+ 		"localCurrencyName": "企业本币名称",
+ 		"localCurrencyId": "2",
+ 		"localCurrencyCode": "企业本币编码"
+ 	},
+ 	"taxInfo": {
+ 		"taxRate": "2",
+ 		"isContainTax": "1",
+ 		"taxId": "33",
+ 		"taxCode": "交易税种编码",
+ 		"taxName": "交易税种名称"
+ 	},
+ 	"poLineList": [{
+ 		"lineNo": "2",
+ 		"prodId": "20",
+ 		"prodCode": "产品编码",
+ 		"prodName": "产品名称",
+ 		"prodDesc": "产品描述",
+ 		"prodScale": "产品规格",
+ 		"purchaseQty": "6",
+ 		"valuationQty": "7",
+ 		"purchaseUnitId": "10",
+ 		"purchaseUnitCode": "采购单位编码",
+ 		"purchaseUnitName": "采购单位名称",
+ 		"valuationUnitId": "21",
+ 		"valuationUnitCode": "计价单位编码",
+ 		"valuationUnitName": "计价单位编码",
+ 		"locationId": "12",
+ 		"locationCode": "库位编码",
+ 		"locationName": "库位名称",
+ 		"invId": "25",
+ 		"invCode": "仓库编码",
+ 		"invName": "仓库名称",
+ 		"price": "7",
+ 		"taxPrice": "6",
+ 		"lineAmount": "3",
+ 		"taxLineTotal": "79",
+ 		"expectedDelivery": "1457920800000",
+ 		"remark": "备注",
+ 		"poLineFileList": [{
+ 			"fileName": "文件名称",
+ 			"fileSize": "60",
+ 			"fileUrl": "附件URL",
+ 			"lineNo": "2",
+ 			"remark": "备注",
+ 			"fileKey": "文件关键字"
+ 		}]
+ 	}],
+ 	"poFileList": [{
+ 		"fileName": "文件名称",
+ 		"fileSize": "4",
+ 		"fileKey": "文件关键字",
+ 		"lineNo": "2",
+ 		"remark": "备注",
+ 		"fileUrl": "附件URL"
+ 	}],
+ 	"poOthreCostList": [{
+ 		"costAmount": "20",
+ 		"costName": "费用名称",
+ 		"lineNo": "2",
+ 		"remark": "备注"
+ 	}]
+ }

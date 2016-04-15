@@ -1,0 +1,35 @@
+{
+	"commonParam": {
+		"mobileSysVersion": "12",
+		"sourcePage": "21",
+		"mobileModel": "1",
+		"sourceSystem": "1",
+		"interfaceVersion": "1",
+		"dataSource": "1"
+	},
+	"token": "令牌",
+	"modiPoOthreCostList": [
+		{
+			"vCostAmount": "20",
+			"costName": "20",
+			"vRemark": "供应商备注",
+			"costId": "10",
+			"costAmount": "30",
+			"remark": "备注",
+			"costSource": "2"
+		}
+	],
+	"secretNumber": "24",
+	"modiPoLineList": [
+		{
+			"modiPoSubLineList": [{
+				"expectedDelivery": "2016-07-06",
+				"valuationQty": "66",
+				"purchaseQty": "37"
+			}]
+		}
+	],
+	"poAnswerId": "100001000000002",
+	"vStatus": "2",
+	"serviceId": "B03_saveAnswerPo"
+}

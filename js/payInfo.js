@@ -1,0 +1,42 @@
+define(function(require, exports, module){
+	var lists = {
+		init: function(){
+			this.start();
+		},
+		//支付信息
+		payInfo: function(){
+			var that = this, html = '';
+			$.ajax({
+				type:"GET",
+                dataType: "json",
+                async:false,
+                url:'http://172.31.10.164/json/purchaseOrderInfo.json?param={ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }',
+                success:function(data){
+                	data = data || {};
+                	if(data){
+                		var infos = data.purchaseOrderInfo;
+                		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
+								+'<li><span>物流方式：</span><p>'+ infos.logisticsType +((infos.logisticsType.indexOf('自提')!=-1) ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
+								+'<li><span>收货地址：</span><p>'+ infos.address +'；<br>电话：'+ infos.mobile +'</p></li>'
+								+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
+								+'<li><span>支付方式：</span><p>'+ infos.paymentType +'</p></li>'
+								+'<li><span>发票类型：</span><p>'+ infos.invoiceType +'</p></li>'
+								+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+								+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
+                	}
+                },
+                error:function(){
+                	alert('数据请求发生错误，请刷新页面!');
+                }
+			})
+			return html;
+		},
+		start: function(){
+			var that = this;
+			document.getElementById('payInfoList').innerHTML = that.payInfo();
+		}
+	};
+
+	module.exports = lists
+	
+});

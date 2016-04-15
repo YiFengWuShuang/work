@@ -1,0 +1,35 @@
+body{ background-color: #efefef;}
+.btnBig{ width: 100%; margin-bottom: .6rem;}
+input::-webkit-input-placeholder{ color:#77c0de;}
+.contarin{ text-align: center;}
+/* 邀请码 */
+.step1{ margin-bottom:.6rem; padding: .6rem .75rem; text-align: left; color: #fff;}
+.codeBox{ position: relative; background-color: #f8f8f8; padding: .5rem .5rem 1rem .5rem; margin-bottom: 1rem; box-shadow: 0 0 6px rgba(0,0,0,.2);}
+.codeBox .sub{ position: absolute; bottom: 10px; right: -.8rem; width: 2.6rem; height: 1.25rem; background: url(../img/invite/sub.png) no-repeat; background-size: 2.6rem 1.25rem;}
+.codeBox-1{ padding-top: .4rem; background-color: #0091cd; background:-webkit-linear-gradient(top,#0091cd,#54b4f0);}
+.codeBox-1 .code{ width: 100%;}
+.codeBox-1 ul{ padding: .5rem .5rem .5rem .75rem; font-size: .75rem;}
+.codeBox-1 li{ padding: .1rem 0;}
+/* 邀请员工注册登录 */
+.step2,.register{ padding: 1rem 1.8rem; color: #888;}
+.step2 .comp{ margin-bottom: .5rem; font-size: 1rem; color: #0091cd;}
+.step2 .comp2{ font-size: .8rem;}
+.loginForm,.regForm{ padding-top: 2rem; padding-bottom: 1rem;}
+.loginForm input{ color: #0091cd; border-bottom:1px solid #d8d8d8;}
+.loginForm input:last-child{ border-bottom:none;}
+/* 加入企业 */
+.step3{ padding:0 1.8rem;}
+.joinSucc{ padding: 1.5rem 0; line-height: 32px; font-size: 1rem;}
+.joinSucc i{ display: inline-block; width: 32px; height: 32px; background: url(../img/public/icon-1.png) no-repeat 0 0; background-size: 32px 65px; margin-right: .3rem; vertical-align: top;}
+.openapp{ color: #929292; font-size: .8rem;}
+/* 邀请员工注册 */
+.register input::-webkit-input-placeholder{ color:#b0b0b0;}
+.register input{ border-bottom:1px solid #d8d8d8;}
+.clauseBox{ height: 2rem; line-height: 2rem;}
+.clauseBox input{ margin-right: .2rem;}
+.phoneBox b{ display: block; margin-bottom: .25rem; font-size: 1rem;}
+.pswTip{ padding: .5rem 0; font-size: .6rem;}
+
+@media screen and (max-width: 320px){
+	
+}

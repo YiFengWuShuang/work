@@ -1,0 +1,23 @@
+{
+    "serviceStatus": "测试内容kb77",
+    "payWayList": [
+        {
+            "payWayCode": "测试内容g5b3",
+            "payWayName": "收款条件1",
+            "payWayId": "测试内容b66m"
+        },
+        {
+            "payWayCode": "测试内容g5b3",
+            "payWayName": "收款条件2",
+            "payWayId": "测试内容b66m"
+        },
+        {
+            "payWayCode": "测试内容g5b3",
+            "payWayName": "收款条件3",
+            "payWayId": "测试内容b66m"
+        }
+    ],
+    "success": false,
+    "errorMsg": "测试内容8fw8",
+    "errorCode": "测试内容jm5u"
+}

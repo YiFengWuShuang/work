@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" id="viewport">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+	<meta content="yes" name="apple-mobile-web-app-capable" />
+	<meta content="telephone=no" name="format-detection" />
+	 <!-- uc强制竖屏 -->
+	<meta name="screen-orientation" content="portrait">
+	<!-- QQ强制竖屏 -->
+	<meta name="x5-orientation" content="portrait">
+	<link rel="stylesheet" href="../css/public.css">
+	<link rel="stylesheet" href="../css/list.css">
+	<title>交易和付款信息</title>
+</head>
+<body>
+	<div class="contarin">
+		<ul id="payInfoList" class="payInfoList"></ul>
+	</div>
+	<script src="../js/lib/sea.js"></script>
+	<script src="../js/lib/zepto-min.js"></script>
+	<script src="../js/public/public.js"></script>
+	<script>
+		$(function(){
+			seajs.use('../js/payInfo.js',function(payInfo){
+				payInfo.init();
+			});
+		})
+	</script>
+</body>
+</html>

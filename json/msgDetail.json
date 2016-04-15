@@ -1,0 +1,23 @@
+{
+    "errorCode": "测试内容k1l5",
+    "errorMsg": "测试内容3h3h",
+    "dataSet": {
+        "header": {
+            "code": 66432,
+            "info": "测试内容20m7",
+            "version": "测试内容ph4i"
+        },
+        "data": {
+            "detail": [
+                {
+                    "Id": "123456",
+                    "UserId": "12345",
+                    "UserName": "实达集团",
+                    "UnRead": 0,
+                    "Title": "消息标题消息标题",
+                    "Content": "消息内容消息内容消息内容消息内容消息内容消息内容消息内容"
+                }
+            ]
+        }
+    }
+}
