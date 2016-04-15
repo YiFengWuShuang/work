@@ -68,7 +68,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		$('.ball-clip-rotate').remove();
                 		var orderInfo = data.poAnswerOrderInfo;
                 		html = '<h2 class="m-title">基本信息</h2>';
@@ -85,6 +85,9 @@ define(function(require, exports, module){
 								 +'</div>'
 							that.vStatus.push(orderInfo[i].vStatus);
                 		}
+                	}
+                	else{
+                		console.log(data.errorMsg);
                 	}
                 },
                 error:function(){
