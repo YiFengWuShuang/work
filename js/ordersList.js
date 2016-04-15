@@ -107,7 +107,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			that._files.push(file[i]);
