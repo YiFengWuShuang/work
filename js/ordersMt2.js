@@ -185,7 +185,7 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:sendUrl + '{ "serviceId":"B03_getPurchaseOrderInfo"}',
+                url:config.serviceUrl + '?param={ "serviceId":"B03_getPurchaseOrderInfo"}',
                 data:{param:inParams},
                 success:function(data){
                 	fnTip.success(2000);

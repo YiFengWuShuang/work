@@ -130,7 +130,7 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:sendUrl + '{ "secretNumber":"73ebfae88c1a85f61823ee1bf113d517", "token":"c65e091c8e7fc9a5c5e9dad31dbfdd9d", "serviceId":"B03_submitPurchaseOrder", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }',
+                url:config.serviceUrl + '?param={ "secretNumber":"73ebfae88c1a85f61823ee1bf113d517", "token":"c65e091c8e7fc9a5c5e9dad31dbfdd9d", "serviceId":"B03_submitPurchaseOrder", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }',
                 success:function(data){
                 	fnTip.success(2000);
                 	//发放成功后跳转到某个页面

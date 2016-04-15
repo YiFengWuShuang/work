@@ -1,5 +1,9 @@
 var $body = $(document.body);
-var sendUrl = 'http://54.222.203.245:7000/supplyCenter/services/invokeRestfulSrv/supplyCloudService?param='
+
+var config = {
+    serviceUrl:""
+};
+config.serviceUrl = 'http://54.222.203.245:7000/supplyCenter/services/invokeRestfulSrv/supplyCloudService'
 // 操作提示
 var fnTip = {
 	success: function(time){
