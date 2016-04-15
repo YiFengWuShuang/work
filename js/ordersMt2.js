@@ -13,10 +13,12 @@ define(function(require, exports, module){
 		orderInfos: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/poLineList.json?param={ "token":"29baaa55788d0c7117fb18a45115b5aa","secretNumber":"a03f0b1eb387cf299a62f61d796525ea","serviceId":"B03_submitAnswerPo", "poId":"12345678", "companyId":"23427592931" }',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{ "token":"29baaa55788d0c7117fb18a45115b5aa","secretNumber":"a03f0b1eb387cf299a62f61d796525ea","serviceId":"B03_submitAnswerPo", "poId":"12345678", "companyId":"23427592931" }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -87,10 +89,12 @@ define(function(require, exports, module){
 		units: function(){
 			var that = this, prodUnitNames = [], basicUnitNames = [];
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/prodUnitList.json?param={"serviceId":"B01_findProdUnitListByProd","companyId":["10001"],"dataSource":"1","interfaceVersion":"1","mobileMode":"1","mobileSysVersion":"1","sourcePage":"1","prodId":"1","secretNumber":""}',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":["10001"],"dataSource":"1","interfaceVersion":"1","mobileMode":"1","mobileSysVersion":"1","sourcePage":"1","prodId":"1","secretNumber":""}'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -139,10 +143,12 @@ define(function(require, exports, module){
 				var _this = $(this);
 				var code = _this.parents('.itemEdit').find('.int-search').val();
 				$.ajax({
-					type:"GET",
+					type:"POST",
 	                dataType: "json",
-	                async:false,
-	                url:'http://172.31.10.164/json/vprodInfo.json?param={"serviceId": "B01_getProdInfoByCode","companyId":"10000001","vendorId":"10000009","prodCode":'+ code +',"pageSize":5,"currentPage":"1","commonParam":{"dataSource": "1", "interfaceVersion": "1", "sourceSystem": "1"},"secretNumber":"1","token":"22333"}',
+	                url:config.serviceUrl,
+	                data: {
+				        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"10000001","vendorId":"10000009","prodCode":'+ code +',"pageSize":5,"currentPage":"1","commonParam":{"dataSource": "1", "interfaceVersion": "1", "sourceSystem": "1"},"secretNumber":"1","token":"22333"}'
+				    },
 	                success:function(data){
 	                	data = data || {};
 	                	if(data){
@@ -181,11 +187,11 @@ define(function(require, exports, module){
 		submitFn: function(){
 			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo);
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:config.serviceUrl + '?param={ "serviceId":"B03_getPurchaseOrderInfo"}',
+                url:config.serviceUrl,
                 data:{param:inParams},
                 success:function(data){
                 	fnTip.success(2000);

@@ -9,10 +9,12 @@ define(function(require, exports, module){
 		orderBaseInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/answerOrderInfo.json?param={ "serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5", "poId":"122", "companyId":"123" }',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{ "serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5", "poId":"122", "companyId":"123" }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -75,10 +77,12 @@ define(function(require, exports, module){
 		taxTypeSelect3: function(){
 			var that = this, options = [];
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/taxList.json?param={"serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"interfaceVersion":"1","mobileModel":"1","sourcePage":"1","mobileSysVersion":"1","dataSource":"1"},"companyId":"10000001","customerId":"10000002","cTaxId":"1"}',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{"serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"interfaceVersion":"1","mobileModel":"1","sourcePage":"1","mobileSysVersion":"1","dataSource":"1"},"companyId":"10000001","customerId":"10000002","cTaxId":"1"}'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -108,10 +112,12 @@ define(function(require, exports, module){
 		benweibi: function(){
 			var that = this, result, _formDate = $('#poFormDate').html();
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/benweibi.json?param={"serviceId":"B01_getExchangeRateByCurrency","companyId":"10000002","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"},"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"10000002","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"},"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -133,11 +139,11 @@ define(function(require, exports, module){
 		submitFn: function(){
 			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo);
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:config.serviceUrl + '?param={ "serviceId":"B03_getPurchaseOrderInfo"}',
+                url:config.serviceUrl,
                 data:{param:inParams},
                 success:function(data){
                 	fnTip.success(2000);

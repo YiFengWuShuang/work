@@ -11,10 +11,12 @@ define(function(require, exports, module){
 		orderBaseInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/orderInfo.json?param={ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }',
+                url:config.serviceUrl,
+                data: {
+			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -42,10 +44,12 @@ define(function(require, exports, module){
 		fileList: function(){
 			var that = this;
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/fileList.json?param={"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"PO"}',
+                url:config.serviceUrl,
+                data: {
+                	"param": '{"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"PO"}'
+                },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -61,10 +65,12 @@ define(function(require, exports, module){
 		prodsInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/prodInfo.json?param={ "token":"9b14aff650e129870793d4eabd944cb5", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "serviceId":"B03_findPoLineList", "poId":"100001000000012", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }',
+                url:config.serviceUrl,
+                data: {
+                	"param": '{"token":"9b14aff650e129870793d4eabd944cb5", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "serviceId":"B03_findPoLineList", "poId":"100001000000012", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+                },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -95,10 +101,12 @@ define(function(require, exports, module){
 		otherCostList: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/otherCostList.json?param={"serviceId":"B03_findPoOtherCostList","companyId":"10000001","poId":"100001000000001","token":"123"}',
+                url:config.serviceUrl,
+				data: {
+                	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"10000001","poId":"100001000000001","token":"123"}'
+                },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -130,7 +138,10 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:config.serviceUrl + '?param={ "secretNumber":"73ebfae88c1a85f61823ee1bf113d517", "token":"c65e091c8e7fc9a5c5e9dad31dbfdd9d", "serviceId":"B03_submitPurchaseOrder", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }',
+                url:config.serviceUrl,
+				data: {
+                	"param": '{ "secretNumber":"73ebfae88c1a85f61823ee1bf113d517", "token":"c65e091c8e7fc9a5c5e9dad31dbfdd9d", "serviceId":"B03_submitPurchaseOrder", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
+                },
                 success:function(data){
                 	fnTip.success(2000);
                 	//发放成功后跳转到某个页面

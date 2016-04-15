@@ -60,7 +60,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 async:false,
                 url:config.serviceUrl,
                 data: {
@@ -97,7 +97,7 @@ define(function(require, exports, module){
 			var that = this;
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 async:false,
                 url:config.serviceUrl,
                 data: {
@@ -118,7 +118,7 @@ define(function(require, exports, module){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 async:false,
                 url:config.serviceUrl,
                 data: {
@@ -166,7 +166,7 @@ define(function(require, exports, module){
 			//根据对方物料编码获取我方产品
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 async:false,
                 url:config.serviceUrl,
                 success:function(data){
@@ -265,7 +265,7 @@ define(function(require, exports, module){
 			var that=this, html='', subtotal=0, resubtotal=0, _responseCost=false;
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 async:false,
                 url:config.serviceUrl,
                 data: {
@@ -532,7 +532,7 @@ define(function(require, exports, module){
 			console.log(inParams)
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data:{"param":inParams},
                 success:function(data){
