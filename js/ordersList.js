@@ -64,7 +64,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
+			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -103,7 +103,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
+			        "param": '{"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -124,7 +124,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
+			        "param": '{"serviceId": "B03_findPoAnswerLineList","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -271,7 +271,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "/zhl/order/customer/check/10000021/100001000000052","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
+			        "param": '{ "token":"令牌", "secretNumber":"序列号", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"100001000000001", "vendorId":"10000021", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
