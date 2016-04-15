@@ -86,9 +86,6 @@ define(function(require, exports, module){
 							that.vStatus.push(orderInfo[i].vStatus);
                 		}
                 	}
-                	else{
-                		console.log(data.errorMsg);
-                	}
                 },
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
@@ -130,7 +127,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var lineList = data.poLineList;
                 		that._lineLists = lineList;
                 		html = '<h2 class="m-title">产品信息</h2>';
@@ -179,7 +176,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	$('.ball-clip-rotate').remove();
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		myProdCode = data.prodMap.prodCode;
                 		myProdName = data.prodMap.prodName;
                 		myProdScale = data.prodMap.prodScale;
@@ -280,7 +277,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var otherCostList = data.poOtherCostList;
                 		that._othersCost = otherCostList;
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
