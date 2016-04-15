@@ -172,7 +172,7 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
                 data:{
                 	"param": '{"serviceId":"B01_getProdByCustomerProd","token":"9688c18171cb42021bc29c34d9d422b9" ,"secretNumber":"3137ca58844ec8d584404df96bf3bed6","vendorId":"10000001","cProdCode":"002","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"/zhl/supply/supply_add","sourceSystem":"1"},"customerId":"10000002"}'
-                }
+                },
                 success:function(data){
                 	$('.ball-clip-rotate').remove();
                 	data = data || {};
