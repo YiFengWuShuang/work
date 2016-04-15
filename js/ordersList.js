@@ -3,6 +3,7 @@ define(function(require, exports, module){
 	var formTip = '<div id="formTip" class="formTip"></div>';
 	var $itemTips = $('.item-tips');
 	var btn = $('.btn-wrap a');
+	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var lists = {
 		init: function(){
 			var that = this;
@@ -64,7 +65,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
+			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poFormNo":"'+ _vParams.poFormNo +'", "poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -102,7 +103,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
+			        "param": '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","poFormNo":"'+ _vParams.poFormNo +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -123,7 +124,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_findPoAnswerLineList","poAnswerId": "100001000000052","vendorId": "10000021","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "d72f7ff3efdb258af7105794c97ab2c4","secretNumber": "81b013f4ab5638f8c3e804c8d45e3518"}'
+			        "param": '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -171,7 +172,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data:{
-                	"param": '{"serviceId":"B01_getProdByCustomerProd","token":"9688c18171cb42021bc29c34d9d422b9" ,"secretNumber":"3137ca58844ec8d584404df96bf3bed6","vendorId":"10000001","cProdCode":"002","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"/zhl/supply/supply_add","sourceSystem":"1"},"customerId":"10000002"}'
+                	"param": '{"serviceId":"B01_getProdByCustomerProd","token":"'+ _vParams.token +'" ,"secretNumber":"'+ _vParams.secretNumber +'","vendorId":"'+ _vParams.vendorId +'","cProdCode":"'+ _vParams.cProdCode +'","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":"'+ _vParams.customerId +'"}'
                 },
                 success:function(data){
                 	$('.ball-clip-rotate').remove();
@@ -273,7 +274,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"令牌", "secretNumber":"序列号", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"100001000000001", "vendorId":"10000021", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
+			        "param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "poFormNo":"'+ _vParams.poFormNo +'", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.token +'", "vendorId":"'+ _vParams.token +'", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -532,7 +533,7 @@ define(function(require, exports, module){
 			}
 
 			//入参字符串
-			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo"';
+			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo","poFormNo":"'+ _vParams.poFormNo +'"';
 			console.log(inParams)
 			$.ajax({
 				type:"POST",
