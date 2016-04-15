@@ -15,10 +15,12 @@ define(function(require, exports, module){
 		setPayOrderInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
-                dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/answerOrderInfo.json?param={"serviceId":"B01_findCompanyConditionList","token":"7a5c5403be1131c6f9a131d532c44144","companyId":"10000001"}',
+				type:"POST",
+                //dataType: "json",
+                url:config.serviceUrl,
+                data: {
+			        "param": '{"serviceId":"B01_findCompanyConditionList","token":"7a5c5403be1131c6f9a131d532c44144","companyId":"10000001"}'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -136,10 +138,12 @@ define(function(require, exports, module){
 		conditionSelect: function(){
 			var that = this, options = [];
 			$.ajax({
-				type:"GET",
-                dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/conditions.json?param={"serviceId":"B01_findCompanyConditionList","token":"7a5c5403be1131c6f9a131d532c44144","companyId":"10000001","conditionType":"1"}',
+				type:"POST",
+                //dataType: "json",
+                url:config.serviceUrl,
+                data: {
+			        "param": '{"serviceId":"B01_findCompanyConditionList","token":"7a5c5403be1131c6f9a131d532c44144","companyId":"10000001","conditionType":"1"}'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -164,10 +168,12 @@ define(function(require, exports, module){
 		payWaySelect: function(){
 			var that = this, options = [];
 			$.ajax({
-				type:"GET",
-                dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/payWay.json?param={"serviceId": "B01_findCompanyPayWayList","commonParam": {"sourcePage": "1","dataSource": "1","mobileModel": "1","mobileSysVersion": "1","interfaceVersion": "1" },"token": "5c04f696072504bf76d38d7ad1636d3f","secretNumber": "b317bc79e150f0472d2f256bd75a6537","companyId":"10000001","payWayType":"1"}',
+				type:"POST",
+                //dataType: "json",
+                url:config.serviceUrl,
+                data: {
+			        "param": '{"serviceId": "B01_findCompanyPayWayList","commonParam": {"sourcePage": "1","dataSource": "1","mobileModel": "1","mobileSysVersion": "1","interfaceVersion": "1" },"token": "5c04f696072504bf76d38d7ad1636d3f","secretNumber": "b317bc79e150f0472d2f256bd75a6537","companyId":"10000001","payWayType":"1"}'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -194,12 +200,12 @@ define(function(require, exports, module){
 				"logisticsType":value2,
 				"payWayName":value3
 			}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo);
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
 
 			$.ajax({
 				type:"POST",
-                dataType: "json",
-                url:config.serviceUrl + '?param={ "serviceId":"B03_getPurchaseOrderInfo"}',
+                //dataType: "json",
+                url:config.serviceUrl,
                 data:{param:inParams},
                 success:function(data){
                 	fnTip.success(2000);

@@ -7,10 +7,12 @@ define(function(require, exports, module){
 		otherCostList: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
-                dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/otherCostList.json?param= { "token":"令牌", "secretNumber":"序列号", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"100001000000001", "vendorId":"10000021", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }',
+				type:"POST",
+                //dataType: "json",
+                url:config.serviceUrl,
+                data: {
+			        "param": '{ "token":"令牌", "secretNumber":"序列号", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"100001000000001", "vendorId":"10000021", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){

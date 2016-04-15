@@ -10,7 +10,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{ "serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5", "poId":"122", "companyId":"123" }'
@@ -78,7 +78,7 @@ define(function(require, exports, module){
 			var that = this, options = [];
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"serviceId":"B01_getTaxByCustomerTax","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"interfaceVersion":"1","mobileModel":"1","sourcePage":"1","mobileSysVersion":"1","dataSource":"1"},"companyId":"10000001","customerId":"10000002","cTaxId":"1"}'
@@ -113,7 +113,7 @@ define(function(require, exports, module){
 			var that = this, result, _formDate = $('#poFormDate').html();
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"10000002","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"},"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}'
@@ -142,7 +142,7 @@ define(function(require, exports, module){
 			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data:{param:inParams},
                 success:function(data){

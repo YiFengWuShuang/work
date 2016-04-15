@@ -7,10 +7,12 @@ define(function(require, exports, module){
 		payInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"GET",
-                dataType: "json",
-                async:false,
-                url:'http://172.31.10.164/json/purchaseOrderInfo.json?param={ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }',
+				type:"POST",
+                //dataType: "json",
+                url:config.serviceUrl,
+                data: {
+			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){

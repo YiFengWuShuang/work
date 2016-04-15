@@ -14,7 +14,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{ "token":"29baaa55788d0c7117fb18a45115b5aa","secretNumber":"a03f0b1eb387cf299a62f61d796525ea","serviceId":"B03_submitAnswerPo", "poId":"12345678", "companyId":"23427592931" }'
@@ -90,7 +90,7 @@ define(function(require, exports, module){
 			var that = this, prodUnitNames = [], basicUnitNames = [];
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":["10001"],"dataSource":"1","interfaceVersion":"1","mobileMode":"1","mobileSysVersion":"1","sourcePage":"1","prodId":"1","secretNumber":""}'
@@ -144,7 +144,7 @@ define(function(require, exports, module){
 				var code = _this.parents('.itemEdit').find('.int-search').val();
 				$.ajax({
 					type:"POST",
-	                dataType: "json",
+	                //dataType: "json",
 	                url:config.serviceUrl,
 	                data: {
 				        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"10000001","vendorId":"10000009","prodCode":'+ code +',"pageSize":5,"currentPage":"1","commonParam":{"dataSource": "1", "interfaceVersion": "1", "sourceSystem": "1"},"secretNumber":"1","token":"22333"}'
@@ -190,7 +190,7 @@ define(function(require, exports, module){
 			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_getPurchaseOrderInfo"';
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:config.serviceUrl,
                 data:{param:inParams},
                 success:function(data){
