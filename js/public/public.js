@@ -78,7 +78,6 @@ $.ajax({
     url:"http://172.31.10.52/usersystem/login/memberLogin/v1",
     dataType: "jsonp",
 	jsonp: "callback",
-	jsonpCallback:"flightHandler",
     data: {account:"sunxy005",password:"123"},
     success:function(data){
     	data = data || {};
