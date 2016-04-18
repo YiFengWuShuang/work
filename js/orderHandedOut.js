@@ -33,7 +33,7 @@ define(function(require, exports, module){
 							 +'	</ul>'
 							 +'</div>'
                 	}else{
-                		fnTip.error(2000);
+
                 	}
                 },
                 error:function(){
@@ -60,7 +60,7 @@ define(function(require, exports, module){
                 			that._files.push(file[i]);
                 		}
                 	}else{
-                		fnTip.error(2000);
+
                 	}
                 }
 			})
@@ -94,7 +94,7 @@ define(function(require, exports, module){
 								+'</div>'
                 		}
                 	}else{
-                		fnTip.error(2000);
+
                 	}
                 },
                 error:function(){
@@ -123,7 +123,7 @@ define(function(require, exports, module){
                 		}
                 		html+='</ul></div>';
                 	}else{
-                		fnTip.error(2000);
+
                 	}
                 },
                 error:function(){

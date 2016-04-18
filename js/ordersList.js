@@ -86,7 +86,7 @@ define(function(require, exports, module){
 							that.vStatus.push(orderInfo[i].vStatus);
                 		}
                 	}else{
-                		fnTip.error(2000);
+
                 	}
                 },
                 error:function(){
