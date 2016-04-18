@@ -70,7 +70,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
-                		$('.ball-clip-rotate').remove();
+                		fnTip.hideLoading();
                 		var orderInfo = data.poAnswerOrderInfo;
                 		html = '<h2 class="m-title">基本信息</h2>';
                 		for(var i=0, len = orderInfo.length; i<len; i++){
@@ -108,6 +108,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
+                		fnTip.hideLoading();
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			that._files.push(file[i]);
@@ -129,6 +130,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
+                		fnTip.hideLoading();
                 		var lineList = data.poLineList;
                 		that._lineLists = lineList;
                 		html = '<h2 class="m-title">产品信息</h2>';
@@ -279,6 +281,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
+                		fnTip.hideLoading();
                 		var otherCostList = data.poOtherCostList;
                 		that._othersCost = otherCostList;
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';

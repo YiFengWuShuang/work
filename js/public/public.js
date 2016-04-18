@@ -36,6 +36,11 @@ var fnTip = {
 	loading: function(){
 		var loading = '<div class="loader-inner ball-clip-rotate"><div></div></div>';
 		$body.append(loading);
+	},
+	hideLoading: function(){
+		if($('.ball-clip-rotate').length){
+			$('.ball-clip-rotate').remove();			
+		}
 	}
 }
 
