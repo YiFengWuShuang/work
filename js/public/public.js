@@ -72,15 +72,19 @@ function getQueryString(name) {
 
 
 //模拟登陆
-$.ajax({
-	type:"POST",
-    dataType: "jsonp",
-    url:"http://172.31.10.52/usersystem/login/memberLogin/v1",
-    data: {account:"sunxy005",password:"123"},
-    success:function(data){
-    	data = data || {};
-    	if(data){
-    		console.log(data.retCode + ' ' + data.token)
-    	}
-    }
-})
+// $.ajax({
+// 	type:"POST",
+//     dataType: "jsonp",
+//     url:"http://172.31.10.52/usersystem/login/memberLogin/v1",
+//     data: {account:"sunxy005",password:"123"},
+//     success:function(data){
+//     	data = data || {};
+//     	if(data){
+//     		console.log(data.retCode + ' ' + data.token)
+//     	}
+//     }
+// })
+
+$.getJSON('http://172.31.10.52/usersystem/login/memberLogin/v1?id=123&callback=?', function(data){
+    console.log(data.retCode + ' ' + data.token)
+});
