@@ -19,7 +19,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var orderInfo = data.purchaseOrderInfo;
                 		html += '<h2 class="m-title">基本信息</h2>'
 							 +'<div class="item-wrap">'
@@ -32,6 +32,8 @@ define(function(require, exports, module){
 							 +'		<li><span>采购日期：</span>'+ orderInfo.poFormDate +'</li>'
 							 +'	</ul>'
 							 +'</div>'
+                	}else{
+                		console.log('TOKEN校验失败')
                 	}
                 },
                 error:function(){
