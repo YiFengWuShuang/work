@@ -3,7 +3,7 @@ var $body = $(document.body);
 var config = {
     serviceUrl:""
 };
-config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService'
+config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 
 //公共参数
 function commonParam() {
@@ -69,3 +69,18 @@ function getQueryString(name) {
 	})
 	$('.checkbox input').trigger('change');
 })();
+
+
+//模拟登陆
+$.ajax({
+	type:"POST",
+    //dataType: "json",
+    url:"http://172.31.10.50:8081/usersystem/login/memberLogin/v1",
+    data: {account:"sunxy005",password:"123"},
+    success:function(data){
+    	data = data || {};
+    	if(data){
+    		console.log(data.retCode + ' ' + data.token)
+    	}
+    }
+})

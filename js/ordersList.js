@@ -62,7 +62,6 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
-                async:false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poFormNo":"'+ _vParams.poFormNo +'", "poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
@@ -122,7 +121,6 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
-                async:false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
@@ -171,7 +169,6 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
-                async:false,
                 url:config.serviceUrl,
                 data:{
                 	"param": '{"serviceId":"B01_getProdByCustomerProd","token":"'+ _vParams.token +'" ,"secretNumber":"'+ _vParams.secretNumber +'","vendorId":"'+ _vParams.vendorId +'","cProdCode":"'+ _vParams.cProdCode +'","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":"'+ _vParams.customerId +'"}'
@@ -273,7 +270,6 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
-                async:false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "poFormNo":"'+ _vParams.poFormNo +'", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.token +'", "vendorId":"'+ _vParams.token +'", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
