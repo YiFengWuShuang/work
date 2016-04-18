@@ -33,7 +33,7 @@ define(function(require, exports, module){
 							 +'	</ul>'
 							 +'</div>'
                 	}else{
-                		console.log('TOKEN校验失败')
+                		alert('数据请求发生错误，请刷新页面!');
                 	}
                 },
                 error:function(){
@@ -54,11 +54,13 @@ define(function(require, exports, module){
                 },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			that._files.push(file[i]);
                 		}
+                	}else{
+                		alert('数据请求发生错误，请刷新页面!');
                 	}
                 }
 			})
@@ -75,7 +77,7 @@ define(function(require, exports, module){
                 },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var prodInfos = data.poLineList;
                 		html = '<h2 class="m-title">产品信息</h2>';
                 		for(var i=0, len=prodInfos.length; i<len; i++){
@@ -91,6 +93,8 @@ define(function(require, exports, module){
 								+'	</ul>'
 								+'</div>'
                 		}
+                	}else{
+                		alert('数据请求发生错误，请刷新页面!');
                 	}
                 },
                 error:function(){
@@ -111,13 +115,15 @@ define(function(require, exports, module){
                 },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var otherCostList = data.poOtherCostList;
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>';
                 		for(var i=0, len=otherCostList.length; i<len; i++){
                 			html+='<li><span>'+ otherCostList[i].costName +'：</span><b>&yen; '+ otherCostList[i].costAmount +'.00</b></li>'
                 		}
                 		html+='</ul></div>';
+                	}else{
+                		alert('数据请求发生错误，请刷新页面!');
                 	}
                 },
                 error:function(){
@@ -145,9 +151,14 @@ define(function(require, exports, module){
                 	"param": '{ "secretNumber":"73ebfae88c1a85f61823ee1bf113d517", "token":"c65e091c8e7fc9a5c5e9dad31dbfdd9d", "serviceId":"B03_submitPurchaseOrder", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
                 },
                 success:function(data){
-                	fnTip.success(2000);
-                	//发放成功后跳转到某个页面
-                	setTimeout(window.location.href='#',2000);
+                	data = data || {};
+                	if(data.success){
+	                	fnTip.success(2000);
+	                	//发放成功后跳转到某个页面
+	                	setTimeout(window.location.href='#',2000);                		
+                	}else{
+                		alert('数据请求发生错误，请刷新页面!');
+                	}
                 },
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
