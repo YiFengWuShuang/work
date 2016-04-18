@@ -33,7 +33,7 @@ define(function(require, exports, module){
 							 +'	</ul>'
 							 +'</div>'
                 	}else{
-                		alert('数据请求发生错误，请刷新页面!');
+                		fnTip.error(2000);
                 	}
                 },
                 error:function(){
@@ -60,7 +60,7 @@ define(function(require, exports, module){
                 			that._files.push(file[i]);
                 		}
                 	}else{
-                		alert('数据请求发生错误，请刷新页面!');
+                		fnTip.error(2000);
                 	}
                 }
 			})
@@ -94,7 +94,7 @@ define(function(require, exports, module){
 								+'</div>'
                 		}
                 	}else{
-                		alert('数据请求发生错误，请刷新页面!');
+                		fnTip.error(2000);
                 	}
                 },
                 error:function(){
@@ -123,7 +123,7 @@ define(function(require, exports, module){
                 		}
                 		html+='</ul></div>';
                 	}else{
-                		alert('数据请求发生错误，请刷新页面!');
+                		fnTip.error(2000);
                 	}
                 },
                 error:function(){
@@ -157,7 +157,7 @@ define(function(require, exports, module){
 	                	//发放成功后跳转到某个页面
 	                	setTimeout(window.location.href='#',2000);                		
                 	}else{
-                		alert('数据请求发生错误，请刷新页面!');
+                		fnTip.error(2000);
                 	}
                 },
                 error:function(){

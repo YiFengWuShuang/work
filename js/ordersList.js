@@ -85,6 +85,8 @@ define(function(require, exports, module){
 								 +'</div>'
 							that.vStatus.push(orderInfo[i].vStatus);
                 		}
+                	}else{
+                		fnTip.error(2000);
                 	}
                 },
                 error:function(){
@@ -540,8 +542,13 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
                 data:{"param":inParams},
                 success:function(data){
-                	fnTip.success(2000);
-                	setTimeout(window.location.reload(),2000);
+                	data = data || {};
+                	if(data.success){
+	                	fnTip.success(2000);
+	                	setTimeout(window.location.reload(),2000);                		
+                	}else{
+                		fnTip.error(2000);
+                	}
                 },
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
