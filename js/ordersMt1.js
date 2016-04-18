@@ -17,7 +17,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var orderInfo = data.poAnswerOrderInfo;
                 		html = '<div id="orderBaseInfo" class="m-item"><h2 class="m-title">基本信息</h2>';
                 		for(var i=0, len = orderInfo.length; i<len; i++){
@@ -85,7 +85,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var taxs = data.taxList, len = taxs.length, _isContainTax = $('#taxType').attr('data-isContainTax'), _taxRate = $('#taxType').attr('data-taxRate');
                 		for(var i=0; i<len; i++){
                 			if(_isContainTax=='1'){
@@ -120,7 +120,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		result = data;
                 	}
                 }
@@ -146,8 +146,11 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
                 data:{param:inParams},
                 success:function(data){
-                	fnTip.success(2000);
-                	setTimeout(window.location.reload(),2000);
+                	data = data || {};
+                	if(data.success){
+	                	fnTip.success(2000);
+	                	setTimeout(window.location.reload(),2000);                		
+                	}
                 },
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');

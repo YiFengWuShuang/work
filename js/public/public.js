@@ -69,3 +69,18 @@ function getQueryString(name) {
 	})
 	$('.checkbox input').trigger('change');
 })();
+
+
+//模拟登陆
+$.ajax({
+	type:"POST",
+    //dataType: "json",
+    url:"http://172.31.10.52/usersystem/login/memberLogin/v1",
+    data: {account:"sunxy005",password:"123"},
+    success:function(data){
+    	data = data || {};
+    	if(data){
+    		console.log(data.retCode + ' ' + data.token)
+    	}
+    }
+})
