@@ -74,7 +74,7 @@ function getQueryString(name) {
 //模拟登陆
 $.ajax({
     dataType: "jsonp",
-    url:"http://172.31.10.52/usersystem/login/memberLogin/v1?id=123",
+    url:"http://172.31.10.52/usersystem/login/memberLogin/v1",
     data: {account:"sunxy005",password:"123"},
     success:function(data){
 
