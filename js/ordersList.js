@@ -101,7 +101,6 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
-                async:false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","poFormNo":"'+ _vParams.poFormNo +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
@@ -125,7 +124,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B03_findPoAnswerLineList","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "04e8d804786baa3523a50e7d73f784ff","secretNumber": "3a311b80bf8c70469d3011969c7685e7"}'
+			        "param": '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -483,11 +482,11 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			//that.fileList();
+			that.fileList();
 			var orderAnswerInfo = document.getElementById('orderAnswerInfo');
 			var prodAnswerInfo = document.getElementById('prodAnswerInfo');
 			var othersCost = document.getElementById('othersCost');
-			if(!orderAnswerInfo){
+			if(orderAnswerInfo){
 				orderAnswerInfo.innerHTML = that.orderBaseInfo();
 			}
 			if(prodAnswerInfo){
@@ -495,7 +494,7 @@ define(function(require, exports, module){
 				//$itemTips.addClass('tips-error').find('span').html('答交异常');
 				//$itemTips.addClass('tips-success').find('span').html('答交无误');
 			}
-			if(!othersCost){
+			if(othersCost){
 				othersCost.innerHTML = that.othersCost();
 			}
 			$('.btn-wrap a').on('click',function(){
