@@ -69,20 +69,3 @@ function getQueryString(name) {
 	})
 	$('.checkbox input').trigger('change');
 })();
-
-
-
-
-
-
-
-$.ajax({
-    url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
-    dataType:"jsonp",
-    data: {
-    	param:'{"account":"sunxy006","password":"123","verifyKey":"","verifyCode":""}'
-    },
-    success:function(data){
-    	alert(111)
-    }
-})
