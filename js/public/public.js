@@ -81,7 +81,7 @@ $.ajax({
     url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
     dataType:"jsonp",
     data: {
-    	param:decodeURI(params)
+    	param:params
     },
     success:function(data){
     	alert(111)
