@@ -121,7 +121,6 @@ define(function(require, exports, module){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
