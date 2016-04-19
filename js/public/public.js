@@ -79,7 +79,9 @@ function getQueryString(name) {
 $.ajax({
     dataType: "jsonp",
     url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
-    data: {"account":"sunxy006","password":"123"},
+    data: {
+    	"param":'{"account":"sunxy006","password":"123"}'
+    },
     success:function(data){
     	alert(111)
     }
