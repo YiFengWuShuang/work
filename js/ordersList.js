@@ -103,7 +103,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        param: '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","poFormNo":"'+ _vParams.poFormNo +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
+			        param: '{"docType":12,"companyId":"10000001","fileSource":2,"searchType":1,"id":"100001000000023","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"1","sourceSystem":"1"},"serviceId":"B01_findFileList","token":"eafbea226c419ff495826ba1d693f68e","secretNumber":"20c75a14d2a32fb114da7af3278eff9a"}'
 			    },
                 success:function(data){
                 	data = data || {};
