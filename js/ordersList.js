@@ -123,7 +123,7 @@ define(function(require, exports, module){
 				type:"POST",
                 url:config.serviceUrl,
                 data: {
-			        param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
+			        param: '{"companyId":[10000001],"soId":"100001000000023","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"/zhl/order/sales/detail/100001000000023/10000001","sourceSystem":"1"},"serviceId":"B03_findSoLineList","token":"eafbea226c419ff495826ba1d693f68e","secretNumber":"20c75a14d2a32fb114da7af3278eff9a"}'
 			    },
                 success:function(data){
                 	data = data || {};
