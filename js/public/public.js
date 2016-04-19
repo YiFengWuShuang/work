@@ -80,7 +80,7 @@ $.ajax({
     dataType: "jsonp",
     url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
     data: {
-    	"param":'{"account":"sunxy006","password":"123"}'
+    	param:'{"account":"sunxy006","password":"123","verifyKey":"","verifyCode":""}'
     },
     success:function(data){
     	alert(111)
