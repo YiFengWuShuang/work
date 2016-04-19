@@ -75,13 +75,12 @@ function getQueryString(name) {
 
 
 
-var params = '{"account":"sunxy006","password":"123","verifyKey":"","verifyCode":""}';
+
 $.ajax({
-	type:"POST",
     url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
     dataType:"jsonp",
     data: {
-    	param:params
+    	param:'{"account":"sunxy006","password":"123","verifyKey":"","verifyCode":""}'
     },
     success:function(data){
     	alert(111)
