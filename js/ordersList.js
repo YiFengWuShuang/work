@@ -487,10 +487,10 @@ define(function(require, exports, module){
 			var orderAnswerInfo = document.getElementById('orderAnswerInfo');
 			var prodAnswerInfo = document.getElementById('prodAnswerInfo');
 			var othersCost = document.getElementById('othersCost');
-			if(orderAnswerInfo){
+			if(!orderAnswerInfo){
 				orderAnswerInfo.innerHTML = that.orderBaseInfo();
 			}
-			if(!prodAnswerInfo){
+			if(prodAnswerInfo){
 				prodAnswerInfo.innerHTML = that.prodAnswerInfo();
 				//$itemTips.addClass('tips-error').find('span').html('答交异常');
 				//$itemTips.addClass('tips-success').find('span').html('答交无误');
