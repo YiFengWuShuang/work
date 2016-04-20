@@ -126,7 +126,7 @@ define(function(require, exports, module){
 			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    // },
                 data: {
-			        param: '{"secretNumber":"6b0292344b2e6f4db30d79e42befdc28","vendorId":"10000021","customerId":"100012","token":"bb0a1709761d2f5e31e9a8391547ad7d","docType":"1","id":"100000","cProdCode":"1","fileSource":"1","searchType":"1","poAnswerId":"1234","companyId":"10000001","commonParam":{"sourcePage":"buy order","sourceSystem":"1","mobileSysVersion":"Android 4.0.1","mobileModel":"1","dataSource":1,"interfaceVersion":"1.1.0"}}'
+			        param: '{"serviceId": "B03_findPoAnswerLineList","secretNumber":"6b0292344b2e6f4db30d79e42befdc28","vendorId":"10000021","customerId":"100012","token":"bb0a1709761d2f5e31e9a8391547ad7d","docType":"1","id":"100000","cProdCode":"1","fileSource":"1","searchType":"1","poAnswerId":"1234","companyId":"10000001","commonParam":{"sourcePage":"buy order","sourceSystem":"1","mobileSysVersion":"Android 4.0.1","mobileModel":"1","dataSource":1,"interfaceVersion":"1.1.0"}}'
 			    },
                 success:function(data){
                 	data = data || {};
