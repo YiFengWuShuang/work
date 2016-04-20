@@ -122,15 +122,12 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 url:config.serviceUrl,
-       //          data: {
-			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
-			    // },
                 data: {
-			        param: '{"serviceId": "B03_findPoAnswerLineList","secretNumber":"6b0292344b2e6f4db30d79e42befdc28","vendorId":10000021,"token":"bb0a1709761d2f5e31e9a8391547ad7d","poAnswerId":"1234"}'
+			        param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
-
+                	if(data.success){
                 		fnTip.hideLoading();
                 		var lineList = data.poLineList;
                 		that._lineLists = lineList;
@@ -155,7 +152,7 @@ define(function(require, exports, module){
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
 							// that.vTotals+=parseInt((lineList[i].vTaxLineTotal=='' ? lineList[i].taxLineTotal : lineList[i].vTaxLineTotal),10);
                 		}
-
+                	}
                 },
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
@@ -484,11 +481,11 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			//that.fileList();
+			that.fileList();
 			var orderAnswerInfo = document.getElementById('orderAnswerInfo');
 			var prodAnswerInfo = document.getElementById('prodAnswerInfo');
 			var othersCost = document.getElementById('othersCost');
-			if(!orderAnswerInfo){
+			if(orderAnswerInfo){
 				orderAnswerInfo.innerHTML = that.orderBaseInfo();
 			}
 			if(prodAnswerInfo){
@@ -496,7 +493,7 @@ define(function(require, exports, module){
 				//$itemTips.addClass('tips-error').find('span').html('答交异常');
 				//$itemTips.addClass('tips-success').find('span').html('答交无误');
 			}
-			if(!othersCost){
+			if(othersCost){
 				othersCost.innerHTML = that.othersCost();
 			}
 			$('.btn-wrap a').on('click',function(){
