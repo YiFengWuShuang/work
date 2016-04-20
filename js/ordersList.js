@@ -51,9 +51,9 @@ define(function(require, exports, module){
 			that.dateFn();
 
 			that.hideTip();
-			$('.item-total').html('总金额：&yen;'+that.totals+'.00');
+			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals.toString()));
 			if(that.vStatus[0]=='5'){
-				$('.item-total-dj').html('答交总金额：&yen;'+that.reCostTotalFn()+'.00').show();
+				$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn().toString())).show();
 				btn.hide();
 			}
 		},
@@ -120,7 +120,7 @@ define(function(require, exports, module){
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 url:config.serviceUrl,
        //          data: {
 			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
@@ -144,11 +144,11 @@ define(function(require, exports, module){
 							for(var j=0; j<lineList[i].poSubLineList.length; j++){
 								html+='<li class="response"><section><span>数量：</span><em>'+ lineList[i].poSubLineList[j].purchaseQty +'</em>'+ lineList[i].poSubLineList[j].purchaseUnit +'/<em>'+ lineList[i].poSubLineList[j].valuationQty +'</em>'+ lineList[i].poSubLineList[j].valuationUnit +'</section><section><span>交期：</span><em>'+ lineList[i].poSubLineList[j].expectedDelivery +'</em></section></li>'
 							}
-							html+='		<li class="price"><span>单价：</span>&yen; '+ lineList[i].vTaxPrice +'.00/'+ lineList[i].valuationUnitName +'</li>'
+							html+='		<li class="price"><span>单价：</span>&yen; '+ formatMoney(lineList[i].vTaxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
 								+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-								// +'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
-								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ lineList[i].taxLineTotal +'.00</b></li>'
-								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ lineList[i].vTaxLineTotal +'.00</li>':'')
+								+'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
+								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
+								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
 								+( that.vStatus[0]=='5' ? '' : '<span class="edit"></span>' )
 								+'</div>'
@@ -211,9 +211,9 @@ define(function(require, exports, module){
 							+'</ul>'
 							+'<div class="btnBox"><a href="javascript:;" class="addResponse">新增答交栏</a></div>'
 							+'<ul class="responseBox2">'
-							+'	<li><span>单价：</span>¥'+ lineLists[index].vTaxPrice +'.00/'+ lineLists[index].valuationUnitName +'</li>'
+							+'	<li><span>单价：</span>¥'+ formatMoney(lineLists[index].vTaxPrice) +'/'+ lineLists[index].valuationUnitName +'</li>'
 							+'	<li><span>备注：</span><p>'+ lineLists[index].remark +'</p></li>'
-							+'	<li class="subtotal"><span>小记：</span><b>&yen; '+ lineLists[index].taxLineTotal +'.00</b></li>'
+							+'	<li class="subtotal"><span>小记：</span><b>&yen; '+ formatMoney(lineLists[index].taxLineTotal) +'</b></li>'
 							+'</ul>'
 							+'<div class="btns">'
 							+'	<a class="btn-cancel" href="javascript:;">取消</a>'
@@ -285,16 +285,16 @@ define(function(require, exports, module){
                 		that._othersCost = otherCostList;
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
                 		for(var i=0, len=otherCostList.length; i<len; i++){
-                			html+='<li data-costName="'+ otherCostList[i].costName +'" data-costAmount="'+ otherCostList[i].costAmount +'" data-vCostAmount="'+ otherCostList[i].vCostAmount +'"><span>'+ otherCostList[i].costName +'：</span><b>&yen; '+ otherCostList[i].costAmount +'.00</b><b class="dj"><em class="money" data-money="'+ (otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount) +'">'+ (otherCostList[i].vCostAmount=='' ? '' : otherCostList[i].vCostAmount+'.00') +'</em></b></li>';
+                			html+='<li data-costName="'+ otherCostList[i].costName +'" data-costAmount="'+ otherCostList[i].costAmount +'" data-vCostAmount="'+ otherCostList[i].vCostAmount +'"><span>'+ otherCostList[i].costName +'：</span><b>&yen; '+ formatMoney(otherCostList[i].costAmount) +'</b><b class="dj"><em class="money" data-money="'+ (otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount) +'">'+ (otherCostList[i].vCostAmount=='' ? '' : formatMoney(otherCostList[i].vCostAmount)) +'</em></b></li>';
                 			subtotal += parseInt(otherCostList[i].costAmount,10);
                 			resubtotal += parseInt((otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount),10);
                 			if(otherCostList[i].vCostAmount!=''){
                 				_responseCost = true;
                 			}
                 		}
-                		html+='<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>小计：</span><b>&yen; '+ subtotal +'.00</b></li>'
+                		html+='<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(subtotal.toString()) +'</b></li>'
                 		if(_responseCost){
-                			html+='<li id="changeCost" class="response"><span>变更费用：</span>&yen; '+ resubtotal +'.00</li>'
+                			html+='<li id="changeCost" class="response"><span>变更费用：</span>&yen; '+ formatMoney(resubtotal.toString()) +'</li>'
                 		}
                 		html+='</ul>'
                 		html+=( that.vStatus[0]=='5' ? '' : '<span class="edit editOther"></span>' )
@@ -327,7 +327,7 @@ define(function(require, exports, module){
 
 			for(var i=0; i<lens; i++){
 				var _val = ($('#othersCost .dj').eq(i).find('em').html()=='' ? '' : $('#othersCost .dj').eq(i).find('em').attr('data-money'));
-				editHtmlCost+='<li><span>'+ othersCost[i].costName +'：</span><b>&yen; '+ othersCost[i].costAmount +'.00</b><input type="text" class="original" id="dj_'+ i +'" value="'+ _val +'" /></li>';
+				editHtmlCost+='<li><span>'+ othersCost[i].costName +'：</span><b>&yen; '+ formatMoney(othersCost[i].costAmount) +'</b><input type="text" class="original" id="dj_'+ i +'" value="'+ _val +'" /></li>';
 			}
 			editHtmlCost+=newResponseItem()
 			editHtmlCost+='</ul>'
@@ -400,7 +400,7 @@ define(function(require, exports, module){
 					if(originalVal==''){
 						continue;
 					}
-					$('#othersCost .dj').eq(l).html('&yen; <em class="money" data-money="' + originalVal + '">' + originalVal + '</em>.00');
+					$('#othersCost .dj').eq(l).html('&yen; <em class="money" data-money="' + originalVal + '">' + formatMoney(originalVal) + '</em>');
 				}
 				that.createResponse($('.addNewCost'),2,self,parent,'isOtherCost');
 
@@ -425,7 +425,7 @@ define(function(require, exports, module){
 				if(type=='isProdAnswer'){
 					html+='<li class="response"><section><span>数量：</span><em>'+ vals[k][0] +'</em>'+lineLists[idx].purchaseUnitName+'/<em>'+ vals[k][1] +'</em>'+lineLists[idx].valuationUnitName+'</section><section><span>交期：</span><em>'+ vals[k][2] +'</em></section></li>'
 				}else{
-					html+='<li class="response" data-costName="'+ vals[k][0] +'" data-costAmount="" data-vCostAmount="'+ vals[k][1] +'"><span><em>'+ vals[k][0] +'</em>：</span>&yen; <em class="money" data-money="'+ vals[k][1] +'">'+ vals[k][1] +'</em>.00</li>'				
+					html+='<li class="response" data-costName="'+ vals[k][0] +'" data-costAmount="" data-vCostAmount="'+ vals[k][1] +'"><span><em>'+ vals[k][0] +'</em>：</span>&yen; <em class="money" data-money="'+ vals[k][1] +'">'+ formatMoney(vals[k][1]) +'</em></li>'				
 				}
 			}
 			that.itemshow(self,parent);
@@ -435,7 +435,7 @@ define(function(require, exports, module){
 				var values = that.reQtys(self.parents('.responseBox'),idx);
 				if(values!=''||values!=undefined){
 					parent.find('.item-wrap').eq(idx).find('.subtotal').attr('data-vtotal',values*lineLists[idx].vTaxPrice);
-					parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal"><span>答交金额：</span>&yen; '+ values*lineLists[idx].vTaxPrice +'.00</li>')
+					parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney((values*lineLists[idx].vTaxPrice).toString()) +'</li>')
 				}
 			}else{
 				$('#othersCostSubtotal').before(html);
@@ -451,10 +451,10 @@ define(function(require, exports, module){
 				})
 				if(moneyChange){
 					$('#othersCostSubtotal').attr('data-vtotal',moneys);
-					$('#othersCostSubtotal').after('<li id="changeCost" class="response" data-otherMoney="'+ moneys +'"><span>变更费用：</span>&yen; '+ moneys +'.00</li>');					
+					$('#othersCostSubtotal').after('<li id="changeCost" class="response" data-otherMoney="'+ moneys +'"><span>变更费用：</span>&yen; '+ formatMoney(moneys.toString()) +'</li>');				
 				}
 			}
-			$('.item-total-dj').html('答交总金额：&yen;'+that.reCostTotalFn()+'.00').show();
+			$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn().toString())).show();
 		},
 		dateFn: function(){
 			$('.timeBox').mdater({
