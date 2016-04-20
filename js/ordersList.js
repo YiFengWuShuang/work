@@ -126,7 +126,7 @@ define(function(require, exports, module){
 			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    // },
                 data: {
-			        param: '{"serviceId": "B03_findPoAnswerLineList","secretNumber":"6b0292344b2e6f4db30d79e42befdc28","vendorId":"10000021","customerId":"100012","token":"bb0a1709761d2f5e31e9a8391547ad7d","docType":"1","id":"100000","cProdCode":"1","fileSource":"1","searchType":"1","poAnswerId":"1234","companyId":"10000001","commonParam":{"sourcePage":"buy order","sourceSystem":"1","mobileSysVersion":"Android 4.0.1","mobileModel":"1","dataSource":1,"interfaceVersion":"1.1.0"}}'
+			        param: '{"serviceId": "B03_findPoAnswerLineList","secretNumber":"6b0292344b2e6f4db30d79e42befdc28","vendorId":10000021,"token":"bb0a1709761d2f5e31e9a8391547ad7d","poAnswerId":"1234"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -146,7 +146,7 @@ define(function(require, exports, module){
 							}
 							html+='		<li class="price"><span>单价：</span>&yen; '+ formatMoney(lineList[i].vTaxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
 								+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-								+'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
+								// +'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
 								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
@@ -155,6 +155,8 @@ define(function(require, exports, module){
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
 							// that.vTotals+=parseInt((lineList[i].vTaxLineTotal=='' ? lineList[i].taxLineTotal : lineList[i].vTaxLineTotal),10);
                 		}
+                	}else{
+                		alert(111)
                 	}
                 },
                 error:function(){
