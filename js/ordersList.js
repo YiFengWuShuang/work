@@ -103,7 +103,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        param: '{"docType":12,"companyId":"10000001","fileSource":2,"searchType":1,"id":"100001000000023","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"1","sourceSystem":"1"},"serviceId":"B01_findFileList","token":"eafbea226c419ff495826ba1d693f68e","secretNumber":"20c75a14d2a32fb114da7af3278eff9a"}'
+			        param: '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","poFormNo":"'+ _vParams.poFormNo +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -122,8 +122,11 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 url:config.serviceUrl,
+       //          data: {
+			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
+			    // },
                 data: {
-			        param: '{"companyId":[10000001],"soId":"100001000000023","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"/zhl/order/sales/detail/100001000000023/10000001","sourceSystem":"1"},"serviceId":"B03_findSoLineList","token":"eafbea226c419ff495826ba1d693f68e","secretNumber":"20c75a14d2a32fb114da7af3278eff9a"}'
+			        param: '{"serviceId":"B03_findPoAnswerLineList","poAnswerId":"100001000000085","vendorId":"10000021","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"/order/customer/check/10000021/100001000000085","sourceSystem":"1"},"token":"321dd8a5842ee5db9d93eb0e32df9060","secretNumber":"2c3da480a8928d213a0affe01f566796"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -481,11 +484,11 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			that.fileList();
+			//that.fileList();
 			var orderAnswerInfo = document.getElementById('orderAnswerInfo');
 			var prodAnswerInfo = document.getElementById('prodAnswerInfo');
 			var othersCost = document.getElementById('othersCost');
-			if(orderAnswerInfo){
+			if(!orderAnswerInfo){
 				orderAnswerInfo.innerHTML = that.orderBaseInfo();
 			}
 			if(prodAnswerInfo){
@@ -493,7 +496,7 @@ define(function(require, exports, module){
 				//$itemTips.addClass('tips-error').find('span').html('答交异常');
 				//$itemTips.addClass('tips-success').find('span').html('答交无误');
 			}
-			if(othersCost){
+			if(!othersCost){
 				othersCost.innerHTML = that.othersCost();
 			}
 			$('.btn-wrap a').on('click',function(){
@@ -551,6 +554,13 @@ define(function(require, exports, module){
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
                 }
+			})
+		},
+		share: function(){
+			require.async('../js/share.js',function(ShareFn){
+				ShareFn({
+					cssname:cssnames
+				})
 			})
 		}
 	};
