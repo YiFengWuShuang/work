@@ -130,7 +130,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data.success){
+
                 		fnTip.hideLoading();
                 		var lineList = data.poLineList;
                 		that._lineLists = lineList;
@@ -155,9 +155,7 @@ define(function(require, exports, module){
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
 							// that.vTotals+=parseInt((lineList[i].vTaxLineTotal=='' ? lineList[i].taxLineTotal : lineList[i].vTaxLineTotal),10);
                 		}
-                	}else{
-                		alert(111)
-                	}
+
                 },
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
