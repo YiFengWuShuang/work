@@ -123,7 +123,7 @@ define(function(require, exports, module){
 				type:"POST",
                 url:config.serviceUrl,
                 data: {
-			        param: '{"serviceId": "B03_findPoAnswerLineList","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
+			        param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -143,14 +143,13 @@ define(function(require, exports, module){
 							}
 							html+='		<li class="price"><span>单价：</span>&yen; '+ formatMoney(lineList[i].vTaxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
 								+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-								// +'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
+								+'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
 								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
 								+( that.vStatus[0]=='5' ? '' : '<span class="edit"></span>' )
 								+'</div>'
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
-							// that.vTotals+=parseInt((lineList[i].vTaxLineTotal=='' ? lineList[i].taxLineTotal : lineList[i].vTaxLineTotal),10);
                 		}
                 	}
                 },
@@ -297,7 +296,6 @@ define(function(require, exports, module){
                 		html+=( that.vStatus[0]=='5' ? '' : '<span class="edit editOther"></span>' )
                 		html+='</div>';
                 		that.totals+=parseInt(subtotal,10);
-						// that.vTotals+=parseInt((_responseCost ? resubtotal : subtotal),10);
                 	}
                 },
                 error:function(){
