@@ -120,7 +120,7 @@ define(function(require, exports, module){
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
-				type:"POST",
+				type:"GET",
                 url:config.serviceUrl,
        //          data: {
 			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
@@ -146,7 +146,7 @@ define(function(require, exports, module){
 							}
 							html+='		<li class="price"><span>单价：</span>&yen; '+ lineList[i].vTaxPrice +'.00/'+ lineList[i].valuationUnitName +'</li>'
 								+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-								+'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
+								// +'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
 								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ lineList[i].taxLineTotal +'.00</b></li>'
 								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ lineList[i].vTaxLineTotal +'.00</li>':'')
 								+'	</ul>'
