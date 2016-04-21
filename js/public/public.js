@@ -6,16 +6,16 @@ var config = {
 config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 
 //公共参数
-function commonParam() {
-    return {
-            dataSource:"1",
-            interfaceVersion:"",
-            mobileModel:"",
-            mobileSysVersion:"",
-            sourcePage:window.location.pathname,
-            sourceSystem:"1"
-        };
-};
+// function commonParam() {
+//     return {
+//             dataSource:"1",
+//             interfaceVersion:"",
+//             mobileModel:"",
+//             mobileSysVersion:"",
+//             sourcePage:window.location.pathname,
+//             sourceSystem:"1"
+//         };
+// };
 
 // 操作提示
 var fnTip = {
