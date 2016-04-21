@@ -121,6 +121,7 @@ define(function(require, exports, module){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
 				type:"POST",
+				dataType: "jsonp",
                 url:config.serviceUrl,
                 data: {
 			        param: '{"serviceId": "B03_findPoAnswerLineList","poFormNo":"'+ _vParams.poFormNo +'","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
@@ -531,7 +532,7 @@ define(function(require, exports, module){
 
 			//入参字符串
 			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo","poFormNo":"'+ _vParams.poFormNo +'"';
-			console.log(inParams)
+			//console.log(inParams)
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
@@ -549,13 +550,6 @@ define(function(require, exports, module){
                 error:function(){
                 	alert('数据请求发生错误，请刷新页面!');
                 }
-			})
-		},
-		share: function(){
-			require.async('../js/share.js',function(ShareFn){
-				ShareFn({
-					cssname:cssnames
-				})
 			})
 		}
 	};
