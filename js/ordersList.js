@@ -119,6 +119,10 @@ define(function(require, exports, module){
 		},
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
+			console.log(_vParams.token)
+			console.log(_vParams.secretNumber)
+			console.log(_vParams.poAnswerId)
+			console.log(_vParams.vendorId)
 			$.ajax({
 				type:"POST",
 				//dataType: "json",
