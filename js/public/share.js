@@ -3,7 +3,7 @@ define(function(require, exports, module){
 	function ShareFn(opts){
 		this.cssname = opts.cssname;
 		this.containers = opts.containers;
-		this.childrens = opts.childrens;
+		this.filterItems = opts.filterItems;
 		this.init();
 	}
 
@@ -30,11 +30,11 @@ define(function(require, exports, module){
 		},
 		filterCon: function(){
 			var that = this,
-				L = that.childrens.length,
+				L = that.filterItems.length,
 				_containers = that.containers.html(),
 				c_html = '';
 			for(var i=0; i<L; i++){
-				$(that.childrens[i]).each(function(){
+				$(that.filterItems[i]).each(function(){
 					c_html = $(this)[0].outerHTML;
 					_containers = _containers.replace(c_html,'');
 				})
@@ -42,7 +42,7 @@ define(function(require, exports, module){
 			return _containers;
 		},
 		evens: function(){
-			var that = this, shareCon = '', L = that.childrens.length;
+			var that = this, shareCon = '', L = that.filterItems.length;
 			shareCon = that.createLink() + ( (L==0) ? that.fullCon() : that.filterCon() );
 			return shareCon;
 		}
