@@ -3,7 +3,7 @@ var $body = $(document.body);
 var config = {
     serviceUrl:""
 };
-config.serviceUrl = 'http://123.127.244.235:8080/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
+config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 
 //公共参数
 function commonParam() {
