@@ -64,12 +64,12 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        param: '{"serviceId": "B03_getPurchaseOrderAnswerInfo","poFormNo":"'+ _vParams.poFormNo +'", "poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
+			        param: '{"serviceId": "B03_getPurchaseOrderAnswerInfo", "poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
+                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
-                		fnTip.hideLoading();
                 		var orderInfo = data.poAnswerOrderInfo;
                 		html = '<h2 class="m-title">基本信息</h2>';
                 		for(var i=0, len = orderInfo.length; i<len; i++){
@@ -103,12 +103,12 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        param: '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","poFormNo":"'+ _vParams.poFormNo +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
+			        param: '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
 			    },
                 success:function(data){
+                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
-                		fnTip.hideLoading();
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			that._files.push(file[i]);
@@ -127,9 +127,9 @@ define(function(require, exports, module){
 			        param: '{"serviceId": "B03_findPoAnswerLineList","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    },
                 success:function(data){
+                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
-                		fnTip.hideLoading();
                 		var lineList = data.poLineList;
                 		that._lineLists = lineList;
                 		html = '<h2 class="m-title">产品信息</h2>';
@@ -272,12 +272,12 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        param: '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "poFormNo":"'+ _vParams.poFormNo +'", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.token +'", "vendorId":"'+ _vParams.token +'", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
+			        param: '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'",, "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
 			    },
                 success:function(data){
+                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
-                		fnTip.hideLoading();
                 		var otherCostList = data.poOtherCostList;
                 		that._othersCost = otherCostList;
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
@@ -531,8 +531,7 @@ define(function(require, exports, module){
 			}
 
 			//入参字符串
-			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo","poFormNo":"'+ _vParams.poFormNo +'"';
-			//console.log(inParams)
+			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo"';
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
