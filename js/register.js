@@ -24,21 +24,21 @@ define(function(require, exports, module){
 			    		return false;
 			    	}
 			    	var mobile = $('#phone').val();
-			    	window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode=')
 			    	fnTip.loading();
-			  //   	$.ajax({
-					// 	type:"POST",
-		   //              dataType: "json",
-		   //              url:'http://172.31.10.52/usersystem/login/getSmsVerifyCode/v1',
-		   //              data:{mobile:mobile},
-		   //              success:function(data){
-		   //              	fnTip.hideLoading();
-		   //              	data = data || {};
-		   //              	if(data){
-		   //              		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.verifyCode);
-		   //              	}
-		   //              }
-					// })
+			    	$.ajax({
+						type:"POST",
+		                dataType: "json",
+		                url:'http://172.31.10.52/usersystem/login/getSmsVerifyCode/v1',
+		                data:{mobile:mobile},
+		                success:function(data){
+		                	fnTip.hideLoading();
+		                	data = data || {};
+		                	if(data){
+		                		console.log(data.verifyCode)
+		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.verifyCode);
+		                	}
+		                }
+					})
 			    	
 			    }
 			    //下一步
