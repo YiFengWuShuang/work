@@ -26,7 +26,7 @@ define(function(require, exports, module){
 								+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
 								+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
                 	}else{
-                		$('.contarin').html('<p>'+ data.errorMsg +'</p>');
+                		$('.contarin').html('<p style="text-align:center;">'+ data.errorMsg +'</p>');
                 	}
                 },
                 error:function(){
