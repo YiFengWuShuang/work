@@ -27,11 +27,12 @@
 .item-wrap .m-input{ margin: .3rem 0;}
 .m-input .c-label{ line-height: 1.4rem;}
 input.s-int{ width: 6rem;}
-input.s-int-w1,textarea.s-int{ width: 11rem;}
-textarea.s-int{ height: 4rem;}
+input.s-int-w1{ width: 11rem;}
+textarea.s-int{ width: 13rem; height: 4rem;}
 
 
 /* media */
 @media screen and (max-width: 320px){
-	input.s-int-w1,textarea.s-int{ width: 9rem;}
+	input.s-int-w1{ width: 9rem;}
+	textarea.s-int{ width: 11rem;}
 }

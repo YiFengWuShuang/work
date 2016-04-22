@@ -126,13 +126,13 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
 				//dataType: "json",
-                url:config.serviceUrl,
+                url:'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService?param={"serviceId":"B03_findPurchaseOrderListByStatus","token":"97dd3f9c87b5b8b937392cb1f6048630","companyId":[10000001],"status":"1","pageSize":"1","currentPage":"1","secretNumber":"0b7619a54e80f9b5b8f96134b2ba9f6a"}',
        //          data: {
 			    //     param: '{"serviceId": "B03_findPoAnswerLineList","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
 			    // },
-			    data: {
-			        param: '{"serviceId": "B03_findPurchaseOrderListByStatus","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
-			    },
+			    // data: {
+			    //     param: '{"serviceId": "B03_findPurchaseOrderListByStatus","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
+			    // },
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
