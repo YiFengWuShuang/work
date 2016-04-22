@@ -15,7 +15,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var infos = data.purchaseOrderInfo;
                 		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
 								+'<li><span>物流方式：</span><p>'+ infos.logisticsType +((infos.logisticsType.indexOf('自提')!=-1) ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
@@ -25,6 +25,8 @@ define(function(require, exports, module){
 								+'<li><span>发票类型：</span><p>'+ infos.invoiceType +'</p></li>'
 								+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
 								+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
+                	}else{
+                		$('.contarin').html('<p>'+ data.errorMsg +'</p>');
                 	}
                 },
                 error:function(){
