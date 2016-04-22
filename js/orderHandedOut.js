@@ -94,7 +94,7 @@ define(function(require, exports, module){
 								+'</div>'
                 		}
                 	}else{
-
+                		document.getElementById('prodListsInfo').innerHTML = '<p style="text-align:center;">'+ data.errorMsg +'</p>'
                 	}
                 },
                 error:function(){
