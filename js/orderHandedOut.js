@@ -1,5 +1,5 @@
 define(function(require, exports, module){
-
+	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var order = {
 		init: function(opts){
 			this._files = [];
@@ -15,7 +15,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"67842005863912b98e3c4376a26dafc3", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"e5044d7883fdabf2eee37a8981769df4", "poId":"1014594958242712", "companyId":"10000021", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"'+ _vParams.token +'", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -50,7 +50,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-                	"param": '{"secretNumber":"e5044d7883fdabf2eee37a8981769df4","token":"67842005863912b98e3c4376a26dafc3","serviceId":"B01_findFileList","companyId":"10000021","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
+                	"param": '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -73,7 +73,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-                	"param": ' { "token":"67842005863912b98e3c4376a26dafc3", "secretNumber":"e5044d7883fdabf2eee37a8981769df4", "serviceId":"B03_findPoLineList", "poId":"1014594958242712", "companyId":"10000021", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+                	"param": ' { "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
                 },
                 success:function(data){
                 	data = data || {};
@@ -111,7 +111,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
 				data: {
-                	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"10000021","poId":"1014594958242712","token":"67842005863912b98e3c4376a26dafc3"}'
+                	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"'+ _vParams.companyId +'","poId":"'+ _vParams.poId +'","token":"'+ _vParams.token +'"}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -148,7 +148,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
 				data: {
-                	"param": '{ "secretNumber":"e5044d7883fdabf2eee37a8981769df4", "token":"67842005863912b98e3c4376a26dafc3", "serviceId":"B03_submitPurchaseOrder", "poId":"1014594958242712", "companyId":"10000021", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
+                	"param": '{ "secretNumber":"'+ _vParams.secretNumber +'", "token":"'+ _vParams.token +'", "serviceId":"B03_submitPurchaseOrder", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
                 },
                 success:function(data){
                 	data = data || {};
