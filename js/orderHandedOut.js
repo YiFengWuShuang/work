@@ -15,7 +15,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"67842005863912b98e3c4376a26dafc3", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"e5044d7883fdabf2eee37a8981769df4", "poId":"1014594958242712", "companyId":"10000021", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -50,7 +50,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-                	"param": '{"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
+                	"param": '{"secretNumber":"e5044d7883fdabf2eee37a8981769df4","token":"67842005863912b98e3c4376a26dafc3","serviceId":"B01_findFileList","companyId":"10000021","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -73,7 +73,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-                	"param": ' { "token":"97dd3f9c87b5b8b937392cb1f6048630", "secretNumber":"0b7619a54e80f9b5b8f96134b2ba9f6a", "serviceId":"B03_findPoLineList", "poId":"1014594958242712", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+                	"param": ' { "token":"67842005863912b98e3c4376a26dafc3", "secretNumber":"e5044d7883fdabf2eee37a8981769df4", "serviceId":"B03_findPoLineList", "poId":"1014594958242712", "companyId":"10000021", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
                 },
                 success:function(data){
                 	data = data || {};
@@ -111,7 +111,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
 				data: {
-                	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"10000001","poId":"100001000000001","token":"123"}'
+                	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"10000021","poId":"1014594958242712","token":"67842005863912b98e3c4376a26dafc3"}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -148,7 +148,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
 				data: {
-                	"param": '{ "secretNumber":"73ebfae88c1a85f61823ee1bf113d517", "token":"c65e091c8e7fc9a5c5e9dad31dbfdd9d", "serviceId":"B03_submitPurchaseOrder", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
+                	"param": '{ "secretNumber":"e5044d7883fdabf2eee37a8981769df4", "token":"67842005863912b98e3c4376a26dafc3", "serviceId":"B03_submitPurchaseOrder", "poId":"1014594958242712", "companyId":"10000021", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
                 },
                 success:function(data){
                 	data = data || {};
