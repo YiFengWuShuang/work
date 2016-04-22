@@ -7,9 +7,8 @@ define(function(require, exports, module){
 		createHTML: function(){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 dataType: "json",
-                async:false,
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 data:{UserId:userId, Id:id},
                 success:function(data){

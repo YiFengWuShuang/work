@@ -5,6 +5,7 @@
 .item-wrap .m-select .c-label{ line-height:1.7rem;}
 .item-wrap .c-cont{ float: left;}
 .item-wrap .c-cont2{ width: 100%;}
+.item-wrap i.qrCode{ width: 1.5rem; height: 1.5rem; background: url(../img/public/qrCode.png) no-repeat; background-size: 1.5rem 1.5rem; margin-right: 0; margin-left: .25rem; vertical-align: middle;}
 .c-cont .select3-input{ margin-bottom: .25rem;}
 .c-cont .curSelect span{ margin-right: 1rem;}
 .c-cont .curSelect span:last-child{ margin-right: 0;}
@@ -22,3 +23,15 @@
 .btns a{ -webkit-box-flex: 1; box-flex: 1; display: block; padding: .2rem; margin-right:.5rem; color: #fff;}
 .btns .btn-cancel{ background-color: #ccc;}
 .btns .btn-save{ background-color: #0179D1;}
+
+.item-wrap .m-input{ margin: .3rem 0;}
+.m-input .c-label{ line-height: 1.4rem;}
+input.s-int{ width: 6rem;}
+input.s-int-w1,textarea.s-int{ width: 11rem;}
+textarea.s-int{ height: 4rem;}
+
+
+/* media */
+@media screen and (max-width: 320px){
+	input.s-int-w1,textarea.s-int{ width: 9rem;}
+}

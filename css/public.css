@@ -56,6 +56,8 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { color: #
 * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 .clearfix:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}
 
+input.s-int,textarea.s-int{ background-color: #fff; border-radius: .25rem; padding: .3rem; border: 1px solid #b0b0b0;}
+
 /* 通用 */
 .btn-wrap{ padding:.3rem .5rem; margin-bottom: .5rem;}
 .btnB,.btnG{ display: block; height: 2rem; line-height: 2rem; border-radius: .25rem; background-color: #0091cd; color: #fff; text-align: center; text-decoration: none;}
