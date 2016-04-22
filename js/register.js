@@ -24,21 +24,21 @@ define(function(require, exports, module){
 			    		return false;
 			    	}
 			    	var mobile = $('#phone').val();
+			    	window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode=')
 			    	fnTip.loading();
-			    	$.ajax({
-						type:"POST",
-		                dataType: "json",
-		                async:false,
-		                url:'http://172.31.10.52/usersystem/login/getSmsVerifyCode/v1',
-		                data:{mobile:mobile},
-		                success:function(data){
-		                	data = data || {};
-		                	if(data){
-		                		$('.ball-clip-rotate').remove();
-		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.verifyCode);
-		                	}
-		                }
-					})
+			  //   	$.ajax({
+					// 	type:"POST",
+		   //              dataType: "json",
+		   //              url:'http://172.31.10.52/usersystem/login/getSmsVerifyCode/v1',
+		   //              data:{mobile:mobile},
+		   //              success:function(data){
+		   //              	fnTip.hideLoading();
+		   //              	data = data || {};
+		   //              	if(data){
+		   //              		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.verifyCode);
+		   //              	}
+		   //              }
+					// })
 			    	
 			    }
 			    //下一步
@@ -55,7 +55,6 @@ define(function(require, exports, module){
 					//     success:function(data){
 					//     	data = data || {};
 					//     	if(data){
-					//     		$('.ball-clip-rotate').remove();
 					//     		window.open('http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile);
 					//     	}
 					//     }
@@ -83,9 +82,9 @@ define(function(require, exports, module){
 			                url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
 			                data:{account:nameVal, password:pswVal},
 			                success:function(data){
+			                	fnTip.hideLoading();
 			                	data = data || {};
 			                	if(data){
-			                		$('.ball-clip-rotate').remove();
 			                		switch(data.retCode){
 				                		case '01211':
 				                			$formTip.html('用户名或密码错误').addClass('formTipShow');
