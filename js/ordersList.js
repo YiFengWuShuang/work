@@ -137,7 +137,8 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		fnTip.hideLoading();
-                		var lineList = data.poLineList;
+                		var lineList = data.List;
+                		alert(lineList)
                 		that._lineLists = lineList;
                 		html = '<h2 class="m-title">产品信息</h2>';
                 		for(var i=0, len=lineList.length; i<len; i++){
