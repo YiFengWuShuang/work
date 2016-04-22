@@ -11,7 +11,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"97dd3f9c87b5b8b937392cb1f6048630", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"0b7619a54e80f9b5b8f96134b2ba9f6a", "poId":"1014594958242712", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"aa8fba1ee3935545690938e3d8bcc9f8", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"8cc2e27c71c619caa2e157baca466de9", "poId":"1014594958242712", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
