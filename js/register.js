@@ -35,7 +35,8 @@ define(function(require, exports, module){
 		                	fnTip.hideLoading();
 		                	data = data || {};
 		                	if(data.retCode=='01250'){
-		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
+		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
+		                		//window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
 		                	}
 		                }
 					})
@@ -56,7 +57,7 @@ define(function(require, exports, module){
 					    	fnTip.hideLoading();
 					    	data = data || {};
 					    	if(data.errorCode=='0'){
-					    		window.open('http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'"&inviteCode="'+ inviteCode +'"');
+					    		_this.attr('href','http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'"&inviteCode="'+ inviteCode +'"');
 					    	}else if(data.errorCode=='01443'){
 					    		$formTip.html('手机验证码不正确').addClass('formTipShow');
 								return false;
@@ -82,7 +83,7 @@ define(function(require, exports, module){
 					    	fnTip.hideLoading();
 					    	data = data || {};
 					    	if(data.errorCode=='0'){
-					    		window.open('http://172.31.10.164/html/join.html');
+					    		_this.attr('href','http://172.31.10.164/html/join.html');
 					    	}else if(data.errorCode=='02145'){
 					    		$formTip.html('输入密码不一致').addClass('formTipShow');
 								return false;
