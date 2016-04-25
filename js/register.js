@@ -29,7 +29,7 @@ define(function(require, exports, module){
 			    	$.ajax({
 						type:"POST",
 		                dataType: "json",
-		                url:'http://172.31.10.52/usersystem/login/getSmsVerifyCode/v1',
+		                url:'http://172.31.10.168/usersystem/login/getSmsVerifyCode/v1',
 		                data:{"mobile":mobile},
 		                success:function(data){
 		                	fnTip.hideLoading();
@@ -51,7 +51,7 @@ define(function(require, exports, module){
 					$.ajax({
 						type:"POST",
 					    dataType: "json",
-					    url:'http://172.31.10.52/usersystem/recover_password/checkSmsVerifyCode/v1',
+					    url:'http://172.31.10.168/usersystem/recover_password/checkSmsVerifyCode/v1',
 					    data:{"mobile":mobile, "smsVerifyCode":verifyCode},
 					    success:function(data){
 					    	fnTip.hideLoading();
@@ -77,7 +77,7 @@ define(function(require, exports, module){
 					$.ajax({
 						type:"POST",
 					    dataType: "json",
-					    url:'http://172.31.10.52/usersystem/register/registerAccountOnMobile/v1',
+					    url:'http://172.31.10.168/usersystem/register/registerAccountOnMobile/v1',
 					    data:{"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2},
 					    success:function(data){
 					    	fnTip.hideLoading();
@@ -106,7 +106,7 @@ define(function(require, exports, module){
 							// 	type:"POST",
 				   //              dataType: "json",
 				   //              async:false,
-				   //              url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
+				   //              url:'http://172.31.10.168/usersystem/login/memberLogin/v1',
 				   //              data:{account:nameVal, password:pswVal},
 				   //              success:function(data){
 				   //              	fnTip.hideLoading();

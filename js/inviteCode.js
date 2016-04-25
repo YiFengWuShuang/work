@@ -9,7 +9,7 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:'http://172.31.10.52/usersystem/register/getCompInfoByInvitationCode/v1',
+                url:'http://172.31.10.168/usersystem/register/getCompInfoByInvitationCode/v1',
                 data:{
                 	invitationCode:that.invitationCode
                 },
