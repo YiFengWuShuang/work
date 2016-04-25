@@ -11,7 +11,7 @@ define(function(require, exports, module){
                 dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 data:{
-                	"param":'{"token":"951d9ae454857c59239ecd1ccb15d62c","secretNumber":"b45392c40b9ec2e4a3d5134a66013769","userId":123, "Id":456}'
+                	"param":JSON.stringify({ "params": { "content": { "header": { "module": "", "key": "", "operator": "" }, "body": { "method": "queryMessage", "data": { "UserId":1, "Id": 10, "pageInfo":{} } } } } })
                 },
                 success:function(data){
                 	data = data || {};
