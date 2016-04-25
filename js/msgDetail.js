@@ -4,16 +4,16 @@ define(function(require, exports, module){
 			var that = this;
 			$('.msgDetail').html(that.createHTML());
 		},
+
+		JSON
 		createHTML: function(){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
 			$.ajax({
 				type:"POST",
                 dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
-                // data:{UserId:8, Id:123},
-                data: {
-			        param: {"UserId": 8, "Id": 123}
-			    },
+                data:{ "params": { "content": { "header": { "module": "", "key": "", "operator": "" }, "body": { "method": "queryMessage", "data": { "UserId":1, "Id": 10, "pageInfo":{} } } } } },
+
                 success:function(data){
                 	data = data || {};
                 	if(data){
