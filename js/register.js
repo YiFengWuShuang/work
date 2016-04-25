@@ -23,18 +23,19 @@ define(function(require, exports, module){
 			    		$formTip.html('您未勾选《用户使用协议》').addClass('formTipShow');
 			    		return false;
 			    	}
-			    	var mobile = $('#phone').val();
+			    	var mobile = $('#phone').val(),
+			    		inviteCode = getQueryString('inviteCode');
 			    	fnTip.loading();
 			    	$.ajax({
 						type:"POST",
 		                dataType: "json",
 		                url:'http://172.31.10.52/usersystem/login/getSmsVerifyCode/v1',
-		                data:{mobile:mobile},
+		                data:{"mobile":mobile},
 		                success:function(data){
 		                	fnTip.hideLoading();
 		                	data = data || {};
-		                	if(data){
-		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.smsVerifyCode);
+		                	if(data.retCode=='01250'){
+		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
 		                	}
 		                }
 					})
@@ -43,17 +44,24 @@ define(function(require, exports, module){
 			    //下一步
 			    if( _this.is('#btn-next') ){
 					var mobile = getQueryString('mobile'),
-						verifyCode = getQueryString('verifyCode');
+						verifyCode = $('#validateCode').val().trim(),
+						inviteCode = getQueryString('inviteCode');
 					fnTip.loading();
 					$.ajax({
 						type:"POST",
 					    dataType: "json",
 					    url:'http://172.31.10.52/usersystem/recover_password/checkSmsVerifyCode/v1',
-					    data:{mobile:mobile, smsVerifyCode:verifyCode},
+					    data:{"mobile":mobile, "smsVerifyCode":verifyCode},
 					    success:function(data){
+					    	fnTip.hideLoading();
 					    	data = data || {};
-					    	if(data){
-					    		window.open('http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile);
+					    	if(data.errorCode=='0'){
+					    		window.open('http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'"&inviteCode="'+ inviteCode +'"');
+					    	}else if(data.errorCode=='01443'){
+					    		$formTip.html('手机验证码不正确').addClass('formTipShow');
+								return false;
+					    	}else{
+					    		console.log(data.errorMsg);
 					    	}
 					    }
 					})
@@ -61,44 +69,64 @@ define(function(require, exports, module){
 			    //完成
 			    if( _this.is('#btn-end') ){
 			    	var mobile = getQueryString('mobile'),
-			    		password = $('#psw-1').val();
-			    	//window.open('http://172.31.10.164/html/invitationLogin.html');
+			    		inviteCode = getQueryString('inviteCode'),
+			    		password = $('#psw-1').val(),
+			    		password2 = $('#psw-2').val();
+			    	fnTip.loading();
+					$.ajax({
+						type:"POST",
+					    dataType: "json",
+					    url:'http://172.31.10.52/usersystem/register/registerAccountOnMobile/v1',
+					    data:{"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2},
+					    success:function(data){
+					    	fnTip.hideLoading();
+					    	data = data || {};
+					    	if(data.errorCode=='0'){
+					    		window.open('http://172.31.10.164/html/join.html');
+					    	}else if(data.errorCode=='02145'){
+					    		$formTip.html('输入密码不一致').addClass('formTipShow');
+								return false;
+					    	}else{
+					    		console.log(data.errorMsg);
+					    	}
+					    }
+					})
 			    }
 			    //登录
 			    if( _this.is('#btn-login') ){
-			    	var nameVal = $('#username').val(),
-			    		pswVal = $('#password').val();
-			    	if( nameVal=='' || pswVal=='' ){
-			    		$formTip.html('用户名和密码不能为空').addClass('formTipShow');
-			    		return false;
-			    	}else{
-			    		fnTip.loading();
-			    		$.ajax({
-							type:"POST",
-			                dataType: "json",
-			                async:false,
-			                url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
-			                data:{account:nameVal, password:pswVal},
-			                success:function(data){
-			                	fnTip.hideLoading();
-			                	data = data || {};
-			                	if(data){
-			                		switch(data.retCode){
-				                		case '01211':
-				                			$formTip.html('用户名或密码错误').addClass('formTipShow');
-				                			return false;
-				                			break;
-				                		case '01210':
-				                			//登入成功
-				                			//跳转到相应页面
-				                			$formTip.removeClass('formTipShow');
-				                			break;
-				                	}
-			                	}
-			                }
-						})
-			    	}
-			    	$formTip.removeClass('formTipShow');
+				   //  	var nameVal = $('#username').val(),
+				   //  		pswVal = $('#password').val();
+				   //  	if( nameVal=='' || pswVal=='' ){
+				   //  		$formTip.html('用户名和密码不能为空').addClass('formTipShow');
+				   //  		return false;
+				   //  	}else{
+				   //  		fnTip.loading();
+				   //  		$.ajax({
+							// 	type:"POST",
+				   //              dataType: "json",
+				   //              async:false,
+				   //              url:'http://172.31.10.52/usersystem/login/memberLogin/v1',
+				   //              data:{account:nameVal, password:pswVal},
+				   //              success:function(data){
+				   //              	fnTip.hideLoading();
+				   //              	data = data || {};
+				   //              	if(data){
+				   //              		switch(data.retCode){
+					  //               		case '01211':
+					  //               			$formTip.html('用户名或密码错误').addClass('formTipShow');
+					  //               			return false;
+					  //               			break;
+					  //               		case '01210':
+					  //               			//登入成功
+					  //               			//跳转到相应页面
+					  //               			$formTip.removeClass('formTipShow');
+					  //               			break;
+					  //               	}
+				   //              	}
+				   //              }
+							// })
+				   //  	}
+				   //  	$formTip.removeClass('formTipShow');
 			    }
 			    if( _this.is('#btn-reg') ){
 			    	//跳去注册页面
@@ -120,10 +148,9 @@ define(function(require, exports, module){
 	            }
 	            //手机验证码
 	            if( _this.is('#validateCode') ){
-					var verifyCode = getQueryString('verifyCode'),
-						validateCode = _this.val();
-					if(validateCode!=verifyCode){
-						var errorMsg = '手机验证码不正确';
+					var validateCode = _this.val();
+					if(validateCode==''){
+						var errorMsg = '手机验证码不能为空';
 						$formTip.html(errorMsg).addClass('formTipShow');
 						return false;
 					}else{
@@ -144,7 +171,7 @@ define(function(require, exports, module){
 	            if( _this.is('#psw-2') ){
 	            	var val1 = $('#psw-1').val();
 	                if( _this.val()=="" || _this.val()!= val1 ){
-	                    var errorMsg = '再次输入密码需一致';
+	                    var errorMsg = '输入密码不一致';
 	                    $formTip.html(errorMsg).addClass('formTipShow');
 	                    return false;
 	                }else{
