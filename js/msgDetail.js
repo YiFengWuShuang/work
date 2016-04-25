@@ -9,8 +9,8 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 dataType: "json",
-                url:"http://172.31.10.155:19890/oss/notify/api",
-                data:{"params":'{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":1,"Id":10,"pageInfo":{}}}}}'},
+                url:'http://172.31.10.155:19890/oss/notify/api',
+                data:{UserId:8, Id:123},
                 success:function(data){
                 	data = data || {};
                 	if(data){
