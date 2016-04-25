@@ -36,7 +36,8 @@ define(function(require, exports, module){
 		                	data = data || {};
 		                	if(data.retCode=='01250'){
 		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
-		                		//window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
+		                	}else{
+		                		return false;
 		                	}
 		                }
 					})
@@ -63,6 +64,7 @@ define(function(require, exports, module){
 								return false;
 					    	}else{
 					    		console.log(data.errorMsg);
+					    		return false;
 					    	}
 					    }
 					})
@@ -89,6 +91,7 @@ define(function(require, exports, module){
 								return false;
 					    	}else{
 					    		console.log(data.errorMsg);
+					    		return false;
 					    	}
 					    }
 					})
