@@ -139,7 +139,7 @@ define(function(require, exports, module){
 		submitFn: function(){
 			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":""';
+			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_poAnswerToSalesOrder"';
 			$.ajax({
 				type:"POST",
                 //dataType: "json",

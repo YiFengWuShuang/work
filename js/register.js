@@ -34,8 +34,7 @@ define(function(require, exports, module){
 		                	fnTip.hideLoading();
 		                	data = data || {};
 		                	if(data){
-		                		console.log(data.verifyCode)
-		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.verifyCode);
+		                		window.open('http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&verifyCode='+ data.smsVerifyCode);
 		                	}
 		                }
 					})
@@ -43,22 +42,21 @@ define(function(require, exports, module){
 			    }
 			    //下一步
 			    if( _this.is('#btn-next') ){
-					// var mobile = getQueryString('mobile'),
-					// 	verifyCode = getQueryString('verifyCode');
-					// fnTip.loading();
-					// $.ajax({
-					// 	type:"POST",
-					//     dataType: "json",
-					//     async:false,
-					//     url:'',
-					//     data:{mobile:mobile, verifyCode:verifyCode},
-					//     success:function(data){
-					//     	data = data || {};
-					//     	if(data){
-					//     		window.open('http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile);
-					//     	}
-					//     }
-					// })
+					var mobile = getQueryString('mobile'),
+						verifyCode = getQueryString('verifyCode');
+					fnTip.loading();
+					$.ajax({
+						type:"POST",
+					    dataType: "json",
+					    url:'http://172.31.10.52/usersystem/recover_password/checkSmsVerifyCode/v1',
+					    data:{mobile:mobile, smsVerifyCode:verifyCode},
+					    success:function(data){
+					    	data = data || {};
+					    	if(data){
+					    		window.open('http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile);
+					    	}
+					    }
+					})
 			    }
 			    //完成
 			    if( _this.is('#btn-end') ){
@@ -88,6 +86,7 @@ define(function(require, exports, module){
 			                		switch(data.retCode){
 				                		case '01211':
 				                			$formTip.html('用户名或密码错误').addClass('formTipShow');
+				                			return false;
 				                			break;
 				                		case '01210':
 				                			//登入成功

@@ -73,7 +73,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-                	"param": ' { "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+                	"param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
                 },
                 success:function(data){
                 	data = data || {};
