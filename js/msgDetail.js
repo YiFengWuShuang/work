@@ -8,7 +8,7 @@ define(function(require, exports, module){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
 			$.ajax({
 				type:"POST",
-                dataType: "json",
+                //dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 // data:{UserId:userId, Id:id},
                 data: {
