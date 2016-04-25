@@ -10,10 +10,10 @@ define(function(require, exports, module){
 				type:"POST",
                 dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
-                data:{UserId:8, Id:123},
-       //          data: {
-			    //     "param": '{"UserId": "8", "Id": "123"}'
-			    // },
+                // data:{UserId:8, Id:123},
+                data: {
+			        param: {"UserId": 8, "Id": 123}
+			    },
                 success:function(data){
                 	data = data || {};
                 	if(data){
@@ -29,7 +29,7 @@ define(function(require, exports, module){
                 	}
                 },
                 error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
+                	//alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return result;
