@@ -11,7 +11,7 @@ define(function(require, exports, module){
                 dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 data:{
-                	"param":{"userId":123, "Id":456}
+                	"userId":123, "Id":456
                 },
                 success:function(data){
                 	data = data || {};
