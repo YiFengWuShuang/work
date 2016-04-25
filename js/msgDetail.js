@@ -4,8 +4,6 @@ define(function(require, exports, module){
 			var that = this;
 			$('.msgDetail').html(that.createHTML());
 		},
-
-		JSON
 		createHTML: function(){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
 			$.ajax({
