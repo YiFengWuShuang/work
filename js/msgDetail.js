@@ -2,7 +2,6 @@ define(function(require, exports, module){
 	var msg = {
 		init: function(){
 			var that = this;
-			//document.getElementById('msgDetail').innerHTML = that.createHTML();
 			$('#msgDetail').html(that.createHTML())
 		},
 		createHTML: function(){
@@ -12,9 +11,9 @@ define(function(require, exports, module){
                 dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 processData:false,
-                data:{
-                	param:{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":1,"Id":10,"pageInfo":{}}}}}
-                },
+                data:JSON.stringify({
+                	"param":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":1,"Id":10,"pageInfo":{}}}}}
+                }),
                 success:function(data){
                 	console.log(data)
                 	data = data || {};
