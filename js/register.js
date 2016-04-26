@@ -29,6 +29,7 @@ define(function(require, exports, module){
 			    	$.ajax({
 						type:"POST",
 		                dataType: "json",
+		                async:false,
 		                url:'http://172.31.10.168/usersystem/login/getSmsVerifyCode/v1',
 		                data:JSON.stringify({"mobile":mobile}),
 		                success:function(data){
