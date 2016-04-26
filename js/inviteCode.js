@@ -5,7 +5,8 @@ define(function(require, exports, module){
 			this.invitationCode = '';
 		},
 		createHTML: function(){
-			var that = this, result='', that.invitationCode = 1525;
+			var that = this, result='';
+			that.invitationCode = getQueryString('invitationCode');
 			$.ajax({
 				type:"POST",
                 dataType: "json",
