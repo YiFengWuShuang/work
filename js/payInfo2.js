@@ -1,8 +1,8 @@
 define(function(require, exports, module){
 	var lists = {
 		init: function(){
-
-			this.start();
+			this.fileList()
+			//this.start();
 		},
 		//附件
 		fileList: function(){
@@ -16,7 +16,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			result += '<p><a href="'+ file[i].fileUrl +'"><i class=i-'+ (reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a></p>'
@@ -24,6 +24,7 @@ define(function(require, exports, module){
                 	}
                 }
 			})
+			console.log(result)
 			return result;
 		},
 		payInfo: function(){
