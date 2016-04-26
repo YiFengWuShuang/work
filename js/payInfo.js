@@ -26,13 +26,13 @@ define(function(require, exports, module){
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
                 		switch(infos.logisticsType){
-                			case: '1':
+                			case '1':
                 				_LogisticalName = '物流';
                 				break;
-                			case: '2':
+                			case '2':
                 				_LogisticalName = '快递';
                 				break;
-                			case: '3':
+                			case '3':
                 				_LogisticalName = '自提';
                 				break;
                 		}
