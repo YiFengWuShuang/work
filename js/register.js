@@ -36,11 +36,10 @@ define(function(require, exports, module){
 		                	fnTip.hideLoading();
 		                	data = data || {};
 		                	if(data.retCode=='01250'){
-		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
+		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode='+inviteCode);
 		                	}else{
 		                		console.log(data.retMsg);
-		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
-		                		//return false;
+		                		return false;
 		                	}
 		                }
 					})
@@ -55,13 +54,14 @@ define(function(require, exports, module){
 					$.ajax({
 						type:"POST",
 					    dataType: "json",
+					    async:false,
 					    url:'http://172.31.10.168/usersystem/recover_password/checkSmsVerifyCode/v1',
 					    data:JSON.stringify({"mobile":mobile, "smsVerifyCode":verifyCode}),
 					    success:function(data){
 					    	fnTip.hideLoading();
 					    	data = data || {};
 					    	if(data.errorCode=='0'){
-					    		_this.attr('href','http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'"&inviteCode="'+ inviteCode +'"');
+					    		_this.attr('href','http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'"&inviteCode='+ inviteCode);
 					    	}else if(data.errorCode=='01443'){
 					    		$formTip.html('手机验证码不正确').addClass('formTipShow');
 								return false;
@@ -82,6 +82,7 @@ define(function(require, exports, module){
 					$.ajax({
 						type:"POST",
 					    dataType: "json",
+					    async:false,
 					    url:'http://172.31.10.168/usersystem/register/registerAccountOnMobile/v1',
 					    data:JSON.stringify({"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2}),
 					    success:function(data){
