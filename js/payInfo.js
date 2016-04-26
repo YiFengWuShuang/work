@@ -9,13 +9,10 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			var params = { "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } };
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
-			    // data:{
-			    // 	"param": '{ "token":"cfa0b8adbd71e0f92adb35c1f089f64f", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"c36d7edee4ca329ea8deb474b2e3ef88", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
-			    // },
 			    data:JSON.stringify(params),
                 success:function(data){
                 	data = data || {};
