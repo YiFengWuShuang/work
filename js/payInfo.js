@@ -10,7 +10,7 @@ define(function(require, exports, module){
 			var params = {"params" : { "token":"2827958e61007446320db857d994e31a", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f9b79a20b1007a3ea46daae1b863bb72", "poId":"1014594958242712", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" }}};
 			$.ajax({
 				type:"GET",
-                //dataType: "json",
+                dataType: "json",
                 async: false,
                 url:config.serviceUrl,
 			    data:JSON.stringify(params),
@@ -29,6 +29,11 @@ define(function(require, exports, module){
                 	}else{
                 		$('.contarin').html('<p style="text-align:center;">'+ data.errorMsg +'</p>');
                 	}
+                },
+                error:function(XMLHttpRequest, textStatus, errorThrown){
+                	console.log('XMLHttpRequest.readyState: ' + XMLHttpRequest.readyState);
+                	console.log('errorThrown: ' + errorThrown);
+                	console.log('textStatus: ' + textStatus);
                 }
 			})
 			return html;
