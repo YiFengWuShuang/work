@@ -28,7 +28,6 @@ define(function(require, exports, module){
 		},
 		payInfo: function(){
 			var that = this, html = '';
-			setTimeout(function(){
 			$.ajax({
 				type:"POST",
 				async: false,
@@ -54,13 +53,9 @@ define(function(require, exports, module){
 								+'</div>'
                 	}
                 }
-			})	
-			fnTip.hideLoading();	
-			return html;	
-			},5000)
-
-			
-			
+			})
+			fnTip.hideLoading();
+			return html;
 		},
 		start: function(){
 			var that = this;

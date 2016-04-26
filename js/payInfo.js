@@ -8,11 +8,11 @@ define(function(require, exports, module){
 		payInfo: function(){
 			var that = this, html = '';
 			var params = { 
-				"token":_vParams.token, 
+				"token":"081b2b97ea13e0300ef60d77f720c262", 
 				"serviceId":"B03_getPurchaseOrderInfo", 
-				"secretNumber":_vParams.secretNumber,
-				"poId":_vParams.poId,
-				"companyId":_vParams.companyId, 
+				"secretNumber":"92db0bad3b1e25096b32b969aae3ee9f",
+				"poId":"100001000000110",
+				"companyId":"10000001", 
 				"commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } 
 			};
 			$.ajax({
