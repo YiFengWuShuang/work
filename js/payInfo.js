@@ -13,7 +13,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
-			    data:'param='+JSON.stringify(params),
+			    data:JSON.stringify(params),
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
