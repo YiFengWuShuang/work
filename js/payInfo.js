@@ -8,16 +8,16 @@ define(function(require, exports, module){
 		payInfo: function(){
 			var that = this, html = '';
 			var params = { 
-				"token":"081b2b97ea13e0300ef60d77f720c262", 
+				"token":_vParams.token, 
 				"serviceId":"B03_getPurchaseOrderInfo", 
-				"secretNumber":"92db0bad3b1e25096b32b969aae3ee9f", 
-				"poId":"100001000000001", 
-				"companyId":"10000021", 
+				"secretNumber":_vParams.secretNumber,
+				"poId":_vParams.poId,
+				"companyId":_vParams.companyId, 
 				"commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } 
 			};
 			$.ajax({
 				type:"GET",
-                //dataType: "json",
+                dataType: "json",
                 async: false,
                 url:config.serviceUrl,
 			    data:'param='+JSON.stringify(params),
