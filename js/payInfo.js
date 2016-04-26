@@ -9,7 +9,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
