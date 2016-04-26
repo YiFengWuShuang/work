@@ -13,8 +13,8 @@ define(function(require, exports, module){
                 //processData:false,
                 data:JSON.stringify({"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}),
                 success:function(data){
-                	console.log(data)
                 	data = data || {};
+                	console.log(data);
                 	if(data.errorCode=='0'){
                 		var _msg = data.dataSet.data;
                 		result	+='<div class="itemHead">'
@@ -28,6 +28,11 @@ define(function(require, exports, module){
                 	}else{
                 		console.log(data.errorMsg);
                 	}
+                },
+                error:function(jqXHR, textStatus, errorThrown){
+                	console.log(jqXHR.readyState);
+                	console.log(textStatus);
+                	console.log(errorThrown);
                 }
 			})
 			return result;
