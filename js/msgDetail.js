@@ -28,10 +28,10 @@ define(function(require, exports, module){
                 		console.log(data.errorMsg);
                 	}
                 },
-                error:function(xhr,errorType,error){
-                	console.log('xhr ' + xhr);
-                	console.log('errorType ' + errorType);
-                	console.log('error ' + error);
+                error:function(XMLHttpRequest, textStatus, errorThrown){
+                	console.log('XMLHttpRequest ' + XMLHttpRequest.status);
+                	console.log('XMLHttpRequest.readyState ' + XMLHttpRequest.readyState);
+                	console.log('textStatus ' + textStatus);
                 }
 			})
 			return result;
