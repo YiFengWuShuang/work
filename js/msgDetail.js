@@ -29,7 +29,7 @@ define(function(require, exports, module){
                 	}
                 },
                 error:function(jqXHR, textStatus, errorThrown){
-                	console.log('jqXHR.readyState ' + jqXHR.readyState);
+                	console.log('jqXHR.readyState ' + jqXHR);
                 	console.log('textStatus ' + textStatus);
                 	console.log('errorThrown ' + errorThrown);
                 }
