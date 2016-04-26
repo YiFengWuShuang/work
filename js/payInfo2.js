@@ -11,7 +11,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"secretNumber":"4bef6eefabd0ef34ab42562e1b956852","token":"c5ef4cca77e9a7821ea5df0da650f07e","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
+			        "param": '{"secretNumber":"92db0bad3b1e25096b32b969aae3ee9f","token":"081b2b97ea13e0300ef60d77f720c262","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -32,7 +32,7 @@ define(function(require, exports, module){
 				async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"c5ef4cca77e9a7821ea5df0da650f07e", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"4bef6eefabd0ef34ab42562e1b956852", "poId":"100001000000110", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"081b2b97ea13e0300ef60d77f720c262", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"92db0bad3b1e25096b32b969aae3ee9f", "poId":"100001000000110", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
