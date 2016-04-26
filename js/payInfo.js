@@ -2,6 +2,7 @@ define(function(require, exports, module){
 	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var lists = {
 		init: function(){
+			fnTip.loading();
 			this.start();
 		},
 		//支付信息
@@ -37,6 +38,7 @@ define(function(require, exports, module){
                 	}
                 }
 			})
+			fnTip.hideLoading();
 			return html;
 		},
 		start: function(){

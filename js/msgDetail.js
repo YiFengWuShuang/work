@@ -1,6 +1,7 @@
 define(function(require, exports, module){
 	var msg = {
 		init: function(){
+			fnTip.loading();
 			this.evens();
 		},
 		createHTML: function(){
@@ -29,6 +30,7 @@ define(function(require, exports, module){
                 	}
                 }
 			})
+			fnTip.hideLoading();
 			return result;
 		},
 		evens: function(){
