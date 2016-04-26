@@ -28,10 +28,10 @@ define(function(require, exports, module){
                 		console.log(data.errorMsg);
                 	}
                 },
-                error:function(jqXHR, textStatus, errorThrown){
-                	console.log('jqXHR.readyState ' + jqXHR);
-                	console.log('textStatus ' + textStatus);
-                	console.log('errorThrown ' + errorThrown);
+                error:function(xhr,errorType,error){
+                	console.log('xhr ' + xhr);
+                	console.log('errorType ' + errorType);
+                	console.log('error ' + error);
                 }
 			})
 			return result;
