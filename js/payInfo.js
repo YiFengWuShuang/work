@@ -7,7 +7,7 @@ define(function(require, exports, module){
 		},
 		//支付信息
 		payInfo: function(){
-			var that = this, html = '';
+			var that = this, html = '', _LogisticalName;
 			var params = { 
 				"token":_vParams.token, 
 				"serviceId":"B03_getPurchaseOrderInfo", 
@@ -25,8 +25,19 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
+                		switch(infos.logisticsType){
+                			case: '1':
+                				_LogisticalName = '物流';
+                				break;
+                			case: '2':
+                				_LogisticalName = '快递';
+                				break;
+                			case: '3':
+                				_LogisticalName = '自提';
+                				break;
+                		}
                 		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-								+'<li><span>物流方式：</span><p>'+ infos.logisticsType +((infos.logisticsType==3) ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
+								+'<li><span>物流方式：</span><p>'+ _LogisticalName +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 								+'<li><span>收货地址：</span><p>'+ infos.address +'；<br>电话：'+ infos.mobile +'</p></li>'
 								+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
 								+'<li><span>支付方式：</span><p>'+ infos.paymentType +'</p></li>'
