@@ -1,11 +1,10 @@
 define(function(require, exports, module){
 	var msg = {
 		init: function(){
-			var that = this;
-			$('#msgDetail').html(that.createHTML())
+			this.evens();
 		},
 		createHTML: function(){
-			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
+			var result='', userId = getQueryString('userId'), id = getQueryString('id');
 			$.ajax({
 				type:"POST",
                 dataType: "json",
@@ -13,28 +12,26 @@ define(function(require, exports, module){
                 data:JSON.stringify({"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}}),
                 success:function(data){
                 	data = data || {};
-                	console.log(data);
                 	if(data.errorCode=='0'){
-                		var _msg = data.dataSet.data;
+                		var _msg = data.data.detail[0];
                 		result	+='<div class="itemHead">'
-								+'	<h2>'+ _msg.detail[0].UserName +'</h2>'
-								+'	<time>'+ time +'</time>'
+								+'	<h2>'+ _msg.UserName +'</h2>'
+								+'	<time>'+ _msg.DateTime +'</time>'
 								+'</div>'
 								+'<div class="itemBody">'
-								+'	<h3>'+ _msg.detail[0].Title +'</h3>'
-								+'	<section>'+ _msg.detail[0].Content +'</section>'
+								+'	<h3>'+ _msg.Title +'</h3>'
+								+'	<section>'+ _msg.Content +'</section>'
 								+'</div>'
                 	}else{
                 		console.log(data.errorMsg);
                 	}
-                },
-                error:function(XMLHttpRequest, textStatus, errorThrown){
-                	console.log('XMLHttpRequest ' + XMLHttpRequest.status);
-                	console.log('XMLHttpRequest.readyState ' + XMLHttpRequest.readyState);
-                	console.log('textStatus ' + textStatus);
                 }
 			})
 			return result;
+		},
+		evens: function(){
+			var that = this;
+			$('.msgDetail').html(that.createHTML())
 		}
 	};
 
