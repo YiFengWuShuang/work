@@ -30,9 +30,9 @@ define(function(require, exports, module){
                 	}
                 },
                 error:function(jqXHR, textStatus, errorThrown){
-                	console.log(3 + ' ' + jqXHR.readyState);
-                	console.log(4 + ' ' + textStatus);
-                	console.log(5 + ' ' + errorThrown);
+                	console.log('jqXHR.readyState ' + jqXHR.readyState);
+                	console.log('textStatus ' + textStatus);
+                	console.log('errorThrown ' + errorThrown);
                 }
 			})
 			return result;
