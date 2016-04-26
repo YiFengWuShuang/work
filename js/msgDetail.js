@@ -7,7 +7,7 @@ define(function(require, exports, module){
 			var result='', userId = parseInt(getQueryString('userId'),10), id = parseInt(getQueryString('id'),10);
 			var params = {"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":userId,"Id":id,"pageInfo":{}}}}}};
 			$.ajax({
-				type:"POST",
+				type:"GET",
                 dataType: "json",
                 async: false,
                 url:'http://172.31.10.155:19890/oss/notify/api',
