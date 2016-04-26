@@ -2,10 +2,10 @@ define(function(require, exports, module){
 	var code = {
 		init: function(){
 			this.evens();
-			this.invitationCode;
+			this.invitationCode = '';
 		},
 		createHTML: function(){
-			var that = this, result='', that.invitationCode = getQueryString('invitationCode') || '';
+			var that = this, result='', that.invitationCode = getQueryString('invitationCode');
 			$.ajax({
 				type:"POST",
                 dataType: "json",
