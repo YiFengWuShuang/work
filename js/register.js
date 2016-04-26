@@ -37,7 +37,9 @@ define(function(require, exports, module){
 		                	if(data.retCode=='01250'){
 		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
 		                	}else{
-		                		return false;
+		                		console.log(data.retMsg);
+		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode="'+ inviteCode +'"');
+		                		//return false;
 		                	}
 		                }
 					})
