@@ -55,11 +55,12 @@ define(function(require, exports, module){
                 	}
                 }
 			})	
-			fnTip.hideLoading();		
+			fnTip.hideLoading();	
+			return html;	
 			},5000)
 
 			
-			return html;
+			
 		},
 		start: function(){
 			var that = this;
