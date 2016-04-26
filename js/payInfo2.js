@@ -1,15 +1,13 @@
 define(function(require, exports, module){
 	var lists = {
 		init: function(){
-			this.fileList()
-			//this.start();
+			this.start();
 		},
 		//附件
 		fileList: function(){
 			var that = this, result = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
                 data: {
@@ -32,7 +30,6 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
                 url:config.serviceUrl,
                 data: {
 			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poAnswerId":"", "vendorId":"", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
