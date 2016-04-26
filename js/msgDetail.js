@@ -4,19 +4,18 @@ define(function(require, exports, module){
 			this.evens();
 		},
 		createHTML: function(){
-			var result='', userId = getQueryString('userId'), id = getQueryString('id');
+			var result='', userId = parseInt(getQueryString('userId'),10), id = parseInt(getQueryString('id'),10);
+			var params = {"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}};
 			$.ajax({
 				type:"POST",
                 dataType: "json",
                 async: false,
                 url:'http://172.31.10.155:19890/oss/notify/api',
-                data:JSON.stringify({"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}}),
+                data:JSON.stringify(params),
                 success:function(data){
                 	data = data || {};
-                	console.log(data.errorCode)
                 	if(data.errorCode=='0'){
                 		var _msg = data.dataSet.data.detail[0];
-                		console.log(_msg.UserName)
                 		result	+='<div class="itemHead">'
 								+'	<h2>'+ _msg.UserName +'</h2>'
 								+'	<time>'+ _msg.DateTime +'</time>'
@@ -30,7 +29,6 @@ define(function(require, exports, module){
                 	}
                 }
 			})
-			console.log(result)
 			return result;
 		},
 		evens: function(){
