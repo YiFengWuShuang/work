@@ -7,13 +7,13 @@ define(function(require, exports, module){
 		//支付信息
 		payInfo: function(){
 			var that = this, html = '';
+			var params = {"params":{ "token":_vParams.token, "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":_vParams.secretNumber, "poId":_vParams.poId, "companyId":_vParams.companyId, "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" }}};
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
-                data: {
-			        "param": '{ "token":"'+ _vParams.token +'", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
-			    },
+			    data:JSON.stringify(params),
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
@@ -29,9 +29,6 @@ define(function(require, exports, module){
                 	}else{
                 		$('.contarin').html('<p style="text-align:center;">'+ data.errorMsg +'</p>');
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;

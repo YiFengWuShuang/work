@@ -88,9 +88,6 @@ define(function(require, exports, module){
                 	}else{
 
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -153,9 +150,6 @@ define(function(require, exports, module){
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
                 		}
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -298,9 +292,6 @@ define(function(require, exports, module){
                 		html+='</div>';
                 		that.totals+=parseInt(subtotal,10);
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -545,9 +536,6 @@ define(function(require, exports, module){
                 	}else{
                 		fnTip.error(2000);
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 		}
