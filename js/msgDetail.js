@@ -5,7 +5,7 @@ define(function(require, exports, module){
 		},
 		createHTML: function(){
 			var result='', userId = parseInt(getQueryString('userId'),10), id = parseInt(getQueryString('id'),10);
-			var params = {"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}};
+			var params = {"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":userId,"Id":id,"pageInfo":{}}}}}};
 			$.ajax({
 				type:"POST",
                 dataType: "json",
