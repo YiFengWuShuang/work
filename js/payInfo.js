@@ -1,4 +1,5 @@
 define(function(require, exports, module){
+	require('../js/public/syscodeapi.js');
 	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var lists = {
 		init: function(){
@@ -25,17 +26,7 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
-                		switch(infos.logisticsType){
-                			case 1:
-                				_LogisticalName = '物流';
-                				break;
-                			case 2:
-                				_LogisticalName = '快递';
-                				break;
-                			case 3:
-                				_LogisticalName = '自提';
-                				break;
-                		}
+                		_LogisticalName = syscode.logisticsType[0]
                 		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
 								+'<li><span>物流方式：</span><p>'+ _LogisticalName +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 								+'<li><span>收货地址：</span><p>'+ infos.address +'；<br>电话：'+ infos.mobile +'</p></li>'
