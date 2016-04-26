@@ -9,10 +9,9 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 dataType: "json",
+                async: false,
                 url:'http://172.31.10.168/usersystem/register/getCompInfoByInvitationCode/v1',
-                data:{
-                	invitationCode:that.invitationCode
-                },
+                data:JSON.stringify({"invitationCode":that.invitationCode}),
                 success:function(data){
                 	data = data || {};
                 	if(data.errorCode=='0'){
