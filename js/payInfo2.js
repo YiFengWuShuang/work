@@ -1,6 +1,7 @@
 define(function(require, exports, module){
 	var lists = {
 		init: function(){
+			fnTip.loading();
 			this.start();
 		},
 		//附件
@@ -15,6 +16,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
+                	fnTip.hideLoading();
                 	if(data.success){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
@@ -36,6 +38,7 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
+                	fnTip.hideLoading();
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
                 		html += '<div id="provisions" class="item-wrap clause">'
