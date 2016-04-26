@@ -59,13 +59,13 @@ define(function(require, exports, module){
 		},
 		orderBaseInfo: function(){
 			var that = this, html = '';
+			var params = {"params": {"serviceId": "B03_getPurchaseOrderAnswerInfo", "poAnswerId": _vParams.poAnswerId, "vendorId": _vParams.vendorId, "commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token":_vParams.token, "secretNumber":_vParams.secretNumber}}
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                dataType: "json",
+                async: false,
                 url:config.serviceUrl,
-                data: {
-			        param: '{"serviceId": "B03_getPurchaseOrderAnswerInfo", "poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
-			    },
+                data:JSON.stringify(params),
                 success:function(data){
                 	fnTip.hideLoading();
                 	data = data || {};
@@ -98,13 +98,13 @@ define(function(require, exports, module){
 		//附件
 		fileList: function(){
 			var that = this;
+			var params = {"params": {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"fileSource":"1","searchType":"1","id":_vParams.id,"docType":_vParams.docType}}
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                dataType: "json",
+                async: false,
                 url:config.serviceUrl,
-                data: {
-			        param: '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
-			    },
+                data:JSON.stringify(params),
                 success:function(data){
                 	fnTip.hideLoading();
                 	data = data || {};
@@ -119,13 +119,13 @@ define(function(require, exports, module){
 		},
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
+			var params = {"params": {"serviceId": "B03_findPoAnswerLineList","poAnswerId":_vParams.poAnswerId,"vendorId":_vParams.vendorId,"commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token":_vParams.token,"secretNumber":_vParams.secretNumber}};
 			$.ajax({
 				type:"POST",
-				//dataType: "json",
+				dataType: "json",
+				async: false,
                 url:config.serviceUrl,
-                data: {
-			        param: '{"serviceId": "B03_findPoAnswerLineList","poAnswerId": "'+ _vParams.poAnswerId +'","vendorId": "'+ _vParams.vendorId +'","commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'"}'
-			    },
+			    data:JSON.stringify(params),
                 success:function(data){
                 	fnTip.hideLoading();
                 	data = data || {};
@@ -164,15 +164,15 @@ define(function(require, exports, module){
 			var that = this;
 			var lineLists = that._lineLists;
 			var myProdCode, myProdName, myProdScale, vProdCode = lineLists[index].vProdCode;
+			var params = {"params": {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":_vParams.cProdCode,"commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":_vParams.customerId}};
 			fnTip.loading();
 			//根据对方物料编码获取我方产品
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                dataType: "json",
+                async: false,
                 url:config.serviceUrl,
-                data:{
-                	param: '{"serviceId":"B01_getProdByCustomerProd","token":"'+ _vParams.token +'" ,"secretNumber":"'+ _vParams.secretNumber +'","vendorId":"'+ _vParams.vendorId +'","cProdCode":"'+ _vParams.cProdCode +'","commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":"'+ _vParams.customerId +'"}'
-                },
+                data:JSON.stringify(params),
                 success:function(data){
                 	$('.ball-clip-rotate').remove();
                 	data = data || {};
@@ -267,13 +267,13 @@ define(function(require, exports, module){
 		},
 		othersCost: function(){
 			var that=this, html='', subtotal=0, resubtotal=0, _responseCost=false;
+			var params = {"params": { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" }}};
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                dataType: "json",
+                async: false,
                 url:config.serviceUrl,
-                data: {
-			        param: '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'","serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" } }'
-			    },
+			    data:JSON.stringify(params),
                 success:function(data){
                 	fnTip.hideLoading();
                 	data = data || {};
@@ -531,12 +531,12 @@ define(function(require, exports, module){
 			}
 
 			//入参字符串
-			inParams = '"modiPoLineList:"' + JSON.stringify(responseVal) + ',"modiPoOthreCostList:"' + JSON.stringify(modiPoOthreCostList) + ',"serviceId":"B03_saveAnswerPo"';
+			inParams = {"params":{"modiPoLineList":responseVal,"modiPoOthreCostList":modiPoOthreCostList,"serviceId":"B03_saveAnswerPo"}};
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                dataType: "json",
                 url:config.serviceUrl,
-                data:{param:inParams},
+                data:JSON.stringify(inParams),
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
