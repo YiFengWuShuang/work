@@ -7,13 +7,13 @@ define(function(require, exports, module){
 		//支付信息
 		payInfo: function(){
 			var that = this, html = '';
-			var params = { "token":"cfa0b8adbd71e0f92adb35c1f089f64f", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"c36d7edee4ca329ea8deb474b2e3ef88", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } };
+			var params = {param:{ "token":"cfa0b8adbd71e0f92adb35c1f089f64f", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"c36d7edee4ca329ea8deb474b2e3ef88", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" }}};
 			$.ajax({
 				type:"GET",
                 //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
-			    data:'param='+JSON.stringify(params),
+			    data:JSON.stringify(params),
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
