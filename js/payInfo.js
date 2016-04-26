@@ -16,7 +16,7 @@ define(function(require, exports, module){
 				"commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } 
 			};
 			$.ajax({
-				type:"GET",
+				type:"POST",
                 async: false,
                 url:config.serviceUrl,
 			    data:'param='+JSON.stringify(params),

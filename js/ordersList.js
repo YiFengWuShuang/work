@@ -116,7 +116,7 @@ define(function(require, exports, module){
 		},
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
-			var params = {"serviceId": "B03_findPoAnswerLineList","poAnswerId":_vParams.poAnswerId,"vendorId":_vParams.vendorId,"commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token":_vParams.token,"secretNumber":_vParams.secretNumber};
+			var params = {"serviceId":"B03_findPoAnswerLineList","poAnswerId":"100001000000110","vendorId":"10000021","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"/order/customer/detail_transfer/10000021/100001000000110/3","sourceSystem":"1"},"token":"c5ef4cca77e9a7821ea5df0da650f07e","secretNumber":"4bef6eefabd0ef34ab42562e1b956852"};
 			$.ajax({
 				type:"POST",
 				//dataType: "json",
