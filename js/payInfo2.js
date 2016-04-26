@@ -54,15 +54,12 @@ define(function(require, exports, module){
                 	}
                 }
 			})
+			fnTip.hideLoading();
 			return html;
 		},
 		start: function(){
 			var that = this;
 			$('.remarks-wrap').append(that.payInfo());
-			if($('.remarks-wrap').find('div').length>0){
-				console.log($('.remarks-wrap').find('div').length)
-				fnTip.hideLoading();
-			}
 		}
 	};
 
