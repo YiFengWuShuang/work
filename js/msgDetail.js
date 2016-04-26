@@ -12,7 +12,7 @@ define(function(require, exports, module){
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 processData:false,
                 data:JSON.stringify({
-                	"param":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":1,"Id":10,"pageInfo":{}}}}}
+                	"param":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}
                 }),
                 success:function(data){
                 	console.log(data)
