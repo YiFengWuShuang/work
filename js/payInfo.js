@@ -7,7 +7,7 @@ define(function(require, exports, module){
 		//支付信息
 		payInfo: function(){
 			var that = this, html = '';
-			var params = ;
+
 			$.ajax({
 				type:"GET",
                 //dataType: "json",
