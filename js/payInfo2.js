@@ -16,7 +16,6 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	fnTip.hideLoading();
                 	if(data.success){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
@@ -38,7 +37,6 @@ define(function(require, exports, module){
 			    },
                 success:function(data){
                 	data = data || {};
-                	fnTip.hideLoading();
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
                 		html += '<div id="provisions" class="item-wrap clause">'
@@ -60,8 +58,8 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			that.fileList();
 			$('.remarks-wrap').append(that.payInfo());
+			fnTip.hideLoading();
 		}
 	};
 
