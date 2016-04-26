@@ -2,7 +2,8 @@ define(function(require, exports, module){
 	var msg = {
 		init: function(){
 			var that = this;
-			document.getElementById('msgDetail').innerHTML = that.createHTML();
+			//document.getElementById('msgDetail').innerHTML = that.createHTML();
+			$('#msgDetail').html(that.createHTML())
 		},
 		createHTML: function(){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
