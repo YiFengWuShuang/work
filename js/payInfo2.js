@@ -7,7 +7,7 @@ define(function(require, exports, module){
 		fileList: function(){
 			var that = this, result = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
-				type:"POST",
+				type:"GET",
                 async: false,
                 url:config.serviceUrl,
                 data: {
@@ -29,10 +29,10 @@ define(function(require, exports, module){
 		payInfo: function(){
 			var that = this, html = '';
 			$.ajax({
-				type:"POST",
+				type:"GET",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poAnswerId":"", "vendorId":"", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poId":"100001000000001", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};

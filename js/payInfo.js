@@ -17,7 +17,6 @@ define(function(require, exports, module){
 			};
 			$.ajax({
 				type:"GET",
-                //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
 			    data:'param='+JSON.stringify(params),
