@@ -11,14 +11,11 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
                 //processData:false,
-                data:JSON.stringify({
-                	"param":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}
-                }),
+                data:JSON.stringify({"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}),
                 success:function(data){
                 	console.log(data)
                 	data = data || {};
                 	if(data.errorCode=='0'){
-
                 		var _msg = data.dataSet.data;
                 		result	+='<div class="itemHead">'
 								+'	<h2>'+ _msg.detail[0].UserName +'</h2>'
