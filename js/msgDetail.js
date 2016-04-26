@@ -2,7 +2,7 @@ define(function(require, exports, module){
 	var msg = {
 		init: function(){
 			var that = this;
-			$('.msgDetail').html(that.createHTML());
+			document.getElementById('msgDetail').innerHTML = that.createHTML();
 		},
 		createHTML: function(){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
@@ -10,12 +10,15 @@ define(function(require, exports, module){
 				type:"POST",
                 dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
+                processData:false,
                 data:{
                 	param:{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":1,"Id":10,"pageInfo":{}}}}}
                 },
                 success:function(data){
+                	console.log(data)
                 	data = data || {};
                 	if(data.errorCode=='0'){
+
                 		var _msg = data.dataSet.data;
                 		result	+='<div class="itemHead">'
 								+'	<h2>'+ _msg.detail[0].UserName +'</h2>'
@@ -28,9 +31,6 @@ define(function(require, exports, module){
                 	}else{
                 		console.log(data.errorMsg);
                 	}
-                },
-                error:function(){
-                	//alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return result;
