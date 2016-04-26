@@ -25,7 +25,7 @@ define(function(require, exports, module){
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
                 		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-								+'<li><span>物流方式：</span><p>'+ infos.logisticsType +((infos.logisticsType.indexOf('自提')!=-1) ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
+								+'<li><span>物流方式：</span><p>'+ infos.logisticsType +((infos.logisticsType==3) ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 								+'<li><span>收货地址：</span><p>'+ infos.address +'；<br>电话：'+ infos.mobile +'</p></li>'
 								+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
 								+'<li><span>支付方式：</span><p>'+ infos.paymentType +'</p></li>'
