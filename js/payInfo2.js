@@ -10,13 +10,14 @@ define(function(require, exports, module){
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{"secretNumber":"","token":"","serviceId":"B01_findFileList","companyId":"10000001","fileSource":"1","searchType":"1","id":"100001000000001","docType":"10"}'
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data.success){
+                	if(data){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			result += '<p><a href="'+ file[i].fileUrl +'"><i class=i-'+ (reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a></p>'
@@ -53,9 +54,6 @@ define(function(require, exports, module){
 								+	that.fileList()
 								+'</div>'
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
