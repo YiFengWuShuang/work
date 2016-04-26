@@ -19,7 +19,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
-			    data:JSON.stringify(params),
+			    data:'param='JSON.stringify(params),
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
