@@ -30,7 +30,7 @@ define(function(require, exports, module){
 						type:"POST",
 		                dataType: "json",
 		                url:'http://172.31.10.168/usersystem/login/getSmsVerifyCode/v1',
-		                data:{"mobile":mobile},
+		                data:JSON.stringify({"mobile":mobile}),
 		                success:function(data){
 		                	fnTip.hideLoading();
 		                	data = data || {};
@@ -53,7 +53,7 @@ define(function(require, exports, module){
 						type:"POST",
 					    dataType: "json",
 					    url:'http://172.31.10.168/usersystem/recover_password/checkSmsVerifyCode/v1',
-					    data:{"mobile":mobile, "smsVerifyCode":verifyCode},
+					    data:JSON.stringify({"mobile":mobile, "smsVerifyCode":verifyCode}),
 					    success:function(data){
 					    	fnTip.hideLoading();
 					    	data = data || {};
@@ -80,7 +80,7 @@ define(function(require, exports, module){
 						type:"POST",
 					    dataType: "json",
 					    url:'http://172.31.10.168/usersystem/register/registerAccountOnMobile/v1',
-					    data:{"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2},
+					    data:JSON.stringify({"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2}),
 					    success:function(data){
 					    	fnTip.hideLoading();
 					    	data = data || {};
