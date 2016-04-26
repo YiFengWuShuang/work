@@ -59,7 +59,10 @@ define(function(require, exports, module){
 		start: function(){
 			var that = this;
 			$('.remarks-wrap').append(that.payInfo());
-			if($('.remarks-wrap').find('div').length>0)fnTip.hideLoading();
+			if($('.remarks-wrap').find('div').length>0){
+				console.log($('.remarks-wrap').find('div').length)
+				fnTip.hideLoading();
+			}
 		}
 	};
 
