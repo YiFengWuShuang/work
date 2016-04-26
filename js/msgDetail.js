@@ -8,9 +8,8 @@ define(function(require, exports, module){
 			var result='', userId = getQueryString('userId'), id = getQueryString('id'), time = getQueryString('time') || '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                dataType: "json",
                 url:'http://172.31.10.155:19890/oss/notify/api',
-                //processData:false,
                 data:JSON.stringify({"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}),
                 success:function(data){
                 	data = data || {};
