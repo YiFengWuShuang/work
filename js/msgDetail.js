@@ -12,8 +12,10 @@ define(function(require, exports, module){
                 data:JSON.stringify({"params":{"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}}),
                 success:function(data){
                 	data = data || {};
+                	console.log(data.errorCode)
                 	if(data.errorCode=='0'){
                 		var _msg = data.dataSet.data.detail[0];
+                		console.log(_msg.UserName)
                 		result	+='<div class="itemHead">'
 								+'	<h2>'+ _msg.UserName +'</h2>'
 								+'	<time>'+ _msg.DateTime +'</time>'
@@ -27,6 +29,7 @@ define(function(require, exports, module){
                 	}
                 }
 			})
+			console.log(result)
 			return result;
 		},
 		evens: function(){
