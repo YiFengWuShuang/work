@@ -26,7 +26,7 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
-                		_LogisticalName = syscode.logisticsType[0]
+                		_LogisticalName = syscode.logisticsType[infos.logisticsType-1].split(',')[1];
                 		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
 								+'<li><span>物流方式：</span><p>'+ _LogisticalName +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 								+'<li><span>收货地址：</span><p>'+ infos.address +'；<br>电话：'+ infos.mobile +'</p></li>'
