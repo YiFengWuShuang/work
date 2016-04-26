@@ -23,13 +23,13 @@ define(function(require, exports, module){
                 	}
                 }
 			})
-			console.log(result)
 			return result;
 		},
 		payInfo: function(){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
+				async: false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{ "token":"c5ef4cca77e9a7821ea5df0da650f07e", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"4bef6eefabd0ef34ab42562e1b956852", "poId":"100001000000110", "companyId":"10000001", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
