@@ -13,7 +13,7 @@ define(function(require, exports, module){
                 data:JSON.stringify({"content":{"header":{"module":"","key":"","operator":""},"body":{"method":"queryMessage","data":{"UserId":89,"Id":10,"pageInfo":{}}}}}),
                 success:function(data){
                 	data = data || {};
-                	console.log(1 + ' ' + data);
+                	console.log(data);
                 	if(data.errorCode=='0'){
                 		var _msg = data.dataSet.data;
                 		result	+='<div class="itemHead">'
@@ -25,7 +25,7 @@ define(function(require, exports, module){
 								+'	<section>'+ _msg.detail[0].Content +'</section>'
 								+'</div>'
                 	}else{
-                		console.log(2 + ' ' + data.errorMsg);
+                		console.log(data.errorMsg);
                 	}
                 },
                 error:function(jqXHR, textStatus, errorThrown){
