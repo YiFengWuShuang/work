@@ -13,7 +13,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.errorCode=='0'){
-                		var _msg = data.data.detail[0];
+                		var _msg = data.dataSet.data.detail[0];
                 		result	+='<div class="itemHead">'
 								+'	<h2>'+ _msg.UserName +'</h2>'
 								+'	<time>'+ _msg.DateTime +'</time>'
