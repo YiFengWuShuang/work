@@ -36,10 +36,7 @@ define(function(require, exports, module){
 							 +'		<li><span>采购日期：</span>'+ transDate(orderInfo.poFormDate) +'</li>'
 							 +'	</ul>'
 							 +'</div>'
-						alert(1)
 						fnTip.hideLoading();
-                	}else{
-
                 	}
                 }
 			})
@@ -62,8 +59,6 @@ define(function(require, exports, module){
                 		for(var i=0; i<len; i++){
                 			that._files.push(file[i]);
                 		}
-                	}else{
-
                 	}
                 }
 			})
