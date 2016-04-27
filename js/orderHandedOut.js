@@ -3,9 +3,12 @@ define(function(require, exports, module){
 	var order = {
 		init: function(opts){
 			this._files = [];
+			that.totals = 0;
 
 			//
 			this.start();
+
+			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals));
 		},
 		//基本信息
 		orderBaseInfo: function(){
@@ -93,6 +96,7 @@ define(function(require, exports, module){
 								+		((prodInfos[i].vTaxLineTotal!='')?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(poSubLineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
 								+'</div>'
+							that.totals+=parseInt(prodInfos[i].taxLineTotal,10);
                 		}
                 	}else{
                 		document.getElementById('prodListsInfo').innerHTML = '<p style="text-align:center;">'+ data.errorMsg +'</p>'
@@ -103,7 +107,7 @@ define(function(require, exports, module){
 		},
 		//其他费用
 		otherCostList: function(){
-			var that = this, html = '';
+			var that = this, html = '', subtotal = 0, resubtotal=0, _responseCost=false;;
 			$.ajax({
 				type:"POST",
                 async: false,
@@ -118,10 +122,20 @@ define(function(require, exports, module){
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>';
                 		for(var i=0, len=otherCostList.length; i<len; i++){
                 			html+='<li><span>'+ otherCostList[i].costName +'：</span><b>&yen; '+ formatMoney(otherCostList[i].costAmount) +'</b></li>'
+                			subtotal += parseInt(otherCostList[i].costAmount,10);
+                			resubtotal += parseInt((otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount),10);
+                			if(otherCostList[i].vCostAmount!=''){
+                				_responseCost = true;
+                			}
+                		}
+                		html+='<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(subtotal) +'</b></li>'
+                		if(_responseCost){
+                			html+='<li id="changeCost" class="response"><span>变更费用：</span>&yen; '+ formatMoney(resubtotal) +'</li>'
                 		}
                 		html+='</ul></div>';
+                		that.totals+=parseInt(subtotal,10);
                 	}else{
-
+                		console.log(data.errorMsg);
                 	}
                 }
 			})
