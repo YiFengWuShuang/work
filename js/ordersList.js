@@ -79,7 +79,7 @@ define(function(require, exports, module){
 								 +'		<li><span>内部单号：</span><b>'+ orderInfo[i].poInsideNo +'</b></li>'
 								 +'		<li><span>客户：</span>'+ orderInfo[i].companyName +'</li>'
 								 +'		<li><span>交易货币：</span>'+ orderInfo[i].currencyCode +'</li>'
-								 +'		<li><span>交易税种：</span>'+ orderInfo[i].taxName + (orderInfo[i].isContainTax=='1' ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo[i].taxRate +'</label>' : '')+'</li>'
+								 +'		<li><span>交易税种：</span>'+ orderInfo[i].taxName + (orderInfo[i].isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo[i].taxRate +'</label>' : '')+'</li>'
 								 +'		<li><span>采购日期：</span>'+ orderInfo[i].poFormDate +'</li>'
 								 +'	</ul>'
 								 +'</div>'

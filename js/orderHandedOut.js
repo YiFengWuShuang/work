@@ -83,10 +83,10 @@ define(function(require, exports, module){
 								+'		<li><span>物料编码：</span><b>'+ prodInfos[i].vProdCode +'</b></li>'
 								+'		<li><span>物料详细：</span><p>'+ prodInfos[i].prodDesc +'</p></li>'
 								+'		<li><section><span>数量：</span>'+ prodInfos[i].vValuationQty +'盒/'+ prodInfos[i].vPurchaseQty +'个</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'
-								+'		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price) +'/个</li>'
+								+'		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price.toString()) +'/个</li>'
 								+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 								//+		(!!that._files[i].fileUrl ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
-								+'		<li><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
+								+'		<li><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal.toString()) +'</b></li>'
 								+'	</ul>'
 								+'</div>'
                 		}
