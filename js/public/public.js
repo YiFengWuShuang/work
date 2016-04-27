@@ -39,7 +39,8 @@ var fnTip = {
 	},
 	hideLoading: function(){
 		if($('.ball-clip-rotate').length){
-			$('.ball-clip-rotate').remove();			
+			setTimeout(function(){$('.ball-clip-rotate').remove()},0)
+						
 		}
 	}
 }
