@@ -99,7 +99,6 @@ define(function(require, exports, module){
 								+'</div>'
 							that.totals+=parseInt(prodInfos[i].taxLineTotal,10);
                 		}
-                		fnTip.hideLoading();
                 	}else{
                 		document.getElementById('prodListsInfo').innerHTML = '<p style="text-align:center;">'+ data.errorMsg +'</p>'
                 	}
