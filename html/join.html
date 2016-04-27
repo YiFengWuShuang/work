@@ -22,7 +22,7 @@
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
 	<script>
-	$(function(){
+	$(function(){console.log(dataSource())
 		var invitationCode = getQueryString('key'), companyName = getQueryString('companyName'), joinStatus = $('#join-status');
 		function statusMsg(str){
 			return '<p class="joinSucc"><i></i><b>您已成功加入'+ str +'！</b></p><p class="openapp">赶紧打开app开启便捷工作之旅！</p>'
