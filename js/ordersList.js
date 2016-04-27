@@ -85,11 +85,10 @@ define(function(require, exports, module){
 								 +'</div>'
 							that.vStatus.push(orderInfo[i].vStatus);
                 		}
-                	}else{
-
                 	}
                 }
 			})
+			console.log(html)
 			return html;
 		},
 		//附件
