@@ -10,7 +10,10 @@ define(function(require, exports, module){
 			fnTip.hideLoading();
 
 			$('.item-total').html('总金额：&yen; '+formatMoney(that.totals)).show();
-			$('.item-total-dj').html('答交总金额：&yen; '+formatMoney(that.reCostTotalFn())).show();
+			if(that.totals!=that.reCostTotalFn()){
+				$('.item-total-dj').html('答交总金额：&yen; '+formatMoney(that.reCostTotalFn())).show();
+			}
+			
 		},
 		//基本信息
 		orderBaseInfo: function(){
