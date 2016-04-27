@@ -86,11 +86,11 @@ define(function(require, exports, module){
 							for(var j=0; j<prodInfos[i].poSubLineInfo.length; j++){
 								html+='<li class="response"><section><span>数量：</span><em>'+ prodInfos[i].poSubLineInfo[j].purchaseQty +'</em>'+ prodInfos[i].poSubLineInfo[j].purchaseUnit +'/<em>'+ prodInfos[i].poSubLineInfo[j].valuationQty +'</em>'+ prodInfos[i].poSubLineInfo[j].valuationUnit +'</section><section><span>交期：</span><em>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</em></section></li>'
 							}
-							html+='		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price.toString()) +'/个</li>'
+							html+='		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price) +'/个</li>'
 								+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 								+		((that._files.length>0) ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
-								+'		<li><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal.toString()) +'</b></li>'
-								+		((prodInfos[i].vTaxLineTotal!='')?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(poSubLineList[i].vTaxLineTotal.toString()) +'</li>':'')
+								+'		<li><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
+								+		((prodInfos[i].vTaxLineTotal!='')?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(poSubLineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
 								+'</div>'
                 		}
