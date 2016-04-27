@@ -53,7 +53,7 @@ define(function(require, exports, module){
 
 			that.hideTip();
 			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals)).show();
-			if(that.vStatus[0]=='5'){
+			if(that.vStatus==5){
 				$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn())).show();
 				btn.hide();
 			}
@@ -71,20 +71,19 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		var orderInfo = data.poAnswerOrderInfo;
-                		html = '<h2 class="m-title">基本信息</h2>';
-                		for(var i=0, len = orderInfo.length; i<len; i++){
-	                		html +='<div class="item-wrap">'
-								 +'	<ul>'
-								 +'		<li><span>平台单号：</span><b>'+ orderInfo[i].poFormNo +'</b></li>'
-								 +'		<li><span>内部单号：</span><b>'+ orderInfo[i].poInsideNo +'</b></li>'
-								 +'		<li><span>客户：</span>'+ orderInfo[i].companyName +'</li>'
-								 +'		<li><span>交易货币：</span>'+ orderInfo[i].currencyCode +'</li>'
-								 +'		<li><span>交易税种：</span>'+ orderInfo[i].taxName + (orderInfo[i].isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo[i].taxRate +'</label>' : '')+'</li>'
-								 +'		<li><span>采购日期：</span>'+ orderInfo[i].poFormDate +'</li>'
-								 +'	</ul>'
-								 +'</div>'
-							that.vStatus.push(orderInfo[i].vStatus);
-                		}
+                		html += '<h2 class="m-title">基本信息</h2>';
+                		html +'<div class="item-wrap">'
+							 +'	<ul>'
+							 +'		<li><span>平台单号：</span><b>'+ orderInfo.poFormNo +'</b></li>'
+							 +'		<li><span>内部单号：</span><b>'+ orderInfo.poInsideNo +'</b></li>'
+							 +'		<li><span>客户：</span>'+ orderInfo.companyName +'</li>'
+							 +'		<li><span>交易货币：</span>'+ orderInfo.currencyCode +'</li>'
+							 +'		<li><span>交易税种：</span>'+ orderInfo.taxName + (orderInfo.isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo.taxRate +'</label>' : '')+'</li>'
+							 +'		<li><span>采购日期：</span>'+ orderInfo.poFormDate +'</li>'
+							 +'	</ul>'
+							 +'</div>'
+						that.vStatus.push(orderInfo.vStatus);
+
                 	}
                 }
 			})
@@ -142,7 +141,7 @@ define(function(require, exports, module){
 								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
-								+( that.vStatus[0]=='5' ? '' : '<span class="edit"></span>' )
+								+( that.vStatus==5 ? '' : '<span class="edit"></span>' )
 								+'</div>'
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
                 		}
@@ -283,7 +282,7 @@ define(function(require, exports, module){
                 			html+='<li id="changeCost" class="response"><span>变更费用：</span>&yen; '+ formatMoney(resubtotal) +'</li>'
                 		}
                 		html+='</ul>'
-                		html+=( that.vStatus[0]=='5' ? '' : '<span class="edit editOther"></span>' )
+                		html+=( that.vStatus==5 ? '' : '<span class="edit editOther"></span>' )
                 		html+='</div>';
                 		that.totals+=parseInt(subtotal,10);
                 	}
