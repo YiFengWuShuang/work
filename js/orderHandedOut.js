@@ -109,7 +109,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
 				data: {
-                	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"'+ _vParams.companyId +'","poId":"'+ _vParams.poId +'","token":"'+ _vParams.token +'"}'
+                	"param": '{"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"","sourceSystem":"1"},"serviceId":"B03_findPoOtherCostList","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"}'
                 },
                 success:function(data){
                 	data = data || {};
