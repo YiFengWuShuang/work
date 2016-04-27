@@ -92,3 +92,13 @@ function formatMoney(s) {
 	})
 	$('.checkbox input').trigger('change');
 })();
+
+
+//数据来源
+function dataSource(){
+	var UA = window.navigator.userAgent.toLowerCase();
+	if(/iphone|ipod|ipad|Macintosh/i.test(UA))return 4;
+	if(/android/i.test(UA))return 3;
+	if(!(/iphone|ipod|android.*mobile|windows.*phone|blackberry.*mobile/i.test(UA)))return 1;
+	if(/micromessenger/i.test(UA))return 2;
+}

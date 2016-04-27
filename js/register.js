@@ -84,7 +84,7 @@ define(function(require, exports, module){
 					    dataType: "json",
 					    async:false,
 					    url:'http://172.31.10.168/usersystem/register/registerAccountOnMobile/v1',
-					    data:JSON.stringify({"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2}),
+					    data:JSON.stringify({"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2, "dataSource":dataSource()}),
 					    success:function(data){
 					    	fnTip.hideLoading();
 					    	data = data || {};
