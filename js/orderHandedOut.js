@@ -52,8 +52,8 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
-                		var file = data.fileList;
-                		for(var i=0, len=file.length; i<len; i++){
+                		var file = data.fileList, len=file.length;
+                		for(var i=0; i<len; i++){
                 			that._files.push(file[i]);
                 		}
                 	}else{
@@ -83,10 +83,14 @@ define(function(require, exports, module){
 								+'		<li><span>物料编码：</span><b>'+ prodInfos[i].vProdCode +'</b></li>'
 								+'		<li><span>物料详细：</span><p>'+ prodInfos[i].prodDesc +'</p></li>'
 								+'		<li><section><span>数量：</span>'+ prodInfos[i].vValuationQty +'盒/'+ prodInfos[i].vPurchaseQty +'个</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'
-								+'		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price.toString()) +'/个</li>'
+							for(var j=0; j<prodInfos[i].poSubLineInfo.length; j++){
+								html+='<li class="response"><section><span>数量：</span><em>'+ prodInfos[i].poSubLineInfo[j].purchaseQty +'</em>'+ prodInfos[i].poSubLineInfo[j].purchaseUnit +'/<em>'+ prodInfos[i].poSubLineInfo[j].valuationQty +'</em>'+ prodInfos[i].poSubLineInfo[j].valuationUnit +'</section><section><span>交期：</span><em>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</em></section></li>'
+							}
+							html+='		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price.toString()) +'/个</li>'
 								+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
-								//+		(!!that._files[i].fileUrl ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
+								+		((that._files.length>0) ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
 								+'		<li><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal.toString()) +'</b></li>'
+								+		((prodInfos[i].vTaxLineTotal!='')?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(poSubLineList[i].vTaxLineTotal.toString()) +'</li>':'')
 								+'	</ul>'
 								+'</div>'
                 		}
