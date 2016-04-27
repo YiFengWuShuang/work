@@ -71,7 +71,7 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		var orderInfo = data.poAnswerOrderInfo;
-                		html += '<h2 class="m-title">基本信息</h2>';
+                		html += '<h2 class="m-title">基本信息</h2>'
                 			 +'<div class="item-wrap">'
 							 +'	<ul>'
 							 +'		<li><span>平台单号：</span><b>'+ orderInfo.poFormNo +'</b></li>'
