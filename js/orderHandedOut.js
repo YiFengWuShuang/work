@@ -12,7 +12,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
                 data: {
 			        "param": '{ "token":"'+ _vParams.token +'", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
@@ -35,9 +35,6 @@ define(function(require, exports, module){
                 	}else{
 
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -47,10 +44,10 @@ define(function(require, exports, module){
 			var that = this;
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
                 data: {
-                	"param": '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
+                	"param": '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":'+ _vParams.docType +'}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -70,7 +67,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
                 data: {
                 	"param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
@@ -96,9 +93,6 @@ define(function(require, exports, module){
                 	}else{
                 		document.getElementById('prodListsInfo').innerHTML = '<p style="text-align:center;">'+ data.errorMsg +'</p>'
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -108,7 +102,7 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
 				data: {
                 	"param": '{"serviceId":"B03_findPoOtherCostList","companyId":"'+ _vParams.companyId +'","poId":"'+ _vParams.poId +'","token":"'+ _vParams.token +'"}'
@@ -125,9 +119,6 @@ define(function(require, exports, module){
                 	}else{
 
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -145,7 +136,7 @@ define(function(require, exports, module){
 		submitFn: function(){
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async: false,
                 url:config.serviceUrl,
 				data: {
                 	"param": '{ "secretNumber":"'+ _vParams.secretNumber +'", "token":"'+ _vParams.token +'", "serviceId":"B03_submitPurchaseOrder", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
@@ -159,9 +150,6 @@ define(function(require, exports, module){
                 	}else{
                 		fnTip.error(2000);
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 		}

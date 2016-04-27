@@ -1,0 +1,51 @@
+{
+    "errorCode": "0",
+    "errorMsg": "OK",
+    "dataSet": {
+        "header": {
+            "code": 0,
+            "info": "OK",
+            "version": "VS-OSS-V1.0.0"
+        },
+        "data": {
+            "detail": [
+                {
+                    "Value": "待接收",
+                    "Key": "1"
+                },
+                {
+                    "Value": "待答交",
+                    "Key": "2"
+                },
+                {
+                    "Value": "待客户确认",
+                    "Key": "3"
+                },
+                {
+                    "Value": "待转销售订单",
+                    "Key": "4"
+                },
+                {
+                    "Value": "已转销售订单",
+                    "Key": "5"
+                },
+                {
+                    "Value": "客户已取消",
+                    "Key": "6"
+                },
+                {
+                    "Value": "已拒绝",
+                    "Key": "7"
+                },
+                {
+                    "Value": "已完成",
+                    "Key": "8"
+                },
+                {
+                    "Value": "强制结案",
+                    "Key": "9"
+                }
+            ]
+        }
+    }
+}
