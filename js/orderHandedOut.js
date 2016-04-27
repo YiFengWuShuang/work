@@ -90,7 +90,7 @@ define(function(require, exports, module){
 							html+='		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price) +'/个</li>'
 								+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 								+		((that._files.length>0) ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
-								+'		<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].poSubLineList.length>0) ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
+								+'		<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
 								+		((prodInfos[i].vTaxLineTotal!='')?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(poSubLineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
 								+'</div>'
