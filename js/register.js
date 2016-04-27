@@ -89,7 +89,7 @@ define(function(require, exports, module){
 					    	fnTip.hideLoading();
 					    	data = data || {};
 					    	if(data.errorCode=='0'){
-					    		_this.attr('href','http://172.31.10.164/html/join.html');
+					    		_this.attr('href','http://172.31.10.164/html/join.html?&companyName="'+ data.companyName +'"');
 					    	}else if(data.errorCode=='02145'){
 					    		$formTip.html('输入密码不一致').addClass('formTipShow');
 								return false;

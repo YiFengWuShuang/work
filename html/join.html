@@ -23,7 +23,11 @@
 	<script src="../js/public/public.js"></script>
 	<script>
 	$(function(){
-		var invitationCode = getQueryString('key'), joinStatus = $('#join-status');
+		var invitationCode = getQueryString('key'), companyName = getQueryString('companyName'), joinStatus = $('#join-status');
+		if(invitationCode==null){
+			joinStatus.html('<p class="joinSucc"><i></i><b>您已成功加入'+ companyName +'！</b></p><p class="openapp">赶紧打开app开启便捷工作之旅！</p>');
+			return false;
+		}
 		$.ajax({
 				type:"POST",
                 async:false,
@@ -35,6 +39,8 @@
                 		joinStatus.html('<p class="joinSucc"><i></i><b>您已成功加入'+ data.companyName +'！</b></p><p class="openapp">赶紧打开app开启便捷工作之旅！</p>');
                 	}else if(data.errorCode=='02154'){
                 		joinStatus.html('<p class="openapp">该账号已有关联公司</p>');
+                	}else{
+                		joinStatus.html('<p class="openapp">'+ data.errorMsg +'</p>');
                 	}
                 }
             })
