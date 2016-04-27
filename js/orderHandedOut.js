@@ -29,7 +29,7 @@ define(function(require, exports, module){
 							 +'		<li><span>供应商：</span>'+ orderInfo.vendorName +'</li>'
 							 +'		<li><span>交易货币：</span>'+ orderInfo.currencyName +'</li>'
 							 +'		<li><span>交易税种：</span>'+ orderInfo.taxName + (orderInfo.isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo.taxRate +'</label>' : '') + '</li>'
-							 +'		<li><span>采购日期：</span>'+ orderInfo.poFormDate +'</li>'
+							 +'		<li><span>采购日期：</span>'+ transDate(orderInfo.poFormDate) +'</li>'
 							 +'	</ul>'
 							 +'</div>'
                 	}else{
@@ -85,7 +85,7 @@ define(function(require, exports, module){
 								+'		<li><section><span>数量：</span>'+ prodInfos[i].vValuationQty +'盒/'+ prodInfos[i].vPurchaseQty +'个</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'
 								+'		<li><span class="price">单价：</span>&yen; '+ prodInfos[i].price +'/个</li>'
 								+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
-								+		(!!that._files[i].fileUrl ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
+								//+		(!!that._files[i].fileUrl ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
 								+'		<li><span>小计：</span><b>&yen; '+ prodInfos[i].taxLineTotal +'</b></li>'
 								+'	</ul>'
 								+'</div>'

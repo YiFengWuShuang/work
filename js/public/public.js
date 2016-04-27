@@ -54,6 +54,15 @@ function getQueryString(name) {
     return null;
 }
 
+//时间戳转换日期
+function transDate(tm){
+    var d = new Date(tm);
+    var year = d.getFullYear();
+    var month = d.getMonth() + 1;
+    var day = d.getDate();
+    return year + '-' + month + '-' + day;
+}
+
 //格式化金额
 function formatMoney(s){
    if(/[^0-9\.]/.test(s)) return "";
