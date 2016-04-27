@@ -36,6 +36,7 @@ define(function(require, exports, module){
 							 +'		<li><span>采购日期：</span>'+ transDate(orderInfo.poFormDate) +'</li>'
 							 +'	</ul>'
 							 +'</div>'
+						alert(1)
 						fnTip.hideLoading();
                 	}else{
 
