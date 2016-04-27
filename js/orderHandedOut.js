@@ -168,7 +168,6 @@ define(function(require, exports, module){
 	                	setTimeout(window.location.href='#',2000);                		
                 	}else{
                 		fnTip.error(2000);
-                		console.log(data.errorMsg);
                 	}
                 }
 			})
