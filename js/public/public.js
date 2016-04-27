@@ -60,21 +60,21 @@ function transDate(tm){
     var year = d.getFullYear();
     var month = d.getMonth() + 1;
     var day = d.getDate();
-    return year + '-' + month + '-' + day;
+    return year + '-' + (month<10 ? '0' + month : month) + '-' + (day<10 ? '0' + day : day);
 }
 
 //格式化金额
-function formatMoney(s){
-	s=s.toString();
-	if(/[^0-9\.]/.test(s)) return "";
-	s=s.replace(/^(\d*)$/,"$1.");
-	s=(s+"00").replace(/(\d*\.\d\d)\d*/,"$1");
-	s=s.replace(".",",");
-	var re=/(\d)(\d{3},)/;
-	while(re.test(s))
-	       s=s.replace(re,"$1,$2");
-	s=s.replace(/,(\d\d)$/,".$1");
-	return s.replace(/^\./,"0.")
+function formatMoney(s) {
+	s = s.toString();
+	if (/[^0-9\.]/.test(s)) return "";
+	s = s.replace(/^(\d*)$/, "$1.");
+	s = (s + "00").replace(/(\d*\.\d\d)\d*/, "$1");
+	s = s.replace(".", ",");
+	var re = /(\d)(\d{3},)/;
+	while (re.test(s))
+		s = s.replace(re, "$1,$2");
+	s = s.replace(/,(\d\d)$/, ".$1");
+	return s.replace(/^\./, "0.")
 }
 
 //checkbox自定义样式

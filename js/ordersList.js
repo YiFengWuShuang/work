@@ -51,9 +51,9 @@ define(function(require, exports, module){
 			that.dateFn();
 
 			that.hideTip();
-			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals.toString()));
+			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals));
 			if(that.vStatus[0]=='5'){
-				$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn().toString())).show();
+				$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn())).show();
 				btn.hide();
 			}
 		},
@@ -283,9 +283,9 @@ define(function(require, exports, module){
                 				_responseCost = true;
                 			}
                 		}
-                		html+='<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(subtotal.toString()) +'</b></li>'
+                		html+='<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(subtotal) +'</b></li>'
                 		if(_responseCost){
-                			html+='<li id="changeCost" class="response"><span>变更费用：</span>&yen; '+ formatMoney(resubtotal.toString()) +'</li>'
+                			html+='<li id="changeCost" class="response"><span>变更费用：</span>&yen; '+ formatMoney(resubtotal) +'</li>'
                 		}
                 		html+='</ul>'
                 		html+=( that.vStatus[0]=='5' ? '' : '<span class="edit editOther"></span>' )
@@ -422,7 +422,7 @@ define(function(require, exports, module){
 				var values = that.reQtys(self.parents('.responseBox'),idx);
 				if(values!=''||values!=undefined){
 					parent.find('.item-wrap').eq(idx).find('.subtotal').attr('data-vtotal',values*lineLists[idx].vTaxPrice);
-					parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney((values*lineLists[idx].vTaxPrice).toString()) +'</li>')
+					parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney((values*lineLists[idx].vTaxPrice)) +'</li>')
 				}
 			}else{
 				$('#othersCostSubtotal').before(html);
@@ -438,10 +438,10 @@ define(function(require, exports, module){
 				})
 				if(moneyChange){
 					$('#othersCostSubtotal').attr('data-vtotal',moneys);
-					$('#othersCostSubtotal').after('<li id="changeCost" class="response" data-otherMoney="'+ moneys +'"><span>变更费用：</span>&yen; '+ formatMoney(moneys.toString()) +'</li>');				
+					$('#othersCostSubtotal').after('<li id="changeCost" class="response" data-otherMoney="'+ moneys +'"><span>变更费用：</span>&yen; '+ formatMoney(moneys) +'</li>');				
 				}
 			}
-			$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn().toString())).show();
+			$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn())).show();
 		},
 		dateFn: function(){
 			$('.timeBox').mdater({
