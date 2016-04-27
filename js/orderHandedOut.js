@@ -8,6 +8,7 @@ define(function(require, exports, module){
 
 			fnTip.loading();
 			that.start();
+			fnTip.hideLoading();
 
 			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals)).show();
 		},
@@ -36,7 +37,6 @@ define(function(require, exports, module){
 							 +'		<li><span>采购日期：</span>'+ transDate(orderInfo.poFormDate) +'</li>'
 							 +'	</ul>'
 							 +'</div>'
-						fnTip.hideLoading();
                 	}
                 }
 			})
