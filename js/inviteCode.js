@@ -1,8 +1,9 @@
 define(function(require, exports, module){
 	var code = {
 		init: function(){
-			this.evens();
 			this.invitationCode = '';
+
+			this.evens();
 		},
 		createHTML: function(){
 			var that = this, result='';
@@ -26,24 +27,17 @@ define(function(require, exports, module){
 			})
 			return result;
 		},
-		hasReg: function(){
-			var that = this, isReg = false;
-
-			return isReg;
-		},
 		evens: function(){
-			var that = this;
-			if(that.hasReg()){
-				//已经注册
-			}else{
-				//未注册，走注册流程
-				var compInfos = document.getElementById('compInfos');
-				if(compInfos){
-					compInfos.innerHTML = that.createHTML();
-					$('.inviteCode').show();
-					$('#joinUs').attr('href','http://172.31.10.164/html/invitationReg1.html?&inviteCode="'+ that.invitationCode +'"');
-				}
+			var that = this, btn = $('#joinUs');
+
+			//未注册，走注册流程
+			var compInfos = document.getElementById('compInfos');
+			if(compInfos){
+				compInfos.innerHTML = that.createHTML();
+				$('.inviteCode').show();
+				btn.attr('href','http://172.31.10.164/html/invitationReg1.html?&inviteCode="'+ that.invitationCode +'"');
 			}
+
 		}
 	};
 

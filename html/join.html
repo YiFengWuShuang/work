@@ -12,14 +12,33 @@
 	<meta name="x5-orientation" content="portrait">
 	<link rel="stylesheet" href="../css/public.css">
 	<link rel="stylesheet" href="../css/invite.css">
-	<title>邀请码</title>
+	<title></title>
 </head>
 <body>
 	<div class="contarin">
-		<div class="step3">
-			<p class="joinSucc"><i></i><b>您已成功加入福建实达集团股份有限公司！</b></p>
-			<p class="openapp">赶紧打开app开启便捷工作之旅！</p>			
-		</div>
+		<div id="join-status" class="step3"></div>
 	</div>
+	<script src="../js/lib/sea.js"></script>
+	<script src="../js/lib/zepto-min.js"></script>
+	<script src="../js/public/public.js"></script>
+	<script>
+	$(function(){
+		var invitationCode = getQueryString('key'), joinStatus = $('#join-status');
+		$.ajax({
+				type:"POST",
+                async:false,
+                url:'http://172.31.10.168/usersystem/register/joinCompanyByAccount/v1',
+                data:JSON.stringify({"invitationCode":invitationCode}),
+                success:function(data){
+                	data = data || {};
+                	if(data.errorCode=='0'){
+                		joinStatus.html('<p class="joinSucc"><i></i><b>您已成功加入'+ data.companyName +'！</b></p><p class="openapp">赶紧打开app开启便捷工作之旅！</p>');
+                	}else if(data.errorCode=='02154'){
+                		joinStatus.html('<p class="openapp">该账号已有关联公司</p>');
+                	}
+                }
+            })
+	})
+	</script>
 </body>
 </html>

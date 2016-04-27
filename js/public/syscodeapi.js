@@ -8,7 +8,7 @@
 	syscode.paymentType = [];
 	syscode.invoiceType = ["1,普通发票","2,增值税发票","3,出口专用发票"];
 
-	function enumeration(keyToValue){
-
+	function enumeration(mainKey, key){
+		
 	}
 }());

@@ -10,10 +10,10 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"9b14aff650e129870793d4eabd944cb5", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"f07e773c7c66c684f5c11a26225fa88e", "poAnswerId":"", "vendorId":"", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"'+ _vParams.poId +'", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -58,9 +58,6 @@ define(function(require, exports, module){
 								+'</div>'
                 		}
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -78,10 +75,10 @@ define(function(require, exports, module){
 			var that = this, options = [];
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_findTaxList","companyIdList":["10000008"],"token":"12222"}'
+			        "param": '{"serviceId":"B01_findTaxList","companyIdList":'+ _vParams.companyIdList +',"token":"'+ _vParams.token +'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -103,9 +100,6 @@ define(function(require, exports, module){
                 		var currValue = $('#currTax').html();
                 		that.initSelect3('#taxType',options,currValue);
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
             })
 		},
@@ -113,10 +107,10 @@ define(function(require, exports, module){
 			var that = this, result, _formDate = $('#poFormDate').html();
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"10000002","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"},"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}'
+			        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"'+ _vParams.companyId +'","token":"'+ _vParams.poId +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"},"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -137,23 +131,20 @@ define(function(require, exports, module){
 			})
 		},
 		submitFn: function(){
-			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
+			var that = this, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_poAnswerToSalesOrder"';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
                 url:config.serviceUrl,
-                data:{param:inParams},
+                data: {
+                	"param": '{"poAnswerOrderInfo":' + poAnswerOrderInfo + ',"serviceId":"B03_poAnswerToSalesOrder"}'
+                },
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
 	                	fnTip.success(2000);
 	                	setTimeout(window.location.reload(),2000);                		
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 		}

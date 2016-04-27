@@ -140,8 +140,7 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			var orderBaseInfo = document.getElementById('orderBaseInfo');
-			var prodListsInfo = document.getElementById('prodListsInfo');
+			;
 			var otherCost = document.getElementById('otherCost');
 			if(orderBaseInfo){
 				orderBaseInfo.innerHTML = that.orderBaseInfo();
