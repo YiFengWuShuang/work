@@ -67,15 +67,15 @@ function transDate(tm){
 //格式化金额
 function formatMoney(s) {
 	s = s.toString();
-	if (/[^0-9\.]/.test(s)) return "";
-	s = s.replace(/^(\d*)$/, "$1.");
-	s = (s + "00").replace(/(\d*\.\d\d)\d*/, "$1");
-	s = s.replace(".", ",");
+	if(/[^0-9\.]/.test(s)) return '';
+	s = s.replace(/^(\d*)$/, '$1.');
+	s = (s + '00').replace(/(\d*\.\d\d)\d*/, '$1');
+	s = s.replace('.', ',');
 	var re = /(\d)(\d{3},)/;
 	while (re.test(s))
-		s = s.replace(re, "$1,$2");
-	s = s.replace(/,(\d\d)$/, ".$1");
-	return s.replace(/^\./, "0.")
+		s = s.replace(re, '$1,$2');
+	s = s.replace(/,(\d\d)$/, '.$1');
+	return s.replace(/^\./, '0.')
 }
 
 //checkbox自定义样式
@@ -98,8 +98,8 @@ function formatMoney(s) {
 //数据来源
 function dataSource(){
 	var UA = window.navigator.userAgent.toLowerCase();
-	if(/iphone|ipod|ipad|Macintosh/i.test(UA))return 4;
-	if(/android/i.test(UA))return 3;
-	if(!(/iphone|ipod|android.*mobile|windows.*phone|blackberry.*mobile/i.test(UA)))return 1;
-	if(/micromessenger/i.test(UA))return 2;
+	if(/iphone|ipod|ipad|Macintosh/i.test(UA)) return 4;
+	if(/android/i.test(UA)) return 3;
+	if(!(/iphone|ipod|android.*mobile|windows.*phone|blackberry.*mobile/i.test(UA))) return 1;
+	if(/micromessenger/i.test(UA)) return 2;
 }
