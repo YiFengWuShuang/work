@@ -34,7 +34,7 @@ var fnTip = {
 		},time);
 	},
 	loading: function(){
-		var loading = '<div class="loader-inner ball-clip-rotate"><div>xxxxxxxxxxx</div></div>';
+		var loading = '<div class="loader-inner ball-clip-rotate"><div></div></div>';
 		$body.append(loading);
 	},
 	hideLoading: function(){
