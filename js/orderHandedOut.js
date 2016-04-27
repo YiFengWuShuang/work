@@ -6,7 +6,7 @@ define(function(require, exports, module){
 			that._files = [];
 			that.totals = 0;
 
-			//
+			fnTip.loading();
 			that.start();
 
 			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals)).show();
@@ -144,10 +144,20 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			document.getElementById('orderBaseInfo').innerHTML = that.orderBaseInfo();
+			var orderBaseInfo = document.getElementById('orderBaseInfo');
+			var prodListsInfo = document.getElementById('prodListsInfo');
+			var otherCost = document.getElementById('otherCost');
+			if(orderBaseInfo){
+				orderBaseInfo.innerHTML = that.orderBaseInfo();
+			}
 			that.fileList();
-			document.getElementById('prodListsInfo').innerHTML = that.prodsInfo();
-			document.getElementById('otherCost').innerHTML = that.otherCostList();
+			if(prodListsInfo){
+				prodListsInfo.innerHTML = that.prodsInfo();
+			}
+			if(otherCost){
+				otherCost.innerHTML = that.otherCostList();
+			}
+
 			$('.btn-wrap a').on('click',function(){
 				that.submitFn();
 			})
