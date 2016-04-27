@@ -16,6 +16,7 @@ define(function(require, exports, module){
 			// that.vTotals = 0;
 			fnTip.loading();
 			that.start();
+			fnTip.hideLoading();
 			//答交
 			$('.contarin').on('click','span.edit',function(){
 				var _this = $(this),
@@ -67,7 +68,6 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
                 data:'param='+JSON.stringify(params),
                 success:function(data){
-                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
                 		var orderInfo = data.poAnswerOrderInfo;
@@ -103,7 +103,6 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
                 data:'param='+JSON.stringify(params),
                 success:function(data){
-                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
                 		var file = data.fileList;
@@ -124,7 +123,6 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
 			    data:'param='+JSON.stringify(params),
                 success:function(data){
-                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
                 		var lineList = data.poLineList;
@@ -269,7 +267,6 @@ define(function(require, exports, module){
                 url:config.serviceUrl,
 			    data:'param='+JSON.stringify(params),
                 success:function(data){
-                	fnTip.hideLoading();
                 	data = data || {};
                 	if(data.success){
                 		var otherCostList = data.poOtherCostList;

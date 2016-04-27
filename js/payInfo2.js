@@ -1,8 +1,8 @@
 define(function(require, exports, module){
 	var lists = {
 		init: function(){
-			fnTip.loading();
 			this.start();
+			fnTip.hideLoading();
 		},
 		//附件
 		fileList: function(){
@@ -54,7 +54,6 @@ define(function(require, exports, module){
                 	}
                 }
 			})
-			fnTip.hideLoading();
 			return html;
 		},
 		start: function(){
