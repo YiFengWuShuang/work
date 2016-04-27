@@ -77,7 +77,7 @@ define(function(require, exports, module){
 							 +'		<li><span>平台单号：</span><b>'+ orderInfo.poFormNo +'</b></li>'
 							 +'		<li><span>内部单号：</span><b>'+ orderInfo.poInsideNo +'</b></li>'
 							 +'		<li><span>客户：</span>'+ orderInfo.companyName +'</li>'
-							 +'		<li><span>交易货币：</span>'+ orderInfo.currencyCode +'</li>'
+							 +'		<li><span>交易货币：</span>'+ orderInfo.currencyName +'</li>'
 							 +'		<li><span>交易税种：</span>'+ orderInfo.taxName + (orderInfo.isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo.taxRate +'</label>' : '')+'</li>'
 							 +'		<li><span>采购日期：</span>'+ orderInfo.poFormDate +'</li>'
 							 +'	</ul>'
@@ -87,7 +87,6 @@ define(function(require, exports, module){
                 	}
                 }
 			})
-			console.log(html)
 			return html;
 		},
 		//附件
@@ -266,7 +265,7 @@ define(function(require, exports, module){
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
-                		var otherCostList = data.poOtherCostList;
+                		var otherCostList = data.poOthreCostList;
                 		that._othersCost = otherCostList;
                 		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
                 		for(var i=0, len=otherCostList.length; i<len; i++){
@@ -288,6 +287,7 @@ define(function(require, exports, module){
                 	}
                 }
 			})
+console.log(html)
 			return html;
 		},
 		editResponseCost: function(item){
