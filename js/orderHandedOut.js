@@ -6,7 +6,6 @@ define(function(require, exports, module){
 			that._files = [];
 			that.totals = 0;
 
-			fnTip.loading();
 			that.start();
 			fnTip.hideLoading();
 
