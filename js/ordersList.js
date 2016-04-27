@@ -72,7 +72,7 @@ define(function(require, exports, module){
                 	if(data.success){
                 		var orderInfo = data.poAnswerOrderInfo;
                 		html += '<h2 class="m-title">基本信息</h2>';
-                		html +'<div class="item-wrap">'
+                			 +'<div class="item-wrap">'
 							 +'	<ul>'
 							 +'		<li><span>平台单号：</span><b>'+ orderInfo.poFormNo +'</b></li>'
 							 +'		<li><span>内部单号：</span><b>'+ orderInfo.poInsideNo +'</b></li>'
