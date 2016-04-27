@@ -14,7 +14,7 @@ define(function(require, exports, module){
 			that.vStatus = [];
 			that.totals = 0;
 			// that.vTotals = 0;
-			fnTip.loading();
+
 			that.start();
 			fnTip.hideLoading();
 			//答交
@@ -157,7 +157,6 @@ define(function(require, exports, module){
 			var lineLists = that._lineLists;
 			var myProdCode, myProdName, myProdScale, vProdCode = lineLists[index].vProdCode;
 			var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":_vParams.cProdCode,"commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":_vParams.customerId};
-			fnTip.loading();
 			//根据对方物料编码获取我方产品
 			$.ajax({
 				type:"POST",
