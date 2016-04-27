@@ -4,7 +4,7 @@
 .tips-success i{ background-position: 0 0;}
 .tips-error{ display: block; color: #f45252;}
 .tips-error i{ background-position: 0 -33px;}
-.item-total{ color: #0091cd; font-size: .8rem;}
+.item-total{ display: none; color: #0091cd; font-size: .8rem;}
 .item-total-dj{ display: none; color: #f45252; font-size: .8rem;}
 .item-link{ display: block; position: relative; color: #606060;}
 /* 付款信息 */

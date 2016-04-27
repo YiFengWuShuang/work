@@ -9,7 +9,7 @@ define(function(require, exports, module){
 			//
 			that.start();
 
-			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals));
+			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals)).show();
 		},
 		//基本信息
 		orderBaseInfo: function(){

@@ -51,7 +51,7 @@ define(function(require, exports, module){
 			that.dateFn();
 
 			that.hideTip();
-			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals));
+			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals)).show();
 			if(that.vStatus[0]=='5'){
 				$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn())).show();
 				btn.hide();
