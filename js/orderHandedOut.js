@@ -2,11 +2,12 @@ define(function(require, exports, module){
 	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var order = {
 		init: function(opts){
-			this._files = [];
+			var that = this;
+			that._files = [];
 			that.totals = 0;
 
 			//
-			this.start();
+			that.start();
 
 			$('.item-total').html('总金额：&yen;'+formatMoney(that.totals));
 		},
