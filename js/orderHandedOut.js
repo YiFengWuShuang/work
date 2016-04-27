@@ -149,6 +149,7 @@ define(function(require, exports, module){
 			var otherCost = document.getElementById('otherCost');
 			if(orderBaseInfo){
 				orderBaseInfo.innerHTML = that.orderBaseInfo();
+				fnTip.hideLoading();
 			}
 			that.fileList();
 			if(prodListsInfo){
