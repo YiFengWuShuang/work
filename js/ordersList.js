@@ -307,7 +307,7 @@ define(function(require, exports, module){
 
 			for(var i=0; i<lens; i++){
 				var _val = ($('#othersCost .dj').eq(i).find('em').html()=='' ? '' : $('#othersCost .dj').eq(i).find('em').attr('data-money'));
-				editHtmlCost+='<li><span>'+ othersCost[i].costName +'：</span><b>&yen; '+ formatMoney(othersCost[i].costAmount) +'</b><input type="text" class="original" id="dj_'+ i +'" value="'+ _val +'" /></li>';
+				editHtmlCost+='<li><span>'+ othersCost[i].costName +'：</span><b>&yen; '+ formatMoney(othersCost[i].costAmount) +'</b><input type="text" class="original" id="dj_'+ i +'" value="'+ _val +'" /><i class="btn-del"></i></li>';
 			}
 			editHtmlCost+=newResponseItem()
 			editHtmlCost+='</ul>'
