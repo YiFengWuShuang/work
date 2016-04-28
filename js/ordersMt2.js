@@ -188,12 +188,14 @@ define(function(require, exports, module){
 		submitFn: function(){
 			var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
 			poAnswerOrderInfo[0] = {"taxName":value}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":""';
+
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
                 url:config.serviceUrl,
-                data:{param:inParams},
+                data: {
+                	"param": '{"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_poAnswerToSalesOrder"}'
+                },
                 success:function(data){
                 	fnTip.success(2000);
                 	setTimeout(window.location.reload(),2000);

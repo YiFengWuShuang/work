@@ -6,18 +6,16 @@ define(function(require, exports, module){
 			var that = this;
 			
 			//缓存枚举数组
-			if(storage.getItem('B02_LogisticsType')==null){
+			if(!storage.getItem('B02_LogisticsType')){
 				requestFn("B02_LogisticsType",function(data){
 					if(data.errorCode=='0'){
-						that.logisticsType = data.dataSet.data.detail;
 						storage.setItem('B02_LogisticsType',JSON.stringify(data.dataSet.data.detail));
 					}
 				});				
 			}
-			if(storage.getItem('B02_InvoiceType')==null){
+			if(!storage.getItem('B02_InvoiceType')){
 				requestFn("B02_InvoiceType",function(data){
 					if(data.errorCode=='0'){
-						that.invoiceType = data.dataSet.data.detail;
 						storage.setItem('B02_InvoiceType',JSON.stringify(data.dataSet.data.detail));
 					}
 				});

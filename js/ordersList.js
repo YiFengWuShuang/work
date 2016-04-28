@@ -78,7 +78,7 @@ define(function(require, exports, module){
 							 +'		<li><span>内部单号：</span><b>'+ orderInfo.poInsideNo +'</b></li>'
 							 +'		<li><span>客户：</span>'+ orderInfo.companyName +'</li>'
 							 +'		<li><span>交易货币：</span>'+ orderInfo.currencyName +'</li>'
-							 +'		<li><span>交易税种：</span>'+ orderInfo.taxName + (orderInfo.isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo.taxRate +'</label>' : '')+'</li>'
+							 +'		<li><span>交易税种：</span>'+ orderInfo.taxName + (orderInfo.isContainTax===1 ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo.taxRate +'%</label>' : '')+'</li>'
 							 +'		<li><span>采购日期：</span>'+ orderInfo.poFormDate +'</li>'
 							 +'	</ul>'
 							 +'</div>'
@@ -176,7 +176,7 @@ define(function(require, exports, module){
 				if(responseLen!=0){
 					for(var i=0; i<responseLen; i++){
 						var ems = responseItem.eq(i).find('em');
-						html += '<li class="myResponse"><span>答交：</span><input type="text" class="int01" value="'+ ems.eq(0).html() +'"><input type="text" class="int02" value="'+ ems.eq(1).html() +'"><div class="timeBox">'+ ems.eq(2).html() +'</div><input type="hidden" value="'+ ems.eq(2).html() +'"></li>'
+						html += '<li class="myResponse"><span>答交：</span><input type="text" class="int01" value="'+ ems.eq(0).html() +'"><input type="text" class="int02" value="'+ ems.eq(1).html() +'"><div class="timeBox">'+ ems.eq(2).html() +'</div><input type="hidden" value="'+ ems.eq(2).html() +'"><i>×</i></li>'
 					}					
 				}
 				return html;
@@ -230,7 +230,7 @@ define(function(require, exports, module){
 			var that = this;
 			var isAdd = true;
 			var Qtys = that._lineLists[index].valuationQty;
-			var cost = '<li class="myResponse"><span>答交：</span><input type="text" class="int01" /><input type="text" class="int02" /><div class="timeBox"></div><input type="hidden" /></li>';
+			var cost = '<li class="myResponse"><span>答交：</span><input type="text" class="int01" /><input type="text" class="int02" /><div class="timeBox"></div><input type="hidden" /><i class="btn-del"></i></li>';
 
 			$body.on('click','.addResponse',function(){
 				var _this = $(this),

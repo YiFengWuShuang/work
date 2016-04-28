@@ -200,13 +200,14 @@ define(function(require, exports, module){
 				"logisticsType":value2,
 				"payWayName":value3
 			}
-			inParams = '"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":""';
 
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
                 url:config.serviceUrl,
-                data:{param:inParams},
+                data: {
+                	"param": '{"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_poAnswerToSalesOrder"}'
+                },
                 success:function(data){
                 	fnTip.success(2000);
                 	setTimeout(window.location.reload(),2000);
