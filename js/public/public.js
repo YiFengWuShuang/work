@@ -2,12 +2,10 @@ var $body = $(document.body);
 
 var config = {
     serviceUrl:"",
-    ossUrl:"",
     ossConfigUrl:""
 };
 config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 //config.serviceUrl='http://172.31.10.127:9090/services/invokeRestfulSrv/supplyCloudService';
-config.ossUrl = "http://172.31.10.168:19791/config/oss/api";
 config.ossConfigUrl = "http://172.31.10.168:19790/oss/config/api";
 
 //公共参数

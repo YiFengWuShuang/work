@@ -3,14 +3,23 @@ define(function(require, exports, module){
 	var lists = {
 		init: function(){
 			var that = this;
+			that.logisticsType = '';
+			that.paymentType = '';
+			that.invoiceType = '';
 			requestFn("B02_LogisticsType",function(data){
-				that.logisticsType = data.dataSet.data.detail
+				if(data.errorCode=='0'){
+					that.logisticsType = data.dataSet.data.detail
+				}
 			});
 			requestFn("",function(data){
-				that.paymentType = data.dataSet.data.detail
+				if(data.errorCode=='0'){
+					that.paymentType = data.dataSet.data.detail
+				}
 			});
 			requestFn("B02_InvoiceType",function(data){
-				that.invoiceType = data.dataSet.data.detail
+				if(data.errorCode=='0'){
+					that.invoiceType = data.dataSet.data.detail
+				}
 			});
 			that.start();
 			fnTip.hideLoading();
