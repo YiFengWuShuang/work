@@ -176,7 +176,7 @@ define(function(require, exports, module){
 				if(responseLen!=0){
 					for(var i=0; i<responseLen; i++){
 						var ems = responseItem.eq(i).find('em');
-						html += '<li class="myResponse"><span>答交：</span><input type="text" class="int01" value="'+ ems.eq(0).html() +'"><input type="text" class="int02" value="'+ ems.eq(1).html() +'"><div class="timeBox">'+ ems.eq(2).html() +'</div><input type="hidden" value="'+ ems.eq(2).html() +'"><i>×</i></li>'
+						html += '<li class="myResponse"><span>答交：</span><input type="text" class="int01" value="'+ ems.eq(0).html() +'"><input type="text" class="int02" value="'+ ems.eq(1).html() +'"><div class="timeBox">'+ ems.eq(2).html() +'</div><input type="hidden" value="'+ ems.eq(2).html() +'"><i class="btn-del"></i></li>'
 					}					
 				}
 				return html;
