@@ -33,6 +33,8 @@
 .responseBox li em.em03{ width: 28%;}
 .responseBox li p{ overflow: hidden;}
 .responseBox li i.btn-del{ display: inline-block; width: 32px; height: 32px; background: url(../img/public/del.png) no-repeat center; background-size:16px 16px; vertical-align: middle;}
+.responseBox li.addNewCost{ position: relative;}
+.responseBox li.addNewCost i.btn-del{ position: absolute; right: 0; top: 0}
 .responseBox .btnBox{ padding: .6rem 0; text-align: center;}
 .responseBox .btnBox a{ display: inline-block; border:1px solid #0091cd; padding: .15rem 1rem; line-height: 1.2rem; color: #0091cd;}
 .responseBox h3{ padding-left: 1rem;}
