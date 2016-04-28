@@ -42,7 +42,7 @@
 .responseCost li{ line-height: 1.4rem;}
 .responseCost li span,.responseBox h3 span{ min-width: 4rem;}
 .responseCost li input{ width: 4rem;}
-.responseCost li input:last-child{ float: right;}
+.responseCost li input:nth-child(2){ float: right;}
 .btns{ display: -webkit-box; display: box; width: 100%; margin: .5rem 0; text-align: center;}
 .btns a{ -webkit-box-flex: 1; box-flex: 1; display: block; padding: .3rem; margin: 0 .5rem; color: #fff;}
 .btns .btn-cancel{ background-color: #ccc;}
