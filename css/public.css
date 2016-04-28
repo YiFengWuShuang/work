@@ -88,7 +88,7 @@ button.btnBig{ border: 0 none;}
 .item-wrap i{ display: inline-block; width: .8rem; height: .8rem; margin-right: .25rem; vertical-align:-2px; background-repeat: no-repeat; background-size: .8rem .8rem;}
 .item-wrap .i-word{ background-image: url(../img/public/word.png);}
 .item-wrap .i-image{ background-image: url(../img/public/image.png);}
-.item-wrap li b.dj{ margin-left: 2rem; color: #f45252;}
+.item-wrap li b.dj{/* margin-left: 2rem;*/ color: #f45252;}
 .item-wrap .edit{ position: absolute; right: 0; top: 0; width: 1.8rem; height: 1.9rem; background: url(../img/public/edit.png) no-repeat center; background-size: .85rem .9rem;}
 b.dj{ color: #f45252;}
 input.int-search{ border: 1px solid #b0b0b0; padding-left: 1.4rem; padding-right: .5rem; background: url(../img/public/icon-search.png) no-repeat .25rem center; background-size: 20px 20px; border-radius: .3rem; height: 1.4rem;}

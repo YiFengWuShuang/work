@@ -5,6 +5,7 @@ define(function(require, exports, module){
 			var that = this;
 			that.purchaseUnit = [];
 			that.valuationUnit = [];
+			that.commonParam = JSON.stringify(commonParam());
 			that.start();
 			$('#btnSaveOrder a').on('click',function(){
 				that.submitFn();
@@ -17,7 +18,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"token":"","serviceId":"B03_findPoAnswerLineList","poAnswerId":"","secretNumber":"","venderId":"","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"} }'
+			        "param": '{"token":"","serviceId":"B03_findPoAnswerLineList","poAnswerId":"","secretNumber":"","venderId":"","commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};

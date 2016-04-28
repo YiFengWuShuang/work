@@ -3,7 +3,7 @@ define(function(require, exports, module){
 	var ordersMt = {
 		init: function(){
 			var that = this;
-			
+			that.commonParam = JSON.stringify(commonParam());
 			$('#savePayInfoList').before(that.setPayOrderInfo());
 			that.conditionSelect();
 			that.LogisticalSelect();
@@ -19,7 +19,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B03_getPurchaseOrderAnswerInfo","poAnswerId":"10000002","vendorId":"","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"}}'
+			        "param": '{"serviceId":"B03_getPurchaseOrderAnswerInfo","poAnswerId":"10000002","vendorId":"","token":"42bf012fb54b7eb3faaddcbc57e54cc0","secretNumber":"4ffcaa9492a61b7de667464b545deca5","commonParam":'+ that.commonParam +'}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -172,7 +172,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B01_findCompanyPayWayList","commonParam": {"sourcePage": "1","dataSource": "1","mobileModel": "1","mobileSysVersion": "1","interfaceVersion": "1" },"token": "5c04f696072504bf76d38d7ad1636d3f","secretNumber": "b317bc79e150f0472d2f256bd75a6537","companyId":"10000001","payWayType":"1"}'
+			        "param": '{"serviceId": "B01_findCompanyPayWayList","commonParam": '+ that.commonParam +',"token": "5c04f696072504bf76d38d7ad1636d3f","secretNumber": "b317bc79e150f0472d2f256bd75a6537","companyId":"10000001","payWayType":"1"}'
 			    },
                 success:function(data){
                 	data = data || {};

@@ -3,7 +3,7 @@ define(function(require, exports, module){
 	var ordersMt = {
 		init: function(){
 			var that = this;
-
+			that.commonParam = JSON.stringify(commonParam());
 			that.start();
 		},
 		orderBaseInfo: function(){
@@ -13,7 +13,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"'+ _vParams.poId +'", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"'+ _vParams.poId +'", "serviceId":"B03_getPurchaseOrderAnswerInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -110,7 +110,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"'+ _vParams.companyId +'","token":"'+ _vParams.poId +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":{"mobileModel":"1","sourcePage":"1","dataSource":"1","mobileSysVersion":"1","interfaceVersion":"1"},"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}'
+			        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"'+ _vParams.companyId +'","token":"'+ _vParams.poId +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":'+ that.commonParam +',"currencyId":"1","rateDate":'+ new Date().getTime(_formDate) +'}'
 			    },
                 success:function(data){
                 	data = data || {};

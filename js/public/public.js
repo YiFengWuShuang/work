@@ -1,22 +1,41 @@
 var $body = $(document.body);
 
 var config = {
-    serviceUrl:""
+    serviceUrl:"",
+    ossUrl:"",
+    ossConfigUrl:""
 };
 config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 //config.serviceUrl='http://172.31.10.127:9090/services/invokeRestfulSrv/supplyCloudService';
+config.ossUrl = "http://172.31.10.168:19791/config/oss/api";
+config.ossConfigUrl = "http://172.31.10.168:19790/oss/config/api";
 
 //公共参数
-// function commonParam() {
-//     return {
-//             dataSource:"1",
-//             interfaceVersion:"",
-//             mobileModel:"",
-//             mobileSysVersion:"",
-//             sourcePage:window.location.pathname,
-//             sourceSystem:"1"
-//         };
-// };
+function commonParam() {
+    return {
+        dataSource:dataSource(),
+        interfaceVersion:"",
+        mobileModel:"",
+        mobileSysVersion:"",
+        sourcePage:window.location.pathname,
+        sourceSystem:"1"
+    };
+};
+
+var PARAM = {
+    "content": {
+        "header": {
+            "key": "",
+            "module": "",
+            "operator": ""
+        },
+        "body": {
+            "method": "",
+            "commonParam": {},
+            "data": {}
+        }
+    }
+};
 
 // 操作提示
 var fnTip = {
@@ -102,4 +121,29 @@ function dataSource(){
 	if(/android/i.test(UA)) return 3;
 	if(!(/iphone|ipod|android.*mobile|windows.*phone|blackberry.*mobile/i.test(UA))) return 1;
 	if(/micromessenger/i.test(UA)) return 2;
+}
+
+//查询枚举信息
+function requestFn(mainKey,callback){
+	PARAM.content.body.commonParam = commonParam();
+    PARAM.content.body.method = 'enumInfoMgr';
+    PARAM.content.body.data = {"action":"query", "MainKey":mainKey};
+	$.ajax({
+		type:"POST",
+		dataType:"json",
+        async: false,
+        url:config.ossConfigUrl,
+        data:JSON.stringify({"params":PARAM}),
+        success:callback
+	})
+}
+
+function enumFn(list, key){
+	var ret = '';
+	list.forEach(function(val){
+        if(key == val.Key) {
+            ret = val.Value;
+        }
+    });
+    return ret;
 }

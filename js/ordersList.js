@@ -60,7 +60,7 @@ define(function(require, exports, module){
 		},
 		orderBaseInfo: function(){
 			var that = this, html = '';
-			var params = {"serviceId": "B03_getPurchaseOrderAnswerInfo", "poAnswerId": _vParams.poAnswerId, "vendorId": _vParams.vendorId, "commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token":_vParams.token, "secretNumber":_vParams.secretNumber}
+			var params = {"serviceId": "B03_getPurchaseOrderAnswerInfo", "poAnswerId": _vParams.poAnswerId, "vendorId": _vParams.vendorId, "commonParam": commonParam(),"token":_vParams.token, "secretNumber":_vParams.secretNumber}
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
@@ -112,7 +112,7 @@ define(function(require, exports, module){
 		},
 		prodAnswerInfo: function(){
 			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
-			var params = {"serviceId": "B03_findPoAnswerLineList","poAnswerId":_vParams.poAnswerId,"vendorId":_vParams.vendorId,"commonParam": {"dataSource": "1","interfaceVersion": "","mobileModel": "","mobileSysVersion": "","sourcePage": "","sourceSystem": "1"},"token":_vParams.token,"secretNumber":_vParams.secretNumber};
+			var params = {"serviceId": "B03_findPoAnswerLineList","poAnswerId":_vParams.poAnswerId,"vendorId":_vParams.vendorId,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};
 			$.ajax({
 				type:"POST",
 				//dataType: "json",
@@ -153,7 +153,7 @@ define(function(require, exports, module){
 			var that = this;
 			var lineLists = that._lineLists;
 			var myProdCode, myProdName, myProdScale, vProdCode = lineLists[index].vProdCode;
-			var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":_vParams.cProdCode,"commonParam":{"dataSource":"","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage" :"","sourceSystem":"1"},"customerId":_vParams.customerId};
+			var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":_vParams.cProdCode,"commonParam":commonParam(),"customerId":_vParams.customerId};
 			//根据对方物料编码获取我方产品
 			$.ajax({
 				type:"POST",
@@ -255,7 +255,7 @@ define(function(require, exports, module){
 		},
 		othersCost: function(){
 			var that=this, html='', subtotal=0, resubtotal=0, _responseCost=false;
-			var params = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":{ "dataSource":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "mobileSysVersion":"1" }};
+			var params = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()};
 			$.ajax({
 				type:"POST",
                 //dataType: "json",
@@ -287,7 +287,6 @@ define(function(require, exports, module){
                 	}
                 }
 			})
-console.log(html)
 			return html;
 		},
 		editResponseCost: function(item){
@@ -297,8 +296,8 @@ console.log(html)
 				var responseItem = $(item).find('.response').not('#changeCost'), responseLen = responseItem.length, html = '';
 				if(responseLen!=0){
 					for(var i=0; i<responseLen; i++){
-						var ems = responseItem.eq(i).find('em');
-						html += '<li class="addNewCost"><input type="text" value="'+ ems.eq(0).html() +'"><input type="text" value="'+ ems.eq(1).html() +'"></li>'
+						//var ems = responseItem.eq(i).find('em');
+						html += '<li class="addNewCost"><input type="text" value="'+ responseItem.eq(i).attr('data-costname') +'"><input type="text" value="'+ responseItem.eq(i).attr('data-vcostamount') +'"></li>'
 					}					
 				}
 				return html;
@@ -406,7 +405,7 @@ console.log(html)
 				if(type=='isProdAnswer'){
 					html+='<li class="response"><section><span>数量：</span><em>'+ vals[k][0] +'</em>'+lineLists[idx].purchaseUnitName+'/<em>'+ vals[k][1] +'</em>'+lineLists[idx].valuationUnitName+'</section><section><span>交期：</span><em>'+ vals[k][2] +'</em></section></li>'
 				}else{
-					html+='<li class="response" data-costName="'+ vals[k][0] +'" data-costAmount="" data-vCostAmount="'+ vals[k][1] +'"><span><em>'+ vals[k][0] +'</em>：</span>&yen; <em class="money" data-money="'+ vals[k][1] +'">'+ formatMoney(vals[k][1]) +'</em></li>'				
+					html+='<li class="response" data-costName="'+ vals[k][0] +'" data-costAmount="" data-vCostAmount="'+ vals[k][1] +'"><span><em>'+ vals[k][0] +'</em>：</span><b></b><b class="dj">&yen; <em class="money" data-money="'+ vals[k][1] +'">'+ formatMoney(vals[k][1]) +'</em></b></li>'				
 				}
 			}
 			that.itemshow(self,parent);
@@ -521,7 +520,7 @@ console.log(html)
 				type:"POST",
                 //dataType: "json",
                 url:config.serviceUrl,
-                data:'param='+JSON.stringify(inParams),
+                data:JSON.stringify(inParams),
                 success:function(data){
                 	data = data || {};
                 	if(data.success){

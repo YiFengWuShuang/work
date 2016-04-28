@@ -5,6 +5,7 @@ define(function(require, exports, module){
 			var that = this;
 			that._files = [];
 			that.totals = 0;
+			that.commonParam = JSON.stringify(commonParam());
 
 			that.start();
 			fnTip.hideLoading();
@@ -23,7 +24,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"'+ _vParams.token +'", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+			        "param": '{ "token":"'+ _vParams.token +'", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -74,7 +75,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
                 data: {
-                	"param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "sourceSystem":"1", "mobileModel":"1", "interfaceVersion":"1", "dataSource":"1" } }'
+                	"param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
                 },
                 success:function(data){
                 	data = data || {};
@@ -114,7 +115,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
 				data: {
-                	"param": '{"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","commonParam":{"dataSource":"1","interfaceVersion":"","mobileModel":"","mobileSysVersion":"","sourcePage":"","sourceSystem":"1"},"serviceId":"B03_findPoOtherCostList","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"}'
+                	"param": '{"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","commonParam":'+ that.commonParam +',"serviceId":"B03_findPoOtherCostList","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -175,7 +176,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
 				data: {
-                	"param": '{ "secretNumber":"'+ _vParams.secretNumber +'", "token":"'+ _vParams.token +'", "serviceId":"B03_submitPurchaseOrder", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":{ "mobileSysVersion":"", "sourcePage":"", "mobileModel":"", "sourceSystem":"", "interfaceVersion":"", "dataSource":"" } }'
+                	"param": '{ "secretNumber":"'+ _vParams.secretNumber +'", "token":"'+ _vParams.token +'", "serviceId":"B03_submitPurchaseOrder", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
                 },
                 success:function(data){
                 	data = data || {};

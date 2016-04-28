@@ -17,7 +17,6 @@
 .item-change li span:first-child{ width: auto;}
 
 /* 出货明细 */
-.shipmentDetails{}
 .shipmentDetails .item-wrap li span:first-child{ width: 4.5rem;}
 
 /* 答交弹层 */
@@ -45,6 +44,9 @@
 .btns a{ -webkit-box-flex: 1; box-flex: 1; display: block; padding: .3rem; margin: 0 .5rem; color: #fff;}
 .btns .btn-cancel{ background-color: #ccc;}
 .btns .btn-save{ background-color: #0179D1;}
+
+/* 其他费用 */
+#othersCost .item-wrap li b:nth-child(2){ display: inline-block; width: 4.5rem;}
 
 @media screen and (max-width: 320px){
 	.responseBox h3{ padding-left: 0;}

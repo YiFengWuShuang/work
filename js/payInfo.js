@@ -1,21 +1,30 @@
 define(function(require, exports, module){
-	require('../js/public/syscodeapi.js');
 	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var lists = {
 		init: function(){
-			this.start();
+			var that = this;
+			requestFn("B02_LogisticsType",function(data){
+				that.logisticsType = data.dataSet.data.detail
+			});
+			requestFn("",function(data){
+				that.paymentType = data.dataSet.data.detail
+			});
+			requestFn("B02_InvoiceType",function(data){
+				that.invoiceType = data.dataSet.data.detail
+			});
+			that.start();
 			fnTip.hideLoading();
 		},
 		//支付信息
 		payInfo: function(){
-			var that = this, html = '', _LogisticalName;
+			var that = this, html = '';
 			var params = { 
 				"token":_vParams.token, 
 				"serviceId":"B03_getPurchaseOrderInfo", 
 				"secretNumber":_vParams.secretNumber,
 				"poId":_vParams.poId,
 				"companyId":_vParams.companyId, 
-				"commonParam":{ "mobileSysVersion":"1", "sourcePage":"1", "mobileModel":"1", "sourceSystem":"1", "interfaceVersion":"1", "dataSource":"1" } 
+				"commonParam":commonParam()
 			};
 			$.ajax({
 				type:"POST",
@@ -26,13 +35,12 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
                 		var infos = data.purchaseOrderInfo;
-                		_LogisticalName = syscode.logisticsType[infos.logisticsType-1].split(',')[1];
                 		html += '<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-								+'<li><span>物流方式：</span><p>'+ _LogisticalName +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
+								+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 								+'<li><span>收货地址：</span><p>'+ infos.address +'；<br>电话：'+ infos.mobile +'</p></li>'
 								+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-								+'<li><span>支付方式：</span><p>'+ infos.paymentType +'</p></li>'
-								+'<li><span>发票类型：</span><p>'+ infos.invoiceType +'</p></li>'
+								+'<li><span>支付方式：</span><p>'+ enumFn(that.paymentType,infos.paymentType) +'</p></li>'
+								+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
 								+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
 								+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
                 	}else{
