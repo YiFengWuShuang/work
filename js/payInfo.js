@@ -11,7 +11,7 @@ define(function(require, exports, module){
 					that.logisticsType = data.dataSet.data.detail
 				}
 			});
-			requestFn("",function(data){
+			requestFn("B02_PaymentType",function(data){
 				if(data.errorCode=='0'){
 					that.paymentType = data.dataSet.data.detail
 				}
