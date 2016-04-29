@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-	<?php include("head.html"); ?>
+	<?php include("header.html"); ?>
 	<link rel="stylesheet" href="../css/popup.css">
 	<link rel="stylesheet" href="../css/zepto.mdater.css">
 	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list.css">
@@ -21,9 +21,7 @@
 			<a href="javascript:;" class="btnB">完成</a>
 		</div>
 	</div>
-	<script src="../js/lib/sea.js"></script>
-	<script src="../js/lib/zepto-min.js"></script>
-	<script src="../js/public/public.js"></script>
+	<?php include("footer.html"); ?>
 	<script>
 		$(function(){
 			fnTip.loading();
