@@ -29,7 +29,6 @@ define(function(require, exports, module){
 				}
 				that.editResponse(item,index);
 				that.addNewResponse(index);
-				
 			})
 
 			//限制答交数量
