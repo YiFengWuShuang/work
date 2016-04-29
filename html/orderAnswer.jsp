@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-	<?php include("header.html"); ?>
+	<%@ include file="header.html" %>
 	<link rel="stylesheet" href="../css/popup.css">
 	<link rel="stylesheet" href="../css/zepto.mdater.css">
 	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list.css">
@@ -21,7 +21,7 @@
 			<a href="javascript:;" class="btnB">完成</a>
 		</div>
 	</div>
-	<?php include("footer.html"); ?>
+	<%@ include file="footer.html" %>
 	<script>
 		$(function(){
 			fnTip.loading();
