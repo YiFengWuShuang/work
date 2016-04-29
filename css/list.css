@@ -21,7 +21,7 @@
 
 /* 答交弹层 */
 .responseBox{ position: relative; background-color: #fff; padding:.3rem .5rem; border-bottom: 1px solid #ddd; margin-bottom: .5rem; text-align: left; color: #606060;}
-.responseBox li{ padding: .15rem 0; overflow: hidden;}
+.responseBox li{ padding: .15rem 0;/* overflow: hidden;*/}
 .responseBox li.myProductInfo,.responseBox li.myProductInfo span{ color: #0091cd}
 .responseBox li.myResponse span{ color: #f45252;}
 .responseBox li span,.responseBox h3 span{ float: left; color: #888; text-align: right;}
@@ -32,7 +32,7 @@
 .responseBox li em{ display: inline-block; width: 18%; margin-right: .4rem; font-style: normal;}
 .responseBox li em.em03{ width: 28%;}
 .responseBox li p{ overflow: hidden;}
-.responseBox li i.btn-del{ display: inline-block; width: 32px; height: 32px; background: url(../img/public/del.png) no-repeat center; background-size:20px 20px; vertical-align: middle;}
+.responseBox li i.btn-del{ display: inline-block; width: 1.6rem; height: 1.6rem; background: url(../img/public/del.png) no-repeat center; background-size:1rem 1rem; vertical-align: middle;}
 
 .responseBox .btnBox{ padding: .6rem 0; text-align: center;}
 .responseBox .btnBox a{ display: inline-block; border:1px solid #0091cd; padding: .15rem 1rem; line-height: 1.2rem; color: #0091cd;}
@@ -40,10 +40,11 @@
 .responseCost{ padding: 0 1rem;}
 .responseCost li{ line-height: 1.4rem;}
 .responseCost li span,.responseBox h3 span{ min-width: 4rem;}
-.responseCost li input{ width: 4rem;}
+.responseCost li input{ width: 4rem; margin-right: 1rem;}
 .responseCost li input:last-child{ float: right;}
-.responseBox li.addNewCost{ position: relative;}
-.responseBox li.addNewCost i.btn-del{ position: absolute; right: 0; top: 0}
+.responseBox li.myResponse,.responseBox li.addNewCost{ position: relative;}
+.responseBox li i.btn-del{ position: absolute; right: -.25rem; top: 0}
+.responseBox li.addNewCost i.btn-del{ right: -.5rem;}
 .responseCost li.addNewCost input:nth-child(2){ float: right;}
 .btns{ display: -webkit-box; display: box; width: 100%; margin: .5rem 0; text-align: center;}
 .btns a{ -webkit-box-flex: 1; box-flex: 1; display: block; padding: .3rem; margin: 0 .5rem; color: #fff;}
@@ -54,6 +55,7 @@
 #othersCost .item-wrap li b:nth-child(2){ display: inline-block; width: 4.5rem;}
 
 @media screen and (max-width: 320px){
+	.responseBox li .timeBox{ margin-left: 1rem;}
 	.responseBox h3{ padding-left: 0;}
 	.responseCost{ padding: 0 .5rem 0 0;}
 }

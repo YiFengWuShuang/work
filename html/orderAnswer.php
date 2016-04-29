@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" id="viewport">
-	<meta content="black" name="apple-mobile-web-app-status-bar-style" />
-	<meta content="yes" name="apple-mobile-web-app-capable" />
-	<meta content="telephone=no" name="format-detection" />
-	 <!-- uc强制竖屏 -->
-	<meta name="screen-orientation" content="portrait">
-	<!-- QQ强制竖屏 -->
-	<meta name="x5-orientation" content="portrait">
-	<link rel="stylesheet" href="../css/public.css">
+	<?php include("head.html"); ?>
 	<link rel="stylesheet" href="../css/popup.css">
 	<link rel="stylesheet" href="../css/zepto.mdater.css">
 	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list.css">

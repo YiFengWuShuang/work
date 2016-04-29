@@ -1,5 +1,6 @@
 define(function(require, exports, module){
 	require('../js/lib/zepto.mdater.js');
+	require('../js/lib/popup.js');
 	var formTip = '<div id="formTip" class="formTip"></div>';
 	var $itemTips = $('.item-tips');
 	var btn = $('.btn-wrap a');
@@ -56,6 +57,8 @@ define(function(require, exports, module){
 				$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn())).show();
 				btn.hide();
 			}
+
+			that.delResponse();
 		},
 		orderBaseInfo: function(){
 			var that = this, html = '';
@@ -296,7 +299,7 @@ define(function(require, exports, module){
 				if(responseLen!=0){
 					for(var i=0; i<responseLen; i++){
 						//var ems = responseItem.eq(i).find('em');
-						html += '<li class="addNewCost"><input type="text" value="'+ responseItem.eq(i).attr('data-costname') +'"><input type="text" value="'+ responseItem.eq(i).attr('data-vcostamount') +'"></li>'
+						html += '<li class="addNewCost"><input type="text" value="'+ responseItem.eq(i).attr('data-costname') +'"><input type="text" value="'+ responseItem.eq(i).attr('data-vcostamount') +'"><i class="btn-del"></i></li>'
 					}					
 				}
 				return html;
@@ -435,6 +438,26 @@ define(function(require, exports, module){
 			}
 			$('.item-total-dj').html('答交总金额：&yen;'+formatMoney(that.reCostTotalFn())).show();
 		},
+		popup: function(type, title, content, closeCallBack, okCallBack){
+			new Popup({
+				type:type,
+				title:title,
+				content:content,
+				ok:'确定',
+				cancel:'取消',
+				closeCallBack:closeCallBack,
+				okCallBack:okCallBack
+			});
+		},
+		delResponse: function(){
+			var that = this, content = '<p>您确定要删除此条答交？</p>';
+			$('.contarin').on('click','.btn-del',function(){
+				var _this = $(this), parent = _this.parent('li');
+				that.popup('confirm', '', content, '', function(){
+					parent.remove();
+				})
+			})
+		},
 		dateFn: function(){
 			$('.timeBox').mdater({
 				minDate : new Date()
@@ -524,7 +547,7 @@ define(function(require, exports, module){
                 	data = data || {};
                 	if(data.success){
 	                	fnTip.success(2000);
-	                	setTimeout(window.location.reload(),2000);                		
+	                	// setTimeout(window.location.reload(),2000);
                 	}else{
                 		fnTip.error(2000);
                 	}

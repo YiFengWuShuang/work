@@ -49,7 +49,7 @@
   100%{-webkit-transform:translateY(-50%);-ms-transform:translateY(-50%);transform:translateY(-50%);opacity: 1}
 }
 .over_load{width:100%;height:100%;top:0;margin:0;padding:0; background-color:#000; opacity:0.7; position:fixed;z-index:9;}
-.center{position: fixed;width: 96%;height: auto;margin: auto;left: 2%;top:50%;-webkit-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.6);border-radius:.2rem;background-color: #fff;z-index:9998;}
+.center{position: fixed;width: 90%;height: auto;margin: auto;left: 5%;top:50%;-webkit-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.6);border-radius:.2rem;background-color: #fff;z-index:9998;}
 .center.popup_in{animation:slideInUp ease-out .3s .1s both;-webkit-animation:slideInUp ease-out .3s .1s both;}
 .center.popup_out{-webkit-animation:bounceOut ease .3s 0s both;}
 .popup_top{position: absolute;top:0;left:0;display: block;width: 100%;height: auto;padding: 10px 0 10px 0; text-align:center;background: #fff;z-index:99991;-webkit-box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.6);}
@@ -65,11 +65,11 @@
 .popup_load {position: fixed;z-index:0;width: 3rem;height: 3rem;margin: auto;left: 50%;top:50%;margin-left: -30px;margin-top:-30px;border-radius: 5px;background-color: rgba(0,0,0,.7);animation:bounceIn ease .3s 0s forwards;-webkit-animation:bounceIn ease .3s 0s both;z-index:999999;font-size:.7rem;color:#fff;line-height: 3rem;text-align: center;}
 .popup_load.out{animation:bounceOut ease .3s 0s forwards;-webkit-animation:bounceOut ease .3s 0s both;}
 .popup-title{display:inline-block;text-align: left;vertical-align: middle;padding:.85rem .5rem;vertical-align: top;font-size: .8rem;}
-.popup-content{padding: .75rem 0 .75rem .5rem;text-align: center;}
+.popup-content{padding: .75rem .5rem;text-align: center;}
 .popup-content img{position:relative;margin:auto;display: block;width: 3.5rem;height: 4.3rem;}
 .popup-content p{}
 #popup_btn_container {text-align: center;display: -webkit-box;display: box;width:100%;height:auto;}
-#popup_btn_container > a {-webkit-box-flex:1;box-flex:1;padding: .75rem;display: block;font-size:.8rem;color: #606060;border:1px solid rgba(0, 0, 0, 0.2);border-left: none;border-bottom: none;}
+#popup_btn_container > a {-webkit-box-flex:1;box-flex:1;padding: .5rem;display: block;font-size:.8rem;color: #606060;border:1px solid rgba(0, 0, 0, 0.2);border-left: none;border-bottom: none;}
 #popup_btn_container > a:last-child{border-right: 0 none;}
 .popup_toast{max-width:80%;margin:auto;padding:5px;font-size:14px;position:absolute;color:#fff;-webkit-animation:bounceIn 0.3s ease both;z-index:9999999;}
 .popup_toast.common{ background:#f55d5e;}
