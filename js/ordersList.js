@@ -8,15 +8,15 @@ define(function(require, exports, module){
 	var lists = {
 		init: function(){
 			var that = this;
-
 			that._files = [];
 			that._lineLists = [];
 			that._othersCost = [];
 			that.vStatus = [];
 			that.totals = 0;
-			// that.vTotals = 0;
+			that.load = false;
 
 			that.start();
+			$('.contarin').show();
 			fnTip.hideLoading();
 			//答交
 			$('.contarin').on('click','span.edit',function(){
@@ -65,7 +65,6 @@ define(function(require, exports, module){
 			var params = {"serviceId": "B03_getPurchaseOrderAnswerInfo", "poAnswerId": _vParams.poAnswerId, "vendorId": _vParams.vendorId, "commonParam": commonParam(),"token":_vParams.token, "secretNumber":_vParams.secretNumber}
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
                 async: false,
                 url:config.serviceUrl,
                 data:'param='+JSON.stringify(params),
@@ -85,7 +84,6 @@ define(function(require, exports, module){
 							 +'	</ul>'
 							 +'</div>'
 						that.vStatus.push(orderInfo.vStatus);
-
                 	}
                 }
 			})
@@ -94,6 +92,7 @@ define(function(require, exports, module){
 		//附件
 		fileList: function(){
 			var that = this, reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
+			if(!that.load)return;
 			var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"fileSource":"1","searchType":"1","id":_vParams.id,"docType":_vParams.docType}
 			$.ajax({
 				type:"POST",
@@ -105,7 +104,9 @@ define(function(require, exports, module){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
                 			//that._files.push(file[i]);
-                			$('files').eq(i).html('<a href="'+ file[i].fileUrl +'"><i class=i-'+ (reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>');
+                			if(file[i].fileName!=''){
+                				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
+                			}
                 		}
                 	}
                 }
@@ -129,7 +130,7 @@ define(function(require, exports, module){
                 		for(var i=0, len=lineList.length; i<len; i++){
 	                		html+='<div class="item-wrap" data-index="'+ i +'">'
 								+'	<ul>'
-								+'		<li><span>物料编码：</span><b>'+ lineList[i].vProdCode +'</b></li>'
+								+'		<li class="vProdCode" data-vProdCode="'+ lineList[i].vProdCode +'" data-prodId="'+ lineList[i].prodId +'"><span>物料编码：</span><b>'+ lineList[i].vProdCode +'</b></li>'
 								+'		<li><span>物料详细：</span><p>'+ lineList[i].prodName +' '+ lineList[i].prodScale +'</p></li>'
 								+'		<li><section><span>数量：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ lineList[i].expectedDelivery +'</em></section></li>'
 							for(var j=0; j<lineList[i].poSubLineList.length; j++){
@@ -137,7 +138,7 @@ define(function(require, exports, module){
 							}
 							html+='		<li class="price"><span>单价：</span>&yen; '+ formatMoney(lineList[i].vTaxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
 								+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-								+'		<li class="files"><span>附件：</span>--</li>'
+								+'		<li class="files"><span>附件：</span></li>'
 								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
@@ -145,16 +146,20 @@ define(function(require, exports, module){
 								+'</div>'
 							that.totals+=parseInt(lineList[i].taxLineTotal,10);
                 		}
+                		that.load = true;
                 	}
                 }
 			})
 			return html;
 		},
 		editResponse: function(item,index){
-			var that = this;
-			var lineLists = that._lineLists;
-			var myProdCode, myProdName, myProdScale, vProdCode = lineLists[index].vProdCode;
-			var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":_vParams.cProdCode,"commonParam":commonParam(),"customerId":_vParams.customerId};
+			var that = this,
+				lineLists = that._lineLists,
+				myProdCode, myProdName, myProdScale,
+				vProdCode = lineLists[index].vProdCode,
+				cProdCode = $('.vProdCode').eq(index).attr('data-vProdCode'),
+				customerId = $('.vProdCode').eq(index).attr('data-prodId');
+			var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":cProdCode,"commonParam":commonParam(),"customerId":customerId};
 			//根据对方物料编码获取我方产品
 			$.ajax({
 				type:"POST",
@@ -256,6 +261,7 @@ define(function(require, exports, module){
 		},
 		othersCost: function(){
 			var that=this, html='', subtotal=0, resubtotal=0, _responseCost=false;
+			if(!that.load)return;
 			var params = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()};
 			$.ajax({
 				type:"POST",
@@ -297,7 +303,6 @@ define(function(require, exports, module){
 				var responseItem = $(item).find('.response').not('#changeCost'), responseLen = responseItem.length, html = '';
 				if(responseLen!=0){
 					for(var i=0; i<responseLen; i++){
-						//var ems = responseItem.eq(i).find('em');
 						html += '<li class="addNewCost"><input type="text" value="'+ responseItem.eq(i).attr('data-costname') +'"><input type="text" value="'+ responseItem.eq(i).attr('data-vcostamount') +'"><i class="btn-del"></i></li>'
 					}					
 				}

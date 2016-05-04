@@ -7,6 +7,9 @@ define(function(require, exports, module){
 		init: function(){
 			var that = this;
 			that.commonParam = JSON.stringify(commonParam());
+			that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
+			that.load = false;
+
 			//查询枚举值
 			requestFn("B02_LogisticsType",function(data){
 				if(data.errorCode=='0'){
@@ -21,10 +24,15 @@ define(function(require, exports, module){
 
 
 			$('#savePayInfoList').before(that.setPayOrderInfo());
-			that.conditionSelect();
-			that.LogisticalSelect();
-			that.address();
-			that.payWaySelect();
+			fnTip.hideLoading();
+			$('.contarin').show();
+			if(that.load){
+				that.conditionSelect();
+				that.LogisticalSelect();
+				that.address();
+				that.payWaySelect();				
+			}
+
 			$('#savePayInfoList a').on('click',function(){
 				that.submitFn();
 			})
@@ -36,7 +44,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B03_getPurchaseOrderAnswerInfo","poAnswerId":"'+ _vParams.poAnswerId +'","vendorId":"'+ _vParams.vendorId +'","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":'+ that.commonParam +'}'
+			        "param": '{"serviceId":"B03_getPurchaseOrderAnswerInfo","poAnswerId":"'+ _vParams.poAnswerId +'","vendorId":"'+ _vParams.vendorId +'",'+ that.tokens +',"commonParam":'+ that.commonParam +'}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -69,7 +77,7 @@ define(function(require, exports, module){
 							+'				<div id="logisticsType" class="select3-input"></div>'
 							+'			</div>'
 							+'		</section>'
-							+'		<section id="address" class="clearfix" data-addressId="'+ infos.addressId +'">'
+							+'		<section id="address" class="clearfix" data-companyId="'+ infos.companyId +'" data-addressId="'+ infos.addressId +'">'
 							+'			<span class="c-label">收货地址：</span>'
 							+'			<div class="c-cont">'
 							+'				<p class="c-txt">'+ infos.address +'；<br>电话：'+ infos.mobile +'</p>'
@@ -125,6 +133,7 @@ define(function(require, exports, module){
 							+'		</section>'
 							+'	</div>'
 							+'</div>'
+						that.load = true;
                 	}
                 }
 			})
@@ -147,10 +156,9 @@ define(function(require, exports, module){
 			//根据客户交易条件获取本方交易条件
 			$.ajax({
 				type:"POST",
-                async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"companyId":"'+ _vParams.companyId +'","serviceId":"B01_getConditionByCustomerCondition","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":'+ that.commonParam +',"customerId":"'+ _vParams.customerId +'","cConditionId":"'+cConditionId+'"}'
+			        "param": '{"companyId":"'+ _vParams.companyId +'","serviceId":"B01_getConditionByCustomerCondition",'+ that.tokens +',"commonParam":'+ that.commonParam +',"customerId":"'+ _vParams.customerId +'","cConditionId":"'+cConditionId+'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -165,10 +173,9 @@ define(function(require, exports, module){
             //交易条件
 			$.ajax({
 				type:"POST",
-                async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_findCompanyConditionList","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'","companyId":"'+ _vParams.companyId +'","conditionType":"2"}'//交易条件类型（1-采购；2-销售）
+			        "param": '{"serviceId":"B01_findCompanyConditionList",'+ that.tokens +',"companyId":"'+ _vParams.companyId +'","conditionType":"2"}'//交易条件类型（1-采购；2-销售）
 			    },
                 success:function(data){
                 	data = data || {};
@@ -195,13 +202,14 @@ define(function(require, exports, module){
 
 		//收/发货地址
 		address: function(){
-			var that = this, $address = $('#address'), id = $address.attr('data-addressId');
+			var that = this, $address = $('#address'), customerId = $address.attr('data-companyId'), id = $address.attr('data-addressId');
+
 			//根据客户址码信息获取本方地址信息
 			$.ajax({
 				type:"POST",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"type":"1","companyId":"'+ _vParams.companyId +'","customerId":"'+ _vParams.customerId +'","cAddressId":"'+ id +'","secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_getAddrInfoByCustomerAddrId"}'
+			        "param": '{"type":"1","companyId":"'+ _vParams.companyId +'","customerId":"'+ customerId +'","cAddressId":"'+ id +'",'+ that.tokens +',"serviceId":"B01_getAddrInfoByCustomerAddrId"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -214,13 +222,13 @@ define(function(require, exports, module){
 		},
 		payWaySelect: function(){
 			var that = this, options = [], currValue = '', cPayWayId = $('#payWayName').attr('data-payWayId');
+
 			//根据客户付款方式获取本方收款方式
 			$.ajax({
 				type:"POST",
-                async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"token":"'+ _vParams.token +'","serviceId":"B01_getPayWayByCustomerPayWay","secretNumber":"'+ _vParams.secretNumber +'","commonParam":'+ that.commonParam +',"companyId":"'+ _vParams.companyId +'","customerId":"'+ _vParams.customerId +'","cPayWayId":"'+cPayWayId+'"}'
+			        "param": '{'+ that.tokens +',"serviceId":"B01_getPayWayByCustomerPayWay","commonParam":'+ that.commonParam +',"companyId":"'+ _vParams.companyId +'","customerId":"'+ _vParams.customerId +'","cPayWayId":"'+cPayWayId+'"}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -232,10 +240,9 @@ define(function(require, exports, module){
             //本方所有收款条件
 			$.ajax({
 				type:"POST",
-                async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B01_findCompanyPayWayList","commonParam": '+ that.commonParam +',"token": "'+ _vParams.token +'","secretNumber": "'+ _vParams.secretNumber +'","companyId":"'+ _vParams.companyId +'","payWayType":"1"}'//类型(1-收款，2-付款)
+			        "param": '{"serviceId": "B01_findCompanyPayWayList","commonParam": '+ that.commonParam +','+ that.tokens +',"companyId":"'+ _vParams.companyId +'","payWayType":"1"}'//类型(1-收款，2-付款)
 			    },
                 success:function(data){
                 	data = data || {};

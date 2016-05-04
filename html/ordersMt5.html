@@ -16,7 +16,7 @@
 	<title>销售订单维护</title>
 </head>
 <body>
-	<div class="contarin">
+	<div class="contarin" style="display:none">
 		<div id="savePayInfoList" class="btn-wrap">
 			<a href="javascript:;" class="btnB">完成</a>			
 		</div>
@@ -28,6 +28,7 @@
 	
 	<script>
 		$(function(){
+			fnTip.loading();
 			seajs.use('../js/ordersMt5.js',function(ordersMt){
 				ordersMt.init();
 			});

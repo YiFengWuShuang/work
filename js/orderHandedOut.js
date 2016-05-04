@@ -3,11 +3,13 @@ define(function(require, exports, module){
 	var order = {
 		init: function(opts){
 			var that = this;
-			that._files = [];
-			that.totals = 0;
 			that.commonParam = JSON.stringify(commonParam());
+			that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
+			that.totals = 0;
+			that.load = false;
 
 			that.start();
+			$('.contarin').show();
 			fnTip.hideLoading();
 
 			$('.item-total').html('总金额：&yen; '+formatMoney(that.totals)).show();
@@ -24,7 +26,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"'+ _vParams.token +'", "serviceId":"B03_getPurchaseOrderInfo", "secretNumber":"'+ _vParams.secretNumber +'", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
+			        "param": '{ '+ that.tokens +', "serviceId":"B03_getPurchaseOrderInfo", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -48,20 +50,21 @@ define(function(require, exports, module){
 		},
 		//附件
 		fileList: function(){
-			var that = this;
+			var that = this, reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			$.ajax({
 				type:"POST",
-                async: false,
                 url:config.serviceUrl,
                 data: {
-                	"param": '{"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'","serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":'+ _vParams.docType +'}'
+                	"param": '{'+ that.tokens +',"serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":'+ _vParams.docType +'}'
                 },
                 success:function(data){
                 	data = data || {};
                 	if(data.success){
                 		var file = data.fileList, len=file.length;
                 		for(var i=0; i<len; i++){
-                			that._files.push(file[i]);
+                			if(file[i].fileName!=''){
+                				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
+                			}
                 		}
                 	}
                 }
@@ -75,7 +78,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
                 data: {
-                	"param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
+                	"param": '{ '+ that.tokens +', "serviceId":"B03_findPoLineList", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
                 },
                 success:function(data){
                 	data = data || {};
@@ -93,13 +96,14 @@ define(function(require, exports, module){
 							}
 							html+='		<li><span class="price">单价：</span>&yen; '+ formatMoney(prodInfos[i].price) +'/个</li>'
 								+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
-								+		((that._files.length>0) ? '<li><span>附件：</span><a href="'+ that._files[i].fileUrl +'"><i class="i-word"></i>'+ that._files[i].fileName +'</a></li>' : '')
+								+'		<li class="files"><span>附件：</span></li>'
 								+'		<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
 								+		((prodInfos[i].vTaxLineTotal!='')?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(poSubLineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
 								+'</div>'
 							that.totals+=parseInt(prodInfos[i].taxLineTotal,10);
                 		}
+                		that.load = true;
                 	}else{
                 		document.getElementById('prodListsInfo').innerHTML = '<p style="text-align:center;">'+ data.errorMsg +'</p>'
                 	}
@@ -109,13 +113,13 @@ define(function(require, exports, module){
 		},
 		//其他费用
 		otherCostList: function(){
-			var that = this, html = '', subtotal = 0, resubtotal=0, _responseCost=false;;
+			var that = this, html = '', subtotal = 0, resubtotal=0, _responseCost=false;
 			$.ajax({
 				type:"POST",
                 async: false,
                 url:config.serviceUrl,
 				data: {
-                	"param": '{"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","commonParam":'+ that.commonParam +',"serviceId":"B03_findPoOtherCostList","token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"}'
+                	"param": '{"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","commonParam":'+ that.commonParam +',"serviceId":"B03_findPoOtherCostList",'+ that.tokens +'}'
                 },
                 success:function(data){
                 	data = data || {};
@@ -158,12 +162,14 @@ define(function(require, exports, module){
 			if(orderBaseInfo){
 				orderBaseInfo.innerHTML = that.orderBaseInfo();
 			}
-			that.fileList();
 			if(prodListsInfo){
 				prodListsInfo.innerHTML = that.prodsInfo();
 			}
-			if(otherCost){
+			if(otherCost&&that.load){
 				otherCost.innerHTML = that.otherCostList();
+			}
+			if(that.load){
+				that.fileList();
 			}
 
 			$('.btn-wrap a').on('click',function(){
@@ -176,7 +182,7 @@ define(function(require, exports, module){
                 async: false,
                 url:config.serviceUrl,
 				data: {
-                	"param": '{ "secretNumber":"'+ _vParams.secretNumber +'", "token":"'+ _vParams.token +'", "serviceId":"B03_submitPurchaseOrder", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
+                	"param": '{ '+ that.tokens +', "serviceId":"B03_submitPurchaseOrder", "poId":"'+ _vParams.poId +'", "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
                 },
                 success:function(data){
                 	data = data || {};

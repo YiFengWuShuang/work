@@ -7,7 +7,10 @@ define(function(require, exports, module){
 			that.purchaseUnit = [];
 			that.valuationUnit = [];
 			that.commonParam = JSON.stringify(commonParam());
+			that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
+			that.load = false;
 			that.start();
+			fnTip.hideLoading();
 			$('#btnSaveOrder a').on('click',function(){
 				that.submitFn();
 			})
@@ -16,14 +19,14 @@ define(function(require, exports, module){
 			var that = this, html = '';
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"token":"'+ _vParams.token +'","serviceId":"B03_findPoAnswerLineList","poAnswerId":"'+ _vParams.poAnswerId +'","secretNumber":"'+ _vParams.secretNumber +'","venderId":"'+ _vParams.venderId +'","commonParam":'+ that.commonParam +' }'
+			        "param": '{'+ that.tokens +',"serviceId":"B03_findPoAnswerLineList","poAnswerId":"'+ _vParams.poAnswerId +'","venderId":"'+ _vParams.venderId +'","commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var orderInfo = data.poLineList;
                 		for(var i=0, len = orderInfo.length; i<len; i++){
                 			var orderInfoItem = orderInfo[i];
@@ -80,6 +83,7 @@ define(function(require, exports, module){
 							}
 							html+='<span class="edit"></span></div></div>'
                 		}
+                		that.load = true;
                 	}
                 }
 			})
@@ -89,23 +93,20 @@ define(function(require, exports, module){
 			var that = this, prodUnitNames = [], basicUnitNames = [];
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
+                async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":'+ _vParams.companyId +',"prodId":"'+ _vParams.prodId +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":'+ that.commonParam +'}'
+			        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":'+ _vParams.companyId +',"prodId":"'+ _vParams.prodId +'",'+ that.tokens +',"commonParam":'+ that.commonParam +'}'
 			    },
                 success:function(data){
                 	data = data || {};
-                	if(data){
+                	if(data.success){
                 		var prodUnitLists = data.prodUnitList;
                 		for(var i=0, len=prodUnitLists.length; i<len; i++){
                 			prodUnitNames.push(prodUnitLists[i].prodUnitName);
                 			basicUnitNames.push(prodUnitLists[i].basicUnitName);
                 		}
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			var select3Len = $('.m-select').length;
@@ -117,7 +118,9 @@ define(function(require, exports, module){
 		start: function(){
 			var that = this;
 			$('#btnSaveOrder').before(that.orderInfos());
-			that.units();
+			if(that.load){
+				that.units();
+			}
 			that.editProdCode();
 			that.hideTip();
 		},
@@ -146,11 +149,11 @@ define(function(require, exports, module){
 	                //dataType: "json",
 	                url:config.serviceUrl,
 	                data: {
-				        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"'+ _vParams.companyId +'","vendorId":"'+ _vParams.vendorId +'","prodCode":'+ code +',"commonParam":'+ that.commonParam +',"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'"}'
+				        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"'+ _vParams.companyId +'","vendorId":"'+ _vParams.vendorId +'","prodCode":'+ code +',"commonParam":'+ that.commonParam +','+ that.tokens +'}'
 				    },
 	                success:function(data){
 	                	data = data || {};
-	                	if(data){
+	                	if(data.success){
 	                		var prodInfos = data.prodInfo;
 	                		if(code==prodInfos.prodCode){
 	                			_this.parents('.item-wrap').find('.wfItem').html(prodInfos.prodCode + '<p>'+ prodInfos.prodName + ' ' + prodInfos.prodScale +'</p>');

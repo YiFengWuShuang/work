@@ -85,6 +85,7 @@ button.btnBig{ border: 0 none;}
 .item-wrap li.response{ padding: .1rem 0;}
 .item-wrap li.response,.item-wrap li.response span,.responseBox li.response,.responseBox li.response span{ color: #f45252;}
 .item-wrap li.response section:first-child span{ color: transparent;}
+.item-wrap li.files{ display: none;}
 .item-wrap i{ display: inline-block; width: .8rem; height: .8rem; margin-right: .25rem; vertical-align:-2px; background-repeat: no-repeat; background-size: .8rem .8rem;}
 .item-wrap .i-word{ background-image: url(../img/public/word.png);}
 .item-wrap .i-image{ background-image: url(../img/public/image.png);}

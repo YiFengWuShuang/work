@@ -3,6 +3,7 @@ define(function(require, exports, module){
 	var ordersMt = {
 		init: function(){
 			this.commonParam = JSON.stringify(commonParam());
+			this.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
 			this.start();
 		},
 		otherCostList: function(){
@@ -12,7 +13,7 @@ define(function(require, exports, module){
                 async:false,
                 url:config.serviceUrl,
                 data: {
-			        "param": '{ "token":"'+ _vParams.token +'", "secretNumber":"'+ _vParams.secretNumber +'", "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":'+ that.commonParam +' }'
+			        "param": '{ '+ that.tokens +', "serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":"'+ _vParams.poAnswerId +'", "vendorId":"'+ _vParams.vendorId +'", "commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};
