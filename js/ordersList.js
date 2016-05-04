@@ -93,12 +93,10 @@ define(function(require, exports, module){
 		},
 		//附件
 		fileList: function(){
-			var that = this;
+			var that = this, reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 			var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"fileSource":"1","searchType":"1","id":_vParams.id,"docType":_vParams.docType}
 			$.ajax({
 				type:"POST",
-                //dataType: "json",
-                async: false,
                 url:config.serviceUrl,
                 data:'param='+JSON.stringify(params),
                 success:function(data){
@@ -106,14 +104,15 @@ define(function(require, exports, module){
                 	if(data.success){
                 		var file = data.fileList;
                 		for(var i=0, len=file.length; i<len; i++){
-                			that._files.push(file[i]);
+                			//that._files.push(file[i]);
+                			$('files').eq(i).html('<a href="'+ file[i].fileUrl +'"><i class=i-'+ (reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>');
                 		}
                 	}
                 }
 			})
 		},
 		prodAnswerInfo: function(){
-			var that = this, html = '', reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
+			var that = this, html = '';
 			var params = {"serviceId": "B03_findPoAnswerLineList","poAnswerId":_vParams.poAnswerId,"vendorId":_vParams.vendorId,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};
 			$.ajax({
 				type:"POST",
@@ -138,7 +137,7 @@ define(function(require, exports, module){
 							}
 							html+='		<li class="price"><span>单价：</span>&yen; '+ formatMoney(lineList[i].vTaxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
 								+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-								+'		<li><span>附件：</span><a href="#"><i class=i-'+ (reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></li>'
+								+'		<li class="files"><span>附件：</span>--</li>'
 								+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].poSubLineList.length>0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 								+		((lineList[i].poSubLineList.length>0)?'<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</li>':'')
 								+'	</ul>'
@@ -367,11 +366,6 @@ define(function(require, exports, module){
 			if(parents.is('#prodAnswerInfo')){
 
 				var myResponse = self.parents('.responseBox').find('li.myResponse'), len = myResponse.length;
-
-				if(len==0){
-					that.itemshow(self,parent);
-					return false;
-				}
 				that.createResponse($('.myResponse'),3,self,parent,'isProdAnswer');
 
 			}else if(parents.is('#othersCost')){
@@ -403,6 +397,7 @@ define(function(require, exports, module){
 					vals[i][j] = thisVal;
 				}
 			}
+			//拼接答交内容
 			for(var k=0; k<lens; k++){
 				if(type=='isProdAnswer'){
 					html+='<li class="response"><section><span>数量：</span><em>'+ vals[k][0] +'</em>'+lineLists[idx].purchaseUnitName+'/<em>'+ vals[k][1] +'</em>'+lineLists[idx].valuationUnitName+'</section><section><span>交期：</span><em>'+ vals[k][2] +'</em></section></li>'
@@ -416,8 +411,17 @@ define(function(require, exports, module){
 				parent.find('.item-wrap').eq(idx).find('.price').before(html);
 				var values = that.reQtys(self.parents('.responseBox'),idx);
 				if(values!=''||values!=undefined){
-					parent.find('.item-wrap').eq(idx).find('.subtotal').attr('data-vtotal',values*lineLists[idx].vTaxPrice);
-					parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney((values*lineLists[idx].vTaxPrice)) +'</li>')
+					var _subtotal = parent.find('.item-wrap').eq(idx).find('.subtotal'), _subTotalPrice = _subtotal.attr('data-total');
+					//重新计算子答交小计
+					if(values==0){
+						_subtotal.attr('data-vtotal',_subTotalPrice);
+					}else{
+						_subtotal.attr('data-vtotal',values*lineLists[idx].vTaxPrice);
+					}
+					//重新计算子答交金额
+					if(html!==''){
+						parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal"><span>答交金额：</span>&yen; '+ formatMoney((values*lineLists[idx].vTaxPrice)) +'</li>')
+					}
 				}
 			}else{
 				$('#othersCostSubtotal').before(html);
@@ -449,6 +453,7 @@ define(function(require, exports, module){
 				okCallBack:okCallBack
 			});
 		},
+		//删除答交项
 		delResponse: function(){
 			var that = this, content = '<p>您确定要删除此条答交？</p>';
 			$('.contarin').on('click','.btn-del',function(){
@@ -458,16 +463,19 @@ define(function(require, exports, module){
 				})
 			})
 		},
+		//日期控件
 		dateFn: function(){
 			$('.timeBox').mdater({
 				minDate : new Date()
 			});
 		},
+		//隐藏提示
 		hideTip: function(){
 			$body.on('focus','input[type="text"]',function(){
 				$('#formTip').removeClass('formTipShow');
 			})
 		},
+		//答交计价数量
 		reQtys: function(parents,index){
 			var vals = 0;
 			parents.find('.int02').each(function(){
@@ -476,6 +484,7 @@ define(function(require, exports, module){
 			})
 			return vals;			
 		},
+		//答交总金额计算
 		reCostTotalFn: function(){
 			var that = this,
 				totals = 0;
@@ -486,7 +495,6 @@ define(function(require, exports, module){
 		},
 		start: function(){
 			var that = this;
-			that.fileList();
 			var orderAnswerInfo = document.getElementById('orderAnswerInfo');
 			var prodAnswerInfo = document.getElementById('prodAnswerInfo');
 			var othersCost = document.getElementById('othersCost');
@@ -495,6 +503,7 @@ define(function(require, exports, module){
 			}
 			if(prodAnswerInfo){
 				prodAnswerInfo.innerHTML = that.prodAnswerInfo();
+				that.fileList();
 				//$itemTips.addClass('tips-error').find('span').html('答交异常');
 				//$itemTips.addClass('tips-success').find('span').html('答交无误');
 			}

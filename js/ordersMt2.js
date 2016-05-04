@@ -1,5 +1,6 @@
 define(function(require, exports, module){
 	var formTip = '<div id="formTip" class="formTip"></div>';
+	var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 	var ordersMt = {
 		init: function(){
 			var that = this;
@@ -18,7 +19,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"token":"","serviceId":"B03_findPoAnswerLineList","poAnswerId":"","secretNumber":"","venderId":"","commonParam":'+ that.commonParam +' }'
+			        "param": '{"token":"'+ _vParams.token +'","serviceId":"B03_findPoAnswerLineList","poAnswerId":"'+ _vParams.poAnswerId +'","secretNumber":"'+ _vParams.secretNumber +'","venderId":"'+ _vParams.venderId +'","commonParam":'+ that.commonParam +' }'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -80,9 +81,6 @@ define(function(require, exports, module){
 							html+='<span class="edit"></span></div></div>'
                 		}
                 	}
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 			return html;
@@ -94,7 +92,7 @@ define(function(require, exports, module){
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":["10001"],"dataSource":"1","interfaceVersion":"1","mobileMode":"1","mobileSysVersion":"1","sourcePage":"1","prodId":"1","secretNumber":""}'
+			        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":'+ _vParams.companyId +',"prodId":"'+ _vParams.prodId +'","secretNumber":"'+ _vParams.secretNumber +'","commonParam":'+ that.commonParam +'}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -148,7 +146,7 @@ define(function(require, exports, module){
 	                //dataType: "json",
 	                url:config.serviceUrl,
 	                data: {
-				        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"10000001","vendorId":"10000009","prodCode":'+ code +',"pageSize":5,"currentPage":"1","commonParam":{"dataSource": "1", "interfaceVersion": "1", "sourceSystem": "1"},"secretNumber":"1","token":"22333"}'
+				        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"'+ _vParams.companyId +'","vendorId":"'+ _vParams.vendorId +'","prodCode":'+ code +',"commonParam":'+ that.commonParam +',"secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'"}'
 				    },
 	                success:function(data){
 	                	data = data || {};
@@ -161,9 +159,6 @@ define(function(require, exports, module){
 	                			$('#formTip').html('产品编码错误，请重新输入').addClass('formTipShow');
 	                		}
 	                	}
-	                },
-	                error:function(){
-	                	alert('数据请求发生错误，请刷新页面!');
 	                }
 				})
 
@@ -199,9 +194,6 @@ define(function(require, exports, module){
                 success:function(data){
                 	fnTip.success(2000);
                 	setTimeout(window.location.reload(),2000);
-                },
-                error:function(){
-                	alert('数据请求发生错误，请刷新页面!');
                 }
 			})
 		}
