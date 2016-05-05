@@ -18,8 +18,8 @@ Lists.prototype = {
 		that.load = false;
 
 		that.start();
-		$('.contarin').show();
 		if(that.load){
+			$('.contarin').show();
 			fnTip.hideLoading();
 		}
 		
