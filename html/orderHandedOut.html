@@ -27,16 +27,12 @@
 			<a href="javascript:;" class="btnB">完成</a>			
 		</div>
 	</div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script>fnTip.loading()</script>
+	<script src="../js/orderHandedOut.js"></script>
 	<script>
-		$(function(){
-			fnTip.loading();
-			seajs.use('../js/orderHandedOut.js',function(order){
-				order.init();
-			});
-		})
+	new OrderHandedOut();
 	</script>
 
 </body>

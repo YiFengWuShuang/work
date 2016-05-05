@@ -30,15 +30,11 @@
 		</div>
 	</div>
 	<div id="formTip" class="formTip"></div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script src="../js/register.js"></script>
 	<script>
-	$(function(){
-		seajs.use('../js/register.js',function(reg){
-			reg.init();
-		})
-	})
+		new Reg();
 	</script>
 </body>
 </html>

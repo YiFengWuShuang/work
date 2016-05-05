@@ -18,16 +18,11 @@
 	<div class="contarin newsCon">
 		<div class="msgDetail"></div>
 	</div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script src="../js/msgDetail.js"></script>
 	<script>
-		$(function(){
-			seajs.use('../js/msgDetail.js',function(msgDetail){
-				msgDetail.init();
-			});
-
-		})
+		new Message();
 	</script>
 </body>
 </html>

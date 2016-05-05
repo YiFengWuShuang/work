@@ -18,16 +18,12 @@
 	<div class="contarin">
 		<ul id="payInfoList" class="payInfoList"></ul>
 	</div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script>fnTip.loading()</script>
+	<script src="../js/payInfo.js"></script>
 	<script>
-		$(function(){
-			fnTip.loading();
-			seajs.use('../js/payInfo.js',function(payInfo){
-				payInfo.init();
-			});
-		})
+	new Lists();
 	</script>
 </body>
 </html>

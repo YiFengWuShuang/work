@@ -21,18 +21,13 @@
 			<a href="javascript:;" class="btnB">完成</a>			
 		</div>
 	</div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script>fnTip.loading()</script>
 	<script src="../js/lib/select3-full-min.js"></script>
-	
+	<script src="../js/ordersMt5.js"></script>
 	<script>
-		$(function(){
-			fnTip.loading();
-			seajs.use('../js/ordersMt5.js',function(ordersMt){
-				ordersMt.init();
-			});
-		})
+	new OrdersMt();
 	</script>
 
 </body>

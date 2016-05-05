@@ -1,4 +1,3 @@
-
 var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var btn = $('.btn-wrap a');
@@ -155,8 +154,7 @@ Lists.prototype = {
             		setTimeout(function(){
 	            		$('.contarin').show();
 						fnTip.hideLoading();
-					},0)
-
+					},0);
             	}
             }
 		})

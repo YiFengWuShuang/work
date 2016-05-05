@@ -15,7 +15,7 @@
 	<title>邀请码</title>
 </head>
 <body>
-	<div class="contarin" style="display:none;">
+	<div class="contarin">
 		<div class="step1">
 			<div class="codeBox">
 				<div class="codeBox-1">
@@ -27,15 +27,11 @@
 			<a href="#" id="joinUs" class="btnBig btnBig-b">同意加入</a>
 		</div>
 	</div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script src="../js/inviteCode.js"></script>
 	<script>
-	$(function(){
-		seajs.use('../js/inviteCode.js',function(code){
-			code.init();
-		})
-	})
+		new Code();
 	</script>
 </body>
 </html>
