@@ -152,8 +152,11 @@ Lists.prototype = {
 						that.totals+=parseInt(lineList[i].taxLineTotal,10);
             		}
             		that.load = true;
+            		setTimeout(function(){
             		$('.contarin').show();
 					fnTip.hideLoading();
+				},0)
+
             	}
             }
 		})
