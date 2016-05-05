@@ -1,3 +1,4 @@
+
 var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var btn = $('.btn-wrap a');
@@ -18,10 +19,6 @@ Lists.prototype = {
 		that.load = false;
 
 		that.start();
-		if(that.load){
-			$('.contarin').show();
-			fnTip.hideLoading();
-		}
 		
 		//答交
 		$('.contarin').on('click','span.edit',function(){
@@ -155,6 +152,8 @@ Lists.prototype = {
 						that.totals+=parseInt(lineList[i].taxLineTotal,10);
             		}
             		that.load = true;
+            		$('.contarin').show();
+					fnTip.hideLoading();
             	}
             }
 		})
