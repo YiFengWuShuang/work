@@ -26,6 +26,7 @@ define(function(require, exports, module){
 			    	var mobile = $('#phone').val(),
 			    		inviteCode = getQueryString('inviteCode');
 			    	fnTip.loading();
+			    	if(that.checkAccount(mobile))return;
 			    	$.ajax({
 						type:"POST",
 		                dataType: "json",
@@ -36,7 +37,7 @@ define(function(require, exports, module){
 		                	fnTip.hideLoading();
 		                	data = data || {};
 		                	if(data.retCode=='01250'){
-		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile="'+ mobile +'"&inviteCode='+inviteCode);
+		                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile='+ mobile +'&inviteCode='+inviteCode);
 		                	}else{
 		                		console.log(data.retMsg);
 		                		return false;
@@ -61,7 +62,7 @@ define(function(require, exports, module){
 					    	fnTip.hideLoading();
 					    	data = data || {};
 					    	if(data.errorCode=='0'){
-					    		_this.attr('href','http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'"&inviteCode='+ inviteCode);
+					    		_this.attr('href','http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'&inviteCode='+ inviteCode);
 					    	}else if(data.errorCode=='01443'){
 					    		$formTip.html('手机验证码不正确').addClass('formTipShow');
 								return false;
@@ -89,7 +90,7 @@ define(function(require, exports, module){
 					    	fnTip.hideLoading();
 					    	data = data || {};
 					    	if(data.errorCode=='0'){
-					    		_this.attr('href','http://172.31.10.164/html/join.html?&companyName="'+ data.companyName +'"');
+					    		_this.attr('href','http://172.31.10.164/html/join.html?&companyName='+ data.companyName);
 					    	}else if(data.errorCode=='02145'){
 					    		$formTip.html('输入密码不一致').addClass('formTipShow');
 								return false;
@@ -187,6 +188,31 @@ define(function(require, exports, module){
 	                }
 	            }
             })
+		},
+		checkAccount:function(mobile){
+			var isReg = true;
+			$.ajax({
+				type:"POST",
+                dataType: "json",
+                async:false,
+                url:'http://172.31.10.168/usersystem/register/checkAccount/v1',
+                data:JSON.stringify({"account":mobile}),
+                success:function(data){
+                	fnTip.hideLoading();
+                	data = data || {};
+                	if(data.retCode=='01110'){
+                		//用户名未注册
+                		isReg = false;
+                	}else if(data.retCode=='01111'){
+                		$formTip.html('用户名已注册').addClass('formTipShow');
+                		isReg = true;
+                	}else{
+                		$formTip.html('操作失败').addClass('formTipShow');
+                		isReg = true;
+                	}
+                }
+			})
+			return isReg;
 		}
 	};
 

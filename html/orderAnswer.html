@@ -30,16 +30,14 @@
 			<a href="javascript:;" class="btnB">完成</a>
 		</div>
 	</div>
-	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
+	<script src="../js/ordersList.js"></script>
 	<script>
-		$(function(){
-			fnTip.loading();
-			seajs.use('../js/ordersList.js',function(lists){
-				lists.init();
-			});
-		})
+	$(function(){
+		fnTip.loading();
+		new Lists()			
+	})
 	</script>
 
 </body>

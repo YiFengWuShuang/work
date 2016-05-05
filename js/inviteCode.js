@@ -35,7 +35,7 @@ define(function(require, exports, module){
 			if(compInfos){
 				compInfos.innerHTML = that.createHTML();
 				$('.inviteCode').show();
-				btn.attr('href','http://172.31.10.164/html/invitationReg1.html?&inviteCode="'+ that.invitationCode +'"');
+				btn.attr('href','http://172.31.10.164/html/invitationReg1.html?&inviteCode='+ that.invitationCode);
 			}
 
 		}

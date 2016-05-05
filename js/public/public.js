@@ -95,6 +95,17 @@ function formatMoney(s) {
 	return s.replace(/^\./, '0.')
 }
 
+//loadScript
+function loadScript(url, callback) {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.onload = function () {
+        callback&&callback();
+    };
+    script.src = url;
+    document.body.appendChild(script);
+}
+
 //checkbox自定义样式
 (function resetCheckbox(){
 	$('.checkbox input').live('change',function(){
