@@ -56,7 +56,7 @@ define(function(require, exports, module){
 						type:"POST",
 					    dataType: "json",
 					    async:false,
-					    url:'http://172.31.10.52/usersystem/recover_password/checkSmsVerifyCode/v1',
+					    url:'http://172.31.10.168/usersystem/recover_password/checkSmsVerifyCode/v1',
 					    data:JSON.stringify({"mobile":mobile, "smsVerifyCode":verifyCode}),
 					    success:function(data){
 					    	fnTip.hideLoading();
