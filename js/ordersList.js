@@ -153,9 +153,9 @@ Lists.prototype = {
             		}
             		that.load = true;
             		setTimeout(function(){
-            		$('.contarin').show();
-					fnTip.hideLoading();
-				},0)
+	            		$('.contarin').show();
+						fnTip.hideLoading();
+					},0)
 
             	}
             }
