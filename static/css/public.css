@@ -106,13 +106,24 @@ label input{ margin-right: .15rem;}
 .formTip{ position: fixed; left: 0; top: -1.2rem; width: 100%; height: 1.2rem; line-height: 1.2rem; background-color: #fff0a8; opacity: 0; color: #c90000; font-size: .6rem; text-align: center; z-index: 9999; -webkit-transition:.3s; transition:.3s;}
 .formTipShow{ top: 0; opacity: 1;}
 
+/* bottom */
+.m-bottom-wrap{ position: fixed; width: 100%; height: 2rem; background-color: #fafafa; left: 0; bottom: 0; z-index: 99999;}
+/*.m-bottom-wrap:before{position: absolute;content: "";top:0;right: 0;width: 100%;height: 0px;border-top: 1px solid #d8d8d8;box-sizing: border-box;transform: scaleY(.5);-webkit-transform: scaleY(.5);}*/
+.m-bottom-wrap .bottom-side{ float: left; height: 100%; width: 70%; overflow: hidden;}
+.m-bottom-wrap .bottom-side a{ float: left; position: relative; width:3.2rem; height:2rem;}
+.m-bottom-wrap .bottom-side a:before{ content: ''; position: absolute; width:1.4rem; height: 1.4rem; left: 50%; top: 50%; margin: -.7rem 0 0 -.7rem; background: url(../img/public/icon-2.png) no-repeat 0 0; background-size: 1.4rem 6rem;}
+.m-bottom-wrap .bottom-side a.mobile:before{ background-position: 0 0;}
+.m-bottom-wrap .bottom-side a.msg:before{ background-position: 0 -1.5rem;}
+.m-bottom-wrap .bottom-side a.share:before{ background-position: 0 -3rem;}
+.m-bottom-wrap .bottom-side a.im:before{ background-position: 0 -4.5rem;}
+.m-bottom-wrap .bottom-btn{ float: right; height: 100%; width: 30%; background-color: #0091cd; line-height:2rem; text-align: center; color: #fff;}
+
 /* css3 loading */
 .loader-inner{ background: rgba(0,0,0,.7); text-align: center;}
 .ball-clip-rotate>div{background-color:#fff;width:2rem;height:2rem;border-radius:100%;margin-top:.6rem;-webkit-animation-fill-mode:both;animation-fill-mode:both;border:2px solid #fff;border-bottom-color:transparent;background:transparent!important;display:inline-block;-webkit-animation:rotate .75s 0s linear infinite;animation:rotate .75s 0s linear infinite}@keyframes rotate{0%{-webkit-transform:rotate(0deg) scale(1);transform:rotate(0deg) scale(1)}50%{-webkit-transform:rotate(180deg) scale(0.6);transform:rotate(180deg) scale(0.6)}100%{-webkit-transform:rotate(360deg) scale(1);transform:rotate(360deg) scale(1)}}
 
 /* media */
 @media screen and (max-width: 320px){
-	/*.m-item2 .item-wrap li span:first-child{ width: auto; text-align: text;}*/
 	.responseBox li em:nth-child(3){ margin: 0;}
 }
 @media  screen and (max-width: 375px) and (min-width: 321px){

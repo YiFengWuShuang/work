@@ -4,8 +4,8 @@ var config = {
     serviceUrl:"",
     ossConfigUrl:""
 };
-config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
-//config.serviceUrl='http://172.31.10.127:9090/services/invokeRestfulSrv/supplyCloudService';
+//config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
+config.serviceUrl='http://172.31.10.127:9090/services/invokeRestfulSrv/supplyCloudService';
 config.ossConfigUrl = "http://172.31.10.168:19790/oss/config/api";
 
 //公共参数
