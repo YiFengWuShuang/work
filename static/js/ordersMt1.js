@@ -8,9 +8,6 @@ OrdersMt.prototype = {
 		that.commonParam = JSON.stringify(commonParam());
 		that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
 		that.start();
-		//demo
-		var mobile = '13929537026';
-		bottomBar(['share'],mobile)
 	},
 	orderBaseInfo: function(){
 		var that = this, html = '';

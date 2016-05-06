@@ -2,21 +2,6 @@
 offItems  不显示的项，类型是数组类型
 */
 
-function connectWebViewJavascriptBridge(callback) {
-    if (window.WebViewJavascriptBridge) {
-        callback(WebViewJavascriptBridge)
-    } else {
-        document.addEventListener(
-            'WebViewJavascriptBridgeReady'
-            , function() {
-                callback(WebViewJavascriptBridge)
-            },
-            false
-        );
-    }
-}
-
-       
 function bottomBar(offItems,mobile,memberId){
 	var items = ['mobile','share','im'], sOffItems = offItems.join(',');
 	var bottomDom = '<div id="jBottom" class="m-bottom-wrap clearfix"><div class="bottom-side">';
