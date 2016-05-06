@@ -48,7 +48,7 @@ Lists.prototype = {
 			type:"POST",
 			async: false,
             url:config.serviceUrl,
-            data: {
+            data: {//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
 		        "param": '{'+ that.tokens +',"serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":"1","searchType":"1","id":"'+ _vParams.id +'","docType":"'+ _vParams.docType +'"}'
 		    },
             success:function(data){

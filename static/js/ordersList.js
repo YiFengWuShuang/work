@@ -2,7 +2,6 @@ var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var btn = $('.btn-wrap a');
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-loadScript('../js/lib/popup.js');
 
 var Lists = function(){
 	this.init();
@@ -50,10 +49,7 @@ Lists.prototype = {
 		})
 
 		//选择日期
-		loadScript('../js/lib/zepto.mdater.js',function(){
-			that.dateFn();
-		});
-		
+		that.dateFn();
 
 		that.hideTip();
 		$('.item-total').html('总金额：&yen;'+formatMoney(that.totals)).show();
@@ -97,6 +93,7 @@ Lists.prototype = {
 	fileList: function(){
 		var that = this, reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 		if(!that.load)return;
+		//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
 		var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"fileSource":"1","searchType":"1","id":_vParams.id,"docType":_vParams.docType}
 		$.ajax({
 			type:"POST",
