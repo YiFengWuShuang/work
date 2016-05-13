@@ -10,30 +10,36 @@
 	<meta name="screen-orientation" content="portrait">
 	<!-- QQ强制竖屏 -->
 	<meta name="x5-orientation" content="portrait">
-	<link rel="stylesheet" href="../css/public_932cd14.css">
+	<link rel="stylesheet" href="../css/public_38e88a3.css">
 	<link rel="stylesheet" href="../css/popup_e29f6ba.css">
 	<link rel="stylesheet" href="../css/zepto.mdater_be77087.css">
-	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list_3820abe.css">
+	<link rel="stylesheet" href="../css/select3_feb906e.css">
+	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list_4b6cc65.css">
+<!-- 	<link class="shareCss" data-cssname="orderMt" rel="stylesheet" href="../css/orderMt.css"> -->
 	<title>采购订单作业</title>
 </head>
 <body>
 	<div class="contarin" style="display:none;">
-		<div class="item-tips"><i></i><span></span></div>
-		<div id="orderAnswerInfo" class="m-item"></div>
-		<div id="prodAnswerInfo" class="m-item m-item2"></div>
-		<div id="othersCost" class="m-item"></div>
-		<div class="item-wrap item-total"></div>
-		<div class="item-wrap item-total-dj"></div>
-		<a href="./orderHandedOut1.html" class="item-wrap item-link">交易和付款信息<span class="arrow_down"></span></a>
-		<a href="./orderHandedOut2.html" class="item-wrap item-link">补充条款，备注与订单附件<span class="arrow_down"></span></a>
+		<div id="orderBaseInfoCon" class="orderBaseInfoCon showItemCon">
+			<div class="item-tips"><i></i><span></span></div>
+			<div id="orderAnswerInfo" class="m-item"></div>
+			<div id="prodAnswerInfo" class="m-item m-item2"></div>
+			<div id="othersCost" class="m-item"></div>
+			<div class="item-wrap item-total"></div>
+			<div class="item-wrap item-total-dj"></div>
+			<a href="javascript:;" class="item-wrap item-link" name="payInfo">交易和付款信息<span class="arrow_down"></span></a>
+			<a href="javascript:;" class="item-wrap item-link" name="remark">补充条款，备注与订单附件<span class="arrow_down"></span></a>
+			<input type="hidden" id="vRemark" value="" />
+		</div>
+		<div id="orderReviseInfoCon" class="hideItemCon"></div>
 	</div>
 	<script src="../js/lib/zepto-min_52cd85c.js"></script>
-	<script src="../js/public/public_1556ad6.js"></script>
+	<script src="../js/public/public_2abb3d9.js"></script>
 	<script>fnTip.loading()</script>
 	<script src="../js/lib/popup_1e75f47.js"></script>
 	<script src="../js/lib/zepto.mdater_485317d.js"></script>
-	<script src="../js/ordersList_66ec3bd.js"></script>
-	<script src="../js/bottom_fb537ec.js"></script>
+	<script src="../js/ordersList_bde61ae.js"></script>
+	<script src="../js/bottom_c28557f.js"></script>
 	<script>
 		new Lists();
 	</script>
