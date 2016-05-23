@@ -14,23 +14,24 @@
 	<link rel="stylesheet" href="../css/popup_e29f6ba.css">
 	<link rel="stylesheet" href="../css/select3_feb906e.css">
 	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list_fca9a0e.css">
-	<link class="shareCss" data-cssname="orderMt" rel="stylesheet" href="../css/orderMt_d02b8c7.css">
-	<title>已确认答交转销售</title>
+<!-- 	<link class="shareCss" data-cssname="orderMt" rel="stylesheet" href="../css/orderMt.css"> -->
+	<title>销售变更</title>
 </head>
 <body>
 	<div class="contarin" style="display:none;">
-		<div id="orderBaseInfoCon" class="showItemCon">
+		<div id="orderBaseInfoCon" class="orderBaseInfoCon showItemCon">
 			<div class="item-tips"><i></i><span></span></div>
-			<div id="orderAnswerInfo" class="m-item"></div>
-			<div id="prodAnswerInfo" class="m-item m-item2"></div>
+			<div id="orderHeadInfo" class="m-item"></div>
+			<a href="javascript:;" class="item-wrap item-link" name="changeCause">变更原因及说明<span class="arrow_down"></span></a>
+			<input type="hidden" id="changeCauseVal1" value="">
+			<input type="hidden" id="changeCauseVal2" value="">
+			<div id="prodBodyInfo" class="m-item m-item2"></div>
 			<div id="othersCost" class="m-item"></div>
 			<div class="item-wrap item-total"></div>
 			<div class="item-wrap item-total-dj"></div>
 			<a href="javascript:;" class="item-wrap item-link" name="payInfo">交易和付款信息<span class="arrow_down"></span></a>
 			<a href="javascript:;" class="item-wrap item-link" name="remark">补充条款，备注与订单附件<span class="arrow_down"></span></a>
-			<input type="hidden" id="j-dealType" value="" />
-			<input type="hidden" id="j-logisticsType" value="" />
-			<input type="hidden" id="j-checkoutType" value="" />
+			<input type="hidden" id="remarkVal" value="">
 		</div>
 		<div id="orderReviseInfoCon" class="hideItemCon"></div>
 	</div>
@@ -39,10 +40,10 @@
 	<script>fnTip.loading()</script>
 	<script src="../js/lib/popup_1e75f47.js"></script>
 	<script src="../js/lib/select3-full-min_01e7b1f.js"></script>
-	<script src="../js/orderRevise_3c09291.js"></script>
+	<script src="../js/sale_change_9f0d8e4.js"></script>
 	<script src="../js/bottom_a40a020.js"></script>
 	<script>
-		new orderRevise();
+		new Lists();
 	</script>
 
 </body>
