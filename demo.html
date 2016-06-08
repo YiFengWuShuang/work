@@ -21,8 +21,16 @@
 	<script src="static/js/public/public.js"></script>
 	<script src="static/js/bottom.js"></script>
 	<script>
-		var mobile = '13929537026';
-		bottomBar(['share'],mobile)
+		//调打电话
+		// var mobile = '13929537026';
+		// bottomBar(['share'],mobile)
+		bottomBar(['share'],'','','出货');
+		$body.on('click','.bottom-btn-confirm',function(){
+			//跳转至出货单新建
+			if(window.WebViewJavascriptBridge){
+				window.WebViewJavascriptBridge.callHandler( "goodsDelivery", {"param":1214648756623612}, function(responseData) {});
+			}
+		})
 	</script>
 </body>
 </html>
