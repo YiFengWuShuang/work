@@ -26,11 +26,10 @@
 		//调打电话
 		// var mobile = '13929537026';
 		// bottomBar(['share'],mobile)
-		bottomBar(['share'],'','','出货');
+		bottomBar(['share'],'','','收货');
 		$body.on('click','.bottom-btn-confirm',function(){
-			//跳转至出货单新建
 			if(window.WebViewJavascriptBridge){
-				window.WebViewJavascriptBridge.callHandler( "goodsDelivery", {"param":1214648756623612}, function(responseData) {});
+				window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":1014652841712519}, function(responseData) {});
 			}
 		})
 	</script>
