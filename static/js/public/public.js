@@ -2,11 +2,19 @@ var $body = $(document.body);
 
 var config = {
     serviceUrl:"",
-    ossConfigUrl:""
+    ossConfigUrl:"",
+    ossNotifyUrl:"",
+    ussUrl:"",
+    htmlUrl:"",
+    userInfo:""
 };
-//config.serviceUrl = 'http://172.31.10.50:8081/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
-config.serviceUrl='http://172.31.10.127:9090/services/invokeRestfulSrv/supplyCloudService';
+
+config.serviceUrl = 'http://54.222.203.245:7000/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 config.ossConfigUrl = "http://172.31.10.168:19790/oss/config/api";
+config.ossNotifyUrl = "http://172.31.10.155:19890/oss/notify/api";
+config.ussUrl = "http://172.31.10.168/usersystem";
+config.htmlUrl = 'http://172.31.10.164/dist/html/';
+config.userInfo = 'http://54.222.203.245:7200/usersystem/login/getTokenList/v1';
 
 //公共参数
 function commonParam() {
@@ -35,16 +43,46 @@ var PARAM = {
     }
 };
 
+// 获取用户信息
+function GetUserInfo(type,param,callback){
+	$.ajax({
+		type:type,
+		async:false,
+        url:config.userInfo,
+        data:JSON.stringify(param),
+        success:function(data){
+        	callback&&callback(data);
+        }
+	})
+}
+
+// 获取接口信息
+// 参数async为空或false,ajax请求为同步,或则异步
+function GetAJAXData(type,param,callback,async){
+	async = !!async;
+	$.ajax({
+		type:type,
+		async:async?true:false,
+        url:config.serviceUrl,
+        data:'param='+JSON.stringify(param),
+        success:function(data){
+        	callback&&callback(data);
+        }
+	})
+}
+
 // 操作提示
 var fnTip = {
-	success: function(time){
+	success: function(time,txt){
+		txt = txt || '操作成功';
 		var tip = '<span class="successTip"><b>操作成功</b></span>';
 		$body.append(tip);
 		setTimeout(function(){
 			$('.successTip').remove();
 		},time);
 	},
-	error: function(time){
+	error: function(time,txt){
+		txt = txt || '操作失败';
 		var tip = '<span class="errorTip"><b>操作失败</b></span>';
 		$body.append(tip);
 		setTimeout(function(){
@@ -74,6 +112,7 @@ function getQueryString(name) {
 
 //时间戳转换日期
 function transDate(tm){
+	if(!tm)return '';
     var d = new Date(tm);
     var year = d.getFullYear();
     var month = d.getMonth() + 1;
@@ -83,6 +122,7 @@ function transDate(tm){
 
 //格式化金额
 function formatMoney(s) {
+	s=((s=='') ? 0 : s)
 	s = s.toString();
 	if(/[^0-9\.]/.test(s)) return '';
 	s = s.replace(/^(\d*)$/, '$1.');
@@ -107,20 +147,19 @@ function loadScript(url, callback) {
 }
 
 //checkbox自定义样式
-(function resetCheckbox(){
-	$('.checkbox input').live('change',function(){
-		var _this = $(this), label = _this.parent();
-		if(_this.prop('checked')){
-			label.addClass('on');
-		}else{
-			label.removeClass('on');
-		}
-		if(_this.prop('disabled')){
-			label.css('color','#999');
-		}
-	})
-	$('.checkbox input').trigger('change');
-})();
+// function resetCheckbox(){
+// 	$('.checkbox input').live('change',function(){
+// 		var _this = $(this), label = _this.parent();
+// 		if(_this.prop('checked')){
+// 			label.addClass('on');
+// 		}else{
+// 			label.removeClass('on');
+// 		}
+// 		if(_this.prop('disabled')){
+// 			label.css('color','#999');
+// 		}
+// 	})
+// };
 
 
 //数据来源
@@ -156,6 +195,16 @@ function enumFn(list, key){
     });
     return ret;
 }
+//反向查找
+function reEnumFn(list, value){
+	var ret = '';
+	list.forEach(function(val){
+        if(value == val.Value) {
+            ret = val.Key;
+        }
+    });
+    return ret;
+}
 
 //操作cookie
 var cookie = {
@@ -176,6 +225,18 @@ var cookie = {
 	}
 }
 
+function popup(type, title, content, closeCallBack, okCallBack){
+	new Popup({
+		type:type,
+		title:title,
+		content:content,
+		ok:'确定',
+		cancel:'取消',
+		closeCallBack:closeCallBack,
+		okCallBack:okCallBack
+	});
+}
+
 //JS调用Native
 function connectWebViewJavascriptBridge(callback) {
     if (window.WebViewJavascriptBridge) {
@@ -189,4 +250,17 @@ function connectWebViewJavascriptBridge(callback) {
             false
         );
     }
+}
+//传递title给Native
+function webViewTitle(title){
+	if(window.WebViewJavascriptBridge){
+		window.WebViewJavascriptBridge.callHandler( "title", {"param":title}, function(responseData) {});
+	}	
+}
+
+//调用Native返回上一级
+function goBack(){
+	if(window.WebViewJavascriptBridge){
+		window.WebViewJavascriptBridge.callHandler( "back", "", function(responseData) {});
+	}	
 }
