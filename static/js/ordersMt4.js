@@ -6,6 +6,7 @@ OrdersMt.prototype = {
 	init: function(){
 		this.commonParam = JSON.stringify(commonParam());
 		this.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
+		this.memberId = '';
 		this.start();
 	},
 	otherCostList: function(){
@@ -65,8 +66,14 @@ OrdersMt.prototype = {
 		var that = this;
 		document.getElementById('othersCost').innerHTML = that.otherCostList();
 		that.createCostList();
+		//通用底部
+		bottomBar(['share'],that.memberId);
+
+		$body.on('click','.bottom-btn',function(){
+			that.submitFn();
+		})
 	},
 	submitFn: function(){
-
+		//setTimeout(function(){goBack()},2000);
 	}
 }

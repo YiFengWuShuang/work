@@ -1,4 +1,6 @@
-
+/*
+我方备注未完成
+*/
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var Lists = function(){
 	this.init();
@@ -8,6 +10,7 @@ Lists.prototype = {
 		this.commonParam = JSON.stringify(commonParam());
 		this.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
 		this.load = false;
+		this.memberId = '';
 		this.start();
 		fnTip.hideLoading();
 	},
@@ -24,6 +27,7 @@ Lists.prototype = {
             	data = data || {};
             	if(data.success){
             		var infos = data.purchaseOrderInfo;
+            		that.memberId = infos.auditid;
             		html += '<div id="provisions" class="item-wrap clause">'
 							+'	<h2>补充条款：</h2>'
 							+'	<p>'+ infos.agreement +'</p>'
@@ -68,6 +72,14 @@ Lists.prototype = {
 		$('.remarks-wrap').append(that.payInfo());
 		if(that.load){
 			$('#files').append(that.fileList());
+		}
+		if($('#intRemarks').length>0){
+			//通用底部
+			bottomBar(['share'],that.memberId);
+
+			$body.on('click','.bottom-btn',function(){
+				//that.submitFn();
+			})
 		}
 	}	
 }

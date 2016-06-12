@@ -1,5 +1,7 @@
 var $formTip = $('#formTip');
 var Reg = function(){
+	this.clickNum = 0;
+	this.countdown = 60;
 	this.init();
 }
 Reg.prototype = {
@@ -13,12 +15,14 @@ Reg.prototype = {
 	    //校验
 		$('form .btnBig').on('click',function(){
 			var _this = $(this);
+			if(_this.hasClass('btnBig-g'))return;
 			var inputs = _this.parent('form').find('input.required');
 		    that.validateFn(inputs);
 		    var numError = $('.formTipShow').length;
 		    if(numError){
 		        return false;
 		    }
+
 		    //获取验证码
 		    if( _this.is('#btn-getCode') ){
 		    	if(!$('#clauseChecked').prop('checked')){
@@ -29,17 +33,18 @@ Reg.prototype = {
 		    		inviteCode = getQueryString('inviteCode');
 		    	fnTip.loading();
 		    	if(that.checkAccount(mobile))return;
+		    	that.settime(_this,'免费获取验证码');
 		    	$.ajax({
 					type:"POST",
 	                dataType: "json",
 	                async:false,
-	                url:'http://172.31.10.168/usersystem/login/getSmsVerifyCode/v1',
+	                url:config.ussUrl+'/login/getSmsVerifyCode/v1',
 	                data:JSON.stringify({"mobile":mobile}),
 	                success:function(data){
 	                	fnTip.hideLoading();
 	                	data = data || {};
 	                	if(data.retCode=='01250'){
-	                		_this.attr('href','http://172.31.10.164/html/invitationReg2.html?&mobile='+ mobile +'&inviteCode='+inviteCode);
+	                		_this.attr('href',config.htmlUrl+'invitationReg2.html?&mobile='+ mobile +'&inviteCode='+inviteCode);
 	                	}else{
 	                		console.log(data.retMsg);
 	                		return false;
@@ -54,17 +59,23 @@ Reg.prototype = {
 					verifyCode = $('#validateCode').val().trim(),
 					inviteCode = getQueryString('inviteCode');
 				fnTip.loading();
+				that.clickNum++;
+				if(that.clickNum>3){
+					that.settime(_this,'下一步');
+				}
 				$.ajax({
 					type:"POST",
 				    dataType: "json",
 				    async:false,
-				    url:'http://172.31.10.168/usersystem/recover_password/checkSmsVerifyCode/v1',
+				    url:config.ussUrl+'/recover_password/checkSmsVerifyCode/v1',
 				    data:JSON.stringify({"mobile":mobile, "smsVerifyCode":verifyCode}),
 				    success:function(data){
 				    	fnTip.hideLoading();
 				    	data = data || {};
 				    	if(data.errorCode=='0'){
-				    		_this.attr('href','http://172.31.10.164/html/invitationReg3.html?&mobile='+ mobile +'&inviteCode='+ inviteCode);
+				    		//重置点击次数
+				    		that.clickNum = 0;
+				    		_this.attr('href',config.htmlUrl+'invitationReg3.html?&mobile='+ mobile +'&inviteCode='+ inviteCode);
 				    	}else if(data.errorCode=='01443'){
 				    		$formTip.html('手机验证码不正确').addClass('formTipShow');
 							return false;
@@ -81,18 +92,26 @@ Reg.prototype = {
 		    		inviteCode = getQueryString('inviteCode'),
 		    		password = $('#psw-1').val(),
 		    		password2 = $('#psw-2').val();
+	    		password = faultylabs.MD5(faultylabs.MD5(password));
+				password2 = faultylabs.MD5(faultylabs.MD5(password2));
 		    	fnTip.loading();
+		    	that.clickNum++;
+				if(that.clickNum>3){
+					that.settime(_this,'完成');
+				}
 				$.ajax({
 					type:"POST",
 				    dataType: "json",
 				    async:false,
-				    url:'http://172.31.10.168/usersystem/register/registerAccountOnMobile/v1',
+				    url:config.ussUrl+'/register/registerAccountOnMobile/v1',
 				    data:JSON.stringify({"mobile":mobile, "invitationCode":inviteCode, "password":password, "confirmPassWd":password2, "dataSource":dataSource()}),
 				    success:function(data){
 				    	fnTip.hideLoading();
 				    	data = data || {};
 				    	if(data.errorCode=='0'){
-				    		_this.attr('href','http://172.31.10.164/html/join.html?&companyName='+ data.companyName);
+				    		//重置点击次数
+				    		that.clickNum = 0;
+				    		_this.attr('href',config.htmlUrl+'join.html?&companyName='+ data.companyName);
 				    	}else if(data.errorCode=='02145'){
 				    		$formTip.html('输入密码不一致').addClass('formTipShow');
 							return false;
@@ -116,7 +135,7 @@ Reg.prototype = {
 						// 	type:"POST",
 			   //              dataType: "json",
 			   //              async:false,
-			   //              url:'http://172.31.10.168/usersystem/login/memberLogin/v1',
+			   //              url:config.ussUrl+'/login/memberLogin/v1',
 			   //              data:{account:nameVal, password:pswVal},
 			   //              success:function(data){
 			   //              	fnTip.hideLoading();
@@ -197,7 +216,7 @@ Reg.prototype = {
 			type:"POST",
 	        dataType: "json",
 	        async:false,
-	        url:'http://172.31.10.168/usersystem/register/checkAccount/v1',
+	        url:config.ussUrl+'/register/checkAccount/v1',
 	        data:JSON.stringify({"account":mobile}),
 	        success:function(data){
 	        	fnTip.hideLoading();
@@ -215,6 +234,21 @@ Reg.prototype = {
 	        }
 		})
 		return isReg;
+	},
+	settime: function(val,txt) {
+		var that = this;
+	    if (that.countdown == 0) {
+	        val.removeClass('btnBig-g');
+	        val.html(txt);
+	        that.countdown = 60;
+	    } else {
+	        val.addClass('btnBig-g');
+	        val.html('重新操作('+ that.countdown +')');
+	        that.countdown--;
+		    setTimeout(function() {
+		        that.settime(val,txt)
+		    }, 1000)
+	    }
 	}
 }
 	

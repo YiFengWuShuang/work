@@ -14,7 +14,7 @@ Code.prototype = {
 			type:"POST",
             dataType: "json",
             async: false,
-            url:'http://172.31.10.168/usersystem/register/getCompInfoByInvitationCode/v1',
+            url:config.ussUrl+'/register/getCompInfoByInvitationCode/v1',
             data:JSON.stringify({"invitationCode":that.invitationCode}),
             success:function(data){
             	data = data || {};
@@ -37,7 +37,7 @@ Code.prototype = {
 		if(compInfos){
 			compInfos.innerHTML = that.createHTML();
 			$('.inviteCode').show();
-			btn.attr('href','http://172.31.10.164/html/invitationReg1.html?&inviteCode='+ that.invitationCode);
+			btn.attr('href',config.htmlUrl+'invitationReg1.html?&inviteCode='+ that.invitationCode);
 		}
 
 	}	

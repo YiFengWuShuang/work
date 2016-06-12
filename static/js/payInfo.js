@@ -63,5 +63,14 @@ Lists.prototype = {
 	start: function(){
 		var that = this;
 		document.getElementById('payInfoList').innerHTML = that.payInfo();
-	}	
+		//通用底部
+		bottomBar([],that.memberId,true);
+		// 分享
+		// $('#btn-share').on('click',function(){
+		// 	loadScript('http://172.31.74.97/M_JSC_WEB/static/js/public/share.js',function(){
+		// 		new ShareFn()
+		// 	})			
+		// })
+
+	}
 }

@@ -11,23 +11,25 @@
 	<!-- QQ强制竖屏 -->
 	<meta name="x5-orientation" content="portrait">
 	<link rel="stylesheet" href="../css/public.css">
-	<link rel="stylesheet" href="../css/select3.css">
-	<link rel="stylesheet" href="../css/orderMt.css" class="shareCss" data-cssname="orderMt">
-	<title>销售订单维护</title>
+	<link rel="stylesheet" href="../css/list.css">
+	<style>
+	.item-wrap li span:first-child{min-width:4.2rem}
+	</style>
+	<title></title>
 </head>
 <body>
-	<div class="contarin" style="display:none">
-		<div id="savePayInfoList" class="btn-wrap">
-			<a href="javascript:;" class="btnB">完成</a>			
-		</div>
+	<div class="contarin deliveryOrder">
+		<div class="showItemCon"></div>
+		<div class="hideItemCon"></div>
 	</div>
+	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
 	<script>fnTip.loading()</script>
-	<script src="../js/lib/select3-full-min.js"></script>
-	<script src="../js/ordersMt5.js"></script>
+	<script src="../js/deliveryOrder.js"></script>
+	<script src="../js/bottom.js"></script>
 	<script>
-	new OrdersMt();
+		new deliveryOrder();
 	</script>
 
 </body>

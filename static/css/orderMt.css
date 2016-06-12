@@ -1,4 +1,4 @@
-.item-wrap{padding-bottom: .6rem;}
+
 .item-wrap > section{ padding: .15rem 0;}
 .item-wrap .m-select{ margin: .7rem 0; padding: 0;}
 .item-wrap .c-label{ float: left; min-width: 3.5rem; text-align: right; color: #888;}
@@ -19,9 +19,12 @@
 .orderWH .select3-input{ width: 7rem;}
 .c-cont-item > span{ display: inline-block; width: 2.5rem;}
 
+.hideItemCon b.dj{ margin-left: 2rem;}
+.hideItemCon input[type="text"]{ border: 1px solid #b0b0b0;border-radius: .25rem;padding: .3rem;width: 7.2rem;}
+
 /* btns */
 .btns{ display: -webkit-box; display: box; width: 80%; margin: .5rem 0; text-align: center;}
-.btns a{ -webkit-box-flex: 1; box-flex: 1; display: block; padding: .2rem; margin-right:.5rem; color: #fff;}
+.btns a{ -webkit-box-flex: 1; box-flex: 1; display: block; padding: .2rem; margin:0 .5rem 0 0; color: #fff;}
 .btns .btn-cancel{ background-color: #ccc;}
 .btns .btn-save{ background-color: #0179D1;}
 

@@ -7,6 +7,7 @@ OrdersMt.prototype = {
 		var that = this;
 		that.commonParam = JSON.stringify(commonParam());
 		that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
+		that.memberId = '';
 		that.start();
 	},
 	orderBaseInfo: function(){
@@ -22,6 +23,7 @@ OrdersMt.prototype = {
             	data = data || {};
             	if(data.success){
             		var orderInfo = data.poAnswerOrderInfo;
+            		that.memberId = orderInfo.auditid;
             		html+= '<div id="orderBaseInfo" class="m-item"><h2 class="m-title">基本信息</h2>'
             			+'<div class="item-wrap">'
 						+'	<ul>'
@@ -45,10 +47,10 @@ OrdersMt.prototype = {
 						+'		</section>'
 						+'		<section class="m-select clearfix">'
 						+'			<span class="c-label">交易税种：</span>'
-						+'			<div class="c-cont">'
+						+'			<div class="c-cont" data-pCurrencyCode="'+ orderInfo.pCurrencyCode +'">'
 						+'				<div id="taxType" class="select3-input" data-isContainTax="'+ orderInfo.isContainTax +'" data-taxRate="'+ orderInfo.taxRate +'"></div>'
 						+'				<p>' + ( orderInfo.isContainTax=='1' ? '<label class="checkbox on"><input type="checkbox" checked="checked" disabled>含税'+ orderInfo.taxRate +'%</label>' : '') + '</p>'	
-						+'			</div>	'				
+						+'			</div>'
 						+'		</section>'
 						+'		<section class="clearfix">'
 						+'			<span class="c-label">订单日期：</span>'
@@ -59,6 +61,8 @@ OrdersMt.prototype = {
 						+'	</div>'
 						+'</div>'
 					setTimeout(function(){fnTip.hideLoading()},0);
+            	}else{
+            		alert(data.errorMsg)
             	}
             }
 		})
@@ -80,7 +84,7 @@ OrdersMt.prototype = {
 			type:"POST",
             url:config.serviceUrl,
             data: {
-		        "param": '{"companyId":"'+ _vParams.companyId +'","currencyCodeP":"'+ currencyCodeP +'",'+ that.tokens +',"serviceId":"B01_getCompCurrencyByPCurrency"}'
+		        "param": '{"companyId":'+ _vParams.companyId +',"currencyCodeP":"'+ currencyCodeP +'",'+ that.tokens +',"serviceId":"B01_getCompCurrencyByPCurrency", "commonParam":'+ that.commonParam +'}'
 		    },
             success:function(data){
             	data = data || {};
@@ -106,7 +110,7 @@ OrdersMt.prototype = {
 			async:false,
             url:config.serviceUrl,
             data: {
-		        "param": '{"serviceId":"B01_getTaxByCustomerTax",'+ that.tokens +',"commonParam":'+ that.commonParam +',"companyId":"'+ _vParams.companyId +'","customerId":"'+ _vParams.customerId +'","cTaxId":"'+cTaxId+'"}'
+		        "param": '{"serviceId":"B01_getTaxByCustomerTax",'+ that.tokens +',"commonParam":'+ that.commonParam +',"companyId":'+ _vParams.companyId +',"customerId":"'+ _vParams.customerId +'","cTaxId":"'+cTaxId+'"}'
 		    },
             success:function(data){
             	data = data || {};
@@ -121,7 +125,7 @@ OrdersMt.prototype = {
 			type:"POST",
             url:config.serviceUrl,
             data: {
-		        "param": '{ "serviceId":"B01_findTaxList", '+ that.tokens +', "companyId":"'+ _vParams.companyId +'", "commonParam":'+ that.commonParam +' }'
+		        "param": '{ "serviceId":"B01_findTaxList", '+ that.tokens +', "companyId":'+ _vParams.companyId +', "commonParam":'+ that.commonParam +' }'
 		    },
             success:function(data){
             	data = data || {};
@@ -151,7 +155,7 @@ OrdersMt.prototype = {
             async:false,
             url:config.serviceUrl,
             data: {
-		        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":"'+ _vParams.companyId +'",'+ that.tokens +',"commonParam":'+ that.commonParam +',"currencyId":'+ currencyId +',"rateDate":'+ new Date().getTime(_formDate) +'}'
+		        "param": '{"serviceId":"B01_getExchangeRateByCurrency","companyId":'+ _vParams.companyId +','+ that.tokens +',"commonParam":'+ that.commonParam +',"currencyId":"'+ currencyId +'","rateDate":"'+ new Date().getTime(_formDate) +'"}'
 		    },
             success:function(data){
             	data = data || {};
@@ -164,11 +168,14 @@ OrdersMt.prototype = {
 	},
 	start: function(){
 		var that = this;
-		$('#btnSaveOrder').before(that.orderBaseInfo());
+		$('#orderInfoCon').html(that.orderBaseInfo());
 		that.currencyType();
 		that.taxTypeSelect3();
 
-		$('#btnSaveOrder a').on('click',function(){
+		//通用底部
+		bottomBar(['share'],that.memberId);
+
+		$body.on('click','.bottom-btn',function(){
 			that.submitFn();
 		})
 	},
@@ -185,7 +192,7 @@ OrdersMt.prototype = {
             	data = data || {};
             	if(data.success){
                 	fnTip.success(2000);
-                	//setTimeout(window.location.reload(),2000);                		
+                	setTimeout(function(){goBack()},2000);
             	}
             }
 		})

@@ -11,11 +11,9 @@ OrdersMt.prototype = {
 		that.commonParam = JSON.stringify(commonParam());
 		that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
 		that.load = false;
+		that.memberId = '';
+		that.prodId = [];
 		that.start();
-		
-		$('#btnSaveOrder a').on('click',function(){
-			that.submitFn();
-		})
 	},
 	orderInfos: function(){
 		var that = this, html = '';
@@ -24,7 +22,7 @@ OrdersMt.prototype = {
             async:false,
             url:config.serviceUrl,
             data: {
-		        "param": '{'+ that.tokens +',"serviceId":"B03_findPoAnswerLineList","poAnswerId":"'+ _vParams.poAnswerId +'","venderId":"'+ _vParams.venderId +'","commonParam":'+ that.commonParam +' }'
+		        "param": '{'+ that.tokens +',"serviceId":"B03_findPoAnswerLineList","poAnswerId":"'+ _vParams.poAnswerId +'","vendorId":"'+ _vParams.vendorId +'","commonParam":'+ that.commonParam +' }'
 		    },
             success:function(data){
             	data = data || {};
@@ -33,9 +31,10 @@ OrdersMt.prototype = {
             		for(var i=0, len = orderInfo.length; i<len; i++){
             			var orderInfoItem = orderInfo[i];
             			var itemLen=orderInfoItem.poSubLineList.length;
+            			that.prodId.push(orderInfoItem.prodId);
                 		html+='<div class="m-item">'
 							+'	<h2 class="m-title">基本信息</h2>'
-							+'	<div class="item-wrap">'
+							+'	<div class="item-wrap" data-prod-index="'+i+'">'
 							+'		<ul>'
 							+'			<li><span>物料编码：</span>'+ orderInfoItem.prodCode +'</li>'
 							+'			<li><span>物料详细：</span><p>'+ orderInfoItem.prodName + ' ' + orderInfoItem.prodScale +'</p></li>'
@@ -60,7 +59,7 @@ OrdersMt.prototype = {
 							+'			<span class="c-label"><b>我方编码：</b></span>'
 							+'			<div class="wfItem">'
 							+				orderInfoItem.vProdCode
-							+'				<p>'+ orderInfoItem.vProdName + ' ' + orderInfoItem.vProdScale +'</p>'
+							+'				<p>'+ orderInfoItem.vProdName + ' ' + orderInfoItem.vProdScale + '</p>'
 							+'			</div>'
 							+'			<div class="itemEdit">'
 							+'				<input type="text" class="int-search" placeholder="请输入我方编码" />'
@@ -99,7 +98,7 @@ OrdersMt.prototype = {
             async:false,
             url:config.serviceUrl,
             data: {
-		        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":'+ _vParams.companyId +',"prodId":"'+ _vParams.prodId +'",'+ that.tokens +',"commonParam":'+ that.commonParam +'}'
+		        "param": '{"serviceId":"B01_findProdUnitListByProd","companyId":"'+ _vParams.companyId +'","prodId":"'+ that.prodId[0] +'",'+ that.tokens +',"commonParam":'+ that.commonParam +'}'
 		    },
             success:function(data){
             	data = data || {};
@@ -120,12 +119,18 @@ OrdersMt.prototype = {
 	},
 	start: function(){
 		var that = this;
-		$('#btnSaveOrder').before(that.orderInfos());
+		$('#orderInfoCon').html(that.orderInfos());
 		if(that.load){
 			that.units();
 		}
 		that.editProdCode();
 		that.hideTip();
+		
+		//通用底部
+		bottomBar(['share'],that.memberId,'','','取消');
+		$body.on('click','.bottom-btn',function(){
+			that.submitFn();
+		})
 	},
 	initSelect3: function(el,options,currValue){
 		$(el).select3({
@@ -137,6 +142,7 @@ OrdersMt.prototype = {
 		});
 	},
 	editProdCode: function(){
+		var that = this;
 		$('.contarin').on('click','.edit',function(){
 			var _this = $(this),
 				parent = _this.parent('.item-wrap');
@@ -152,7 +158,7 @@ OrdersMt.prototype = {
                 //dataType: "json",
                 url:config.serviceUrl,
                 data: {
-			        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"'+ _vParams.companyId +'","vendorId":"'+ _vParams.vendorId +'","prodCode":'+ code +',"commonParam":'+ that.commonParam +','+ that.tokens +'}'
+			        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"'+ _vParams.companyId +'","vendorId":"'+ _vParams.vendorId +'","prodCode":"'+ code +'","commonParam":'+ that.commonParam +','+ that.tokens +'}'
 			    },
                 success:function(data){
                 	data = data || {};
@@ -187,20 +193,6 @@ OrdersMt.prototype = {
 		})
 	},
 	submitFn: function(){
-		var that = this, inParams, value = $('#taxType').select3('value'), poAnswerOrderInfo = [];
-		poAnswerOrderInfo[0] = {"taxName":value}
 
-		$.ajax({
-			type:"POST",
-            //dataType: "json",
-            url:config.serviceUrl,
-            data: {
-            	"param": '{"poAnswerOrderInfo":' + JSON.stringify(poAnswerOrderInfo) + ',"serviceId":"B03_poAnswerToSalesOrder"}'
-            },
-            success:function(data){
-            	fnTip.success(2000);
-            	setTimeout(window.location.reload(),2000);
-            }
-		})
 	}
 }

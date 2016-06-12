@@ -11,32 +11,28 @@
 	<!-- QQ强制竖屏 -->
 	<meta name="x5-orientation" content="portrait">
 	<link rel="stylesheet" href="../css/public.css">
-	<link rel="stylesheet" href="../css/select3.css">
-	<link rel="stylesheet" href="../css/orderMt.css" class="shareCss" data-cssname="orderMt">
-	<title>销售订单维护</title>
+	<link rel="stylesheet" href="../css/popup.css">
+	<link rel="stylesheet" href="../css/list.css">
+	<style>
+		.item-wrap li span:first-child{ width: 4.2rem;}
+	</style>
+	<title></title>
 </head>
 <body>
-	<div class="contarin">
-		<div id="btnSaveOrder" class="btn-wrap">
-			<a href="javascript:;" class="btnB">完成</a>			
-		</div>
+	<div class="contarin receiveOrder" style="display:none">
+		<div id="orderHeadInfo" class="m-item"></div>
+		<div id="prodBodyInfo" class="m-item m-item2"></div>
+		<a href="#" class="item-wrap item-link" name="remark">备注与订单附件<span class="arrow_down"></span></a>
 	</div>
-<!-- 	<div id="jBottom" class="m-bottom-wrap clearfix">
-		<div class="bottom-side">
-			<a href="javascript:;" class="mobile"></a>
-			<a href="javascript:;" class="share"></a>
-			<a href="javascript:;" class="im"></a>
-		</div>
-		<a href="javascript:;" class="bottom-btn">完成</a>
-	</div> -->
+	<script src="../js/lib/sea.js"></script>
 	<script src="../js/lib/zepto-min.js"></script>
 	<script src="../js/public/public.js"></script>
 	<script>fnTip.loading()</script>
-	<script src="../js/lib/select3-full-min.js"></script>
-	<script src="../js/ordersMt1.js"></script>
+	<script src="../js/lib/popup.js"></script>
+	<script src="../js/receiveOrder.js"></script>
 	<script src="../js/bottom.js"></script>
 	<script>
-		new OrdersMt();
+		new receiveOrder();
 	</script>
 
 </body>

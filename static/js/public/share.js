@@ -1,7 +1,8 @@
 function ShareFn(opts){
-	this.cssname = opts.cssname;
-	this.containers = opts.containers;
-	this.filterItems = opts.filterItems;
+	opts = opts || '';
+	this.cssname = opts.cssname || $('.shareCss');
+	this.containers = opts.containers || $('.contarin');
+	this.filterItems = opts.filterItems || [];
 	this.init();
 }
 

@@ -237,6 +237,14 @@ function popup(type, title, content, closeCallBack, okCallBack){
 	});
 }
 
+function isUndefined(value){
+	return typeof value === 'undefined';
+}
+
+function isEmpty(value){
+	return isUndefined(value) || value === '' || value === null || value !== value;
+}
+
 //JS调用Native
 function connectWebViewJavascriptBridge(callback) {
     if (window.WebViewJavascriptBridge) {
@@ -261,6 +269,6 @@ function webViewTitle(title){
 //调用Native返回上一级
 function goBack(){
 	if(window.WebViewJavascriptBridge){
-		window.WebViewJavascriptBridge.callHandler( "back", "", function(responseData) {});
+		window.WebViewJavascriptBridge.callHandler( "back", {"param":""}, function(responseData) {});
 	}	
 }

@@ -11,6 +11,7 @@ OrdersMt.prototype = {
 		var that = this;
 		that.commonParam = JSON.stringify(commonParam());
 		that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
+		that.memberId = '';
 		that.load = false;
 
 		//查询枚举值
@@ -26,16 +27,19 @@ OrdersMt.prototype = {
 		});
 
 
-		$('#savePayInfoList').before(that.setPayOrderInfo());
+		$('#orderInfoCon').html(that.setPayOrderInfo());
 
 		if(that.load){
 			that.conditionSelect();
 			that.LogisticalSelect();
 			that.address();
-			that.payWaySelect();				
+			that.payWaySelect();
+			//通用底部
+			bottomBar(['share'],that.memberId);
 		}
 
-		$('#savePayInfoList a').on('click',function(){
+		$body.on('click','.bottom-btn',function(e){
+			e.preventDefault();
 			that.submitFn();
 		})
 	},
@@ -52,6 +56,7 @@ OrdersMt.prototype = {
             	data = data || {};
             	if(data.success){
             		var infos = data.poAnswerOrderInfo;
+            		that.memberId = infos.auditid;
         			html+='<div id="payInfoList" class="m-item">'
 						+'	<div class="item-wrap">'
 						+'		<ul>'
@@ -157,14 +162,14 @@ OrdersMt.prototype = {
 	},
 
 	conditionSelect: function(){
-		var that = this, options = [], currValue = '', $jyCurrVal = $('#jyCurrVal'), cConditionId = $jyCurrVal.attr('data-conditionId');
+		var that = this, options = [], currValue = '', $jyCurrVal = $('#jyCurrVal'), cConditionId = $jyCurrVal.attr('data-conditionId'), customerId = $('#address').attr('data-companyId');
 
 		//根据客户交易条件获取本方交易条件
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,
             data: {
-		        "param": '{"companyId":"'+ _vParams.companyId +'","serviceId":"B01_getConditionByCustomerCondition",'+ that.tokens +',"commonParam":'+ that.commonParam +',"customerId":"'+ _vParams.customerId +'","cConditionId":"'+cConditionId+'"}'
+		        "param": '{"companyId":"'+ _vParams.companyId +'","serviceId":"B01_getConditionByCustomerCondition",'+ that.tokens +',"commonParam":'+ that.commonParam +',"customerId":"'+ customerId +'","cConditionId":"'+cConditionId+'"}'
 		    },
             success:function(data){
             	data = data || {};
@@ -227,14 +232,14 @@ OrdersMt.prototype = {
         })
 	},
 	payWaySelect: function(){
-		var that = this, options = [], currValue = '', cPayWayId = $('#payWayName').attr('data-payWayId');
+		var that = this, options = [], currValue = '', customerId = $('#address').attr('data-companyId'), cPayWayId = $('#payWayName').attr('data-payWayId');
 
 		//根据客户付款方式获取本方收款方式
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,
             data: {
-		        "param": '{'+ that.tokens +',"serviceId":"B01_getPayWayByCustomerPayWay","commonParam":'+ that.commonParam +',"companyId":"'+ _vParams.companyId +'","customerId":"'+ _vParams.customerId +'","cPayWayId":"'+cPayWayId+'"}'
+		        "param": '{'+ that.tokens +',"serviceId":"B01_getPayWayByCustomerPayWay","commonParam":'+ that.commonParam +',"companyId":"'+ _vParams.companyId +'","customerId":"'+ customerId +'","cPayWayId":"'+cPayWayId+'"}'
 		    },
             success:function(data){
             	data = data || {};
@@ -282,7 +287,7 @@ OrdersMt.prototype = {
             },
             success:function(data){
             	fnTip.success(2000);
-            	setTimeout(window.location.reload(),2000);
+            	setTimeout(function(){goBack()},2000);
             }
 		})
 	}
