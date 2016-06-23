@@ -44,11 +44,22 @@ function btmBtnMobile(memberId){
 		popup('alert','','用户ID有误或为空!');
 		return false;		
 	}
-	window.WebViewJavascriptBridge.callHandler( "call", {"param":memberId}, function(responseData) {
-		if(responseData.response_code!=0){
-			popup('alert','','用户ID有误!');
-		}
-	});
+	if(isAndroidMobileDevice()){
+		window.WebViewJavascriptBridge.callHandler( "call", {"param":memberId}, function(responseData) {
+			if(responseData.response_code!=0){
+				popup('alert','','用户ID有误!');
+			}
+		});
+	}else{
+		setupWebViewJavascriptBridge(function(bridge) {
+			bridge.callHandler("call", {"param":memberId}, function responseCallback(responseData) {
+				if(responseData.response_code!=0){
+					popup('alert','','用户ID有误!');
+				}
+		    })
+		})			
+	}
+
 }
 
 // 分享
@@ -62,9 +73,19 @@ function btmBtnIm(memberId){
 		popup('alert','','用户ID有误或为空!');
 		return false;		
 	}
-	window.WebViewJavascriptBridge.callHandler( "chat", {"param":memberId}, function(responseData) {
-		if(responseData.response_code!=0){
-			popup('alert','','用户ID有误!');
-		}
-	});
+	if(isAndroidMobileDevice()){
+		window.WebViewJavascriptBridge.callHandler( "chat", {"param":memberId}, function(responseData) {
+			if(responseData.response_code!=0){
+				popup('alert','','用户ID有误!');
+			}
+		});
+	}else{
+		setupWebViewJavascriptBridge(function(bridge) {
+			bridge.callHandler("chat", {"param":memberId}, function responseCallback(responseData) {
+				if(responseData.response_code!=0){
+					popup('alert','','用户ID有误!');
+				}
+		    })
+		})		
+	}
 }

@@ -113,7 +113,7 @@ OrderHandedOut.prototype = {
 						if(that.status==3){
 							if(prodInfos[i].poSubLineInfo.length>0){
 								for(var j=0, L=prodInfos[i].poSubLineInfo.length; j<L; j++){
-									html+='<li class="response"><section><span>分批答交：</span>'+ prodInfos[i].poSubLineInfo[j].purchaseQty + prodInfos[i].poSubLineInfo[j].purchaseUnit +'/'+ prodInfos[i].poSubLineInfo[j].valuationQty + prodInfos[i].poSubLineInfo[j].valuationUnit +'</section><section><span>交期：</span>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</section></li>'
+									html+='<li class="response"><section><span>分批答交：</span>'+ prodInfos[i].poSubLineInfo[j].purchaseQty + prodInfos[i].vAnswerUnitName +'/'+ prodInfos[i].poSubLineInfo[j].valuationQty + prodInfos[i].vValuationUnitName +'</section><section><span>交期：</span>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</section></li>'
 								}
 							}else{
 								html+=' <li class="response"><section><span><span>答交数量：</span>'+ prodInfos[i].vPurchaseQty + prodInfos[i].vAnswerUnitName +'/'+ prodInfos[i].vValuationQty + prodInfos[i].vValuationUnitName +'</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'							
@@ -354,8 +354,12 @@ OrderHandedOut.prototype = {
 			//------------------待收货
 			if(that.status==4){
 				//---》跳转至app收货单新建
-				if(window.WebViewJavascriptBridge){
+				if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
 					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function(responseData) {});
+				}else{
+					setupWebViewJavascriptBridge(function(bridge) {
+						bridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function responseCallback(responseData) {})
+					})
 				}
 				return false;
 			}

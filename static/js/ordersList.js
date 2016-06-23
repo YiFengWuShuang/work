@@ -515,7 +515,7 @@ Lists.prototype = {
 
 		$('.item-total').html('订单总金额：'+$currencySymbol + formatMoney(that.orderInfo.cTotalAmount)).show();
 		if(that.vStatus!=1){
-			$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount)).show();			
+			$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount||that.orderInfo.cTotalAmount)).show();			
 		}
 
 
@@ -545,7 +545,7 @@ Lists.prototype = {
         getObFileList();
 
 		//单头附件
-		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"24","fileSource":1,"searchType":1};//searchType查询类型1单头2单身
+		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.vendorId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"24","fileSource":2,"searchType":1};//searchType查询类型1单头2单身
 		GetAJAXData('POST',fileParam,function(fileData){
 			if(fileData.success){
 				$fileData = fileData;
@@ -745,6 +745,10 @@ Lists.prototype = {
         	addCostItem = {
         		"vCostAmount":Number($othersCost.eq(c).attr('data-vcostamount')),
         		"costName":$othersCost.eq(c).attr('data-costname'),
+        		"isNewAdd": true,//是否页面上新增加的
+        		"costSource": 2,//costSource = 1：客户(不能删除)，2：供应商
+        		"costAmount": 0,
+        		"remark": "",
         		"vRemark":'',
         		"lineNo":c+1
         	}
@@ -918,7 +922,6 @@ Lists.prototype = {
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,
-            // data:'param='+JSON.stringify(inParams),
             data: {
 		        "param": JSON.stringify(inParams)
 		    },

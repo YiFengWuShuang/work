@@ -31,7 +31,7 @@
 .responseBox li span:nth-child(4){ float: none;}
 .responseBox li input{ width: 18%; height: 1.4rem; border: 1px solid #979797; padding: 0 .1rem; margin-right: .4rem; overflow: hidden;}
 .responseBox li input.int03{ width: 30%; margin-right: 0; margin-left: 1.3rem;}
-.responseBox li .timeBox{display: inline-block; width: 30%; height: 1.4rem; line-height: 1.4rem; border: 1px solid #979797; margin-left: 1.3rem; padding: 0 .1rem; vertical-align: middle;}
+.item-wrap li .timeBox{display: inline-block; width: 30%; height: 1.4rem; line-height: 1.4rem; border: 1px solid #979797; margin-left: 1.3rem; padding: 0 .1rem; vertical-align: middle;}
 .responseBox li em{ display: inline-block; width: 18%; margin-right: .4rem; font-style: normal;}
 .responseBox li em.em03{ width: 28%;}
 .responseBox li p{ overflow: hidden;}
@@ -65,6 +65,8 @@
 /* 变更 */
 .purchase-change #prodBodyInfo .changeItem section span{ color: transparent;}
 .purchase-change #prodBodyInfo .changeItem section span.nth0{ color: #f45252;}
+.item-wrap-change input[type="text"]{ width: 5rem; height: 1.4rem; line-height: 1.4rem; border:1px solid #b0b0b0; padding:0 .2rem;}
+.item-wrap-change li .timeBox{ margin-left: 0; border-color: #b0b0b0; width: 5rem; padding:0 .2rem;}
 
 @media screen and (max-width: 320px){
 	.responseBox li .timeBox{ margin-left: 1rem;}

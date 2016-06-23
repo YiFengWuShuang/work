@@ -15,6 +15,8 @@
 #currency .curSelect{ display: none;}
 .wfItem,.itemEdit{ overflow: hidden;}
 .itemEdit{ display: none;}
+.wfItem-int{ display: inline-block; position: relative;}
+.wfItem-int i{ position: absolute; right: 0; top: 0;}
 
 .orderWH .select3-input{ width: 7rem;}
 .c-cont-item > span{ display: inline-block; width: 2.5rem;}

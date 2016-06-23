@@ -10,6 +10,7 @@ var config = {
 };
 
 config.serviceUrl = 'http://54.222.203.245:7000/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
+//config.serviceUrl = 'http://prod-supplycenter-789909153.cn-north-1.elb.amazonaws.com.cn/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 config.ossConfigUrl = "http://172.31.10.168:19790/oss/config/api";
 config.ossNotifyUrl = "http://172.31.10.155:19890/oss/notify/api";
 config.ussUrl = "http://172.31.10.168/usersystem";
@@ -245,7 +246,31 @@ function isEmpty(value){
 	return isUndefined(value) || value === '' || value === null || value !== value;
 }
 
-//JS调用Native
+
+function isMobileUserAgent(){
+	return (/iphone|ipod|android.*mobile|windows.*phone|blackberry.*mobile/i.test(window.navigator.userAgent.toLowerCase()));
+}
+function isAppleMobileDevice(){
+	return (/iphone|ipod|ipad|Macintosh/i.test(navigator.userAgent.toLowerCase()));
+}
+function isAndroidMobileDevice(){
+	return (/android/i.test(navigator.userAgent.toLowerCase()));
+}
+
+
+//IOS JS调用Native
+function setupWebViewJavascriptBridge(callback) {
+    if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+    if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+    window.WVJBCallbacks = [callback];
+    var WVJBIframe = document.createElement('iframe');
+    WVJBIframe.style.display = 'none';
+    WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+    document.documentElement.appendChild(WVJBIframe);
+    setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+}
+
+//Android JS调用Native
 function connectWebViewJavascriptBridge(callback) {
     if (window.WebViewJavascriptBridge) {
         callback(WebViewJavascriptBridge)
@@ -259,6 +284,7 @@ function connectWebViewJavascriptBridge(callback) {
         );
     }
 }
+
 //传递title给Native
 function webViewTitle(title){
 	if(window.WebViewJavascriptBridge){
@@ -268,7 +294,11 @@ function webViewTitle(title){
 
 //调用Native返回上一级
 function goBack(){
-	if(window.WebViewJavascriptBridge){
+	if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
 		window.WebViewJavascriptBridge.callHandler( "back", {"param":""}, function(responseData) {});
-	}	
+	}else{
+		setupWebViewJavascriptBridge(function(bridge) {
+			bridge.callHandler( "back", {"param":""}, function responseCallback(responseData) {})
+		})
+	}
 }

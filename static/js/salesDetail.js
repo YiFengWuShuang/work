@@ -190,8 +190,12 @@ salesDetail.prototype = {
 
 		$body.on('click','.bottom-btn-confirm',function(){
 			//跳转至出货单新建
-			if(window.WebViewJavascriptBridge){
+			if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
 				window.WebViewJavascriptBridge.callHandler( "goodsDelivery", {"param":that.orderInfo.soFormNo}, function(responseData) {});
+			}else{
+				setupWebViewJavascriptBridge(function(bridge) {
+					bridge.callHandler( "goodsDelivery", {"param":that.orderInfo.soFormNo}, function responseCallback(responseData) {})
+				})				
 			}
 		})
 	},

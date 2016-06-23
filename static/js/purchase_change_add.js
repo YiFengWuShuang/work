@@ -12,8 +12,10 @@ var $PoLineList;
 var $scope = {};
 var $platformCurrencyList;
 var $currencySymbol;
+var $priceDecimalNum;//单价小数位数
+var $amountDecimalNum;//金额小数位数
 var $fileListData1;
-//that.changeType 1同意差异，变更原始订单   2取消订单
+//that.changeType 1答交差异变更，3结案订单，2取消订单，4采购信息调整
 var Lists = function(){
 	this.init();
 }
@@ -21,7 +23,6 @@ Lists.prototype = {
 	init: function(){
 		var that = this;
 		that._files = [];
-		that._lineLists = [];
 		that._othersCost = [];
 		that.changeReason = [];
 		that.totals = 0;
@@ -31,6 +32,7 @@ Lists.prototype = {
 			fnTip.hideLoading();
 		},0);
 		//查询枚举值
+		//变更类型名称
 		requestFn("B03_POCType",function(data){
 			if(data.errorCode=='0'){
 				that.changeTypeList = data.dataSet.data.detail;
@@ -41,9 +43,10 @@ Lists.prototype = {
 				that.logisticsType = data.dataSet.data.detail;
 			}
 		});
-		requestFn("B02_InvoiceType",function(data){
+		//发票信息
+		requestFn("B02_Invoice",function(data){
 			if(data.errorCode=='0'){
-				that.invoiceType = data.dataSet.data.detail;
+				that.invoiceInfoName = data.dataSet.data.detail;
 			}
 		});
 
@@ -68,10 +71,12 @@ Lists.prototype = {
             	data = data || {};
             	if(data.success){
             		that.orderInfo = data.purchaseOrderInfo;
-            		if(data.purchaseOrderInfo.status==3||data.purchaseOrderInfo.status==4){
+            		if(data.purchaseOrderInfo.status==3){
             			that.changeType = '1'
             		}else if(data.purchaseOrderInfo.status==8){
             			that.changeType = '2'
+            		}else if(data.purchaseOrderInfo.status==4){
+            			that.changeType = '4'
             		}
             		html +='<h2 class="m-title">变更信息</h2><div class="item-wrap">'
 						 +'	<ul>'
@@ -84,11 +89,34 @@ Lists.prototype = {
 						 +'		<li><span>变更日期：</span>'+ transDate(new Date().getTime()) +'</li>'
 						 +'	</ul>'
 						 +'</div>'
+					//发票类型
+					if(that.orderInfo.invoice!=1){
+						requestFn("B02_InvoiceType",function(data){
+							if(data.errorCode=='0'){
+								that.invoiceType = data.dataSet.data.detail;
+							}
+						});						
+					}
+
+			        //变更后价格总计
+			        if( that.changeType != 2 ){
+			            that.addval_total = (that.orderInfo.vTotal=="")?that.orderInfo.cTotal:that.orderInfo.vTotal;   
+			            that.addval_taxTotal = (that.orderInfo.vTaxTotal=="")?that.orderInfo.cTaxTotal:that.orderInfo.vTaxTotal;   
+			            that.addval_totalAmount = (that.orderInfo.vTotalAmount=="")?that.orderInfo.cTotalAmount:that.orderInfo.vTotalAmount;   
+			            that.addval_otherCostTotal = (that.orderInfo.vOtherCostTotal=="")?that.orderInfo.cOtherCostTotal:that.orderInfo.vOtherCostTotal;  
+			        }else{
+			            that.addval_total = 0;
+			            that.addval_taxTotal = 0;
+			            that.addval_totalAmount = 0;
+			            that.addval_otherCostTotal = 0;
+			        }
+
             	}
             }
 		})
 		return html;
 	},
+	//采购明细-----------------------------------------------------------------------
 	prodBodyInfo: function(){
 		var that = this, html = '';
 		var params = {"serviceId": "B03_findPoLineList","companyId":_vParams.companyId,"poId": _vParams.poId,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};
@@ -100,45 +128,183 @@ Lists.prototype = {
             success:function(data){
             	data = data || {};
             	if(data.success){
-            		var lineList = data.poLineList;
-            		that._lineLists = lineList;
+			    	$PoLineList = data.poLineList
+			        $PoLineList.sort(function(a1,a2){
+			            return a1.lineNo-a2.lineNo;
+			        });
+			        //初始化异动类型、变更附件、变更备注
+			        $PoLineList.isChecked = false;   
+			        $PoLineList.forEach(function(val) {
+			            val.changeLineNo = val.lineNo;
+			            val.changeType = 1;  //异动类型（1-未变化、2-修改、3-新增）
+			            val.changeFileList = [];
+			            val.changeRemark = "";	
+			            val.isChecked = false;   
+					});
+			        /**
+			         * @采购明细 备注和附件
+			         * 取消订单和强制结案状态 下只需要取出 订单附件和备注并且显示 
+			         * 答交差异变更和调整采购信息状态下 需要上传附件 添加备注  并保存
+			         */
+			        if( that.changeType == 3 ){
+			            $PoLineList.forEach(function(val) {
+			                //变更后采购明细 与 订单信息一样 
+			                val.changeQty = val.purchaseQty;		                 
+			                val.changeValuationQty = val.valuationQty;	 
+			                val.changePrice = val.price;		     	             
+			                val.changeTaxPrice = val.taxPrice;		     	             
+			                val.changeLineAmount = val.lineAmount;		     	             
+			                val.changeTaxLineTotal = val.taxLineTotal;		     	     
+			                val.changeExpectedDeliveryStr = val.expectedDelivery;	
+			            });
+			        }else if( that.changeType == 1){
+			            var batchArr = [];//分批答交 临时数组
+
+			            //答交差异变更 分批答交拆开
+			            $PoLineList.forEach(function(val) {
+			                //变更后采购明细 与 答交信息一样 
+			                val.changeQty = val.vPurchaseQty;		                 
+			                val.changeValuationQty = val.vValuationQty;
+			                val.changePrice = val.vPrice;	
+			                val.changeTaxPrice = val.vTaxPrice;		     	             
+			                val.changeLineAmount = val.vLineAmount;		     	             
+			                val.changeTaxLineTotal = val.vTaxLineTotal;		     	     
+			                val.changeExpectedDeliveryStr = val.vExpectedDelivery;	
+
+			                //分批答交 拆分操作
+			                if( val.vBatchAnswer == 1 ){
+			                    for( var i=0;i<val.poSubLineInfo.length;i++ ){
+			                        if( i==0 ){
+			                            val.changeQty = val.poSubLineInfo[i].purchaseQty;
+			                            val.changeValuationQty = val.poSubLineInfo[i].valuationQty;	
+			                            val.changeExpectedDeliveryStr = val.poSubLineInfo[i].expectedDelivery;
+			                            val.changeLineAmount = (val.changePrice*val.changeValuationQty);
+			                            val.changeTaxLineTotal = (val.changeTaxPrice*val.changeValuationQty);
+			                            val.changeType = 2;
+			                        }else{
+			                            var batchItem = {};
+			                            batchItem.prodId = val.prodId;		                 
+			                            batchItem.prodCode = val.prodCode;		                 
+			                            batchItem.prodName = val.prodName;		                 
+			                            batchItem.prodScale = val.prodScale;		                 
+			                            batchItem.prodDesc = val.prodDesc;		                 
+			                            batchItem.valuationUnitId = val.valuationUnitId;		                 
+			                            batchItem.valuationUnitCode = val.valuationUnitCode;		                 
+			                            batchItem.valuationUnitName = val.valuationUnitName;	
+			                            batchItem.purchaseUnitId = val.purchaseUnitId;	
+			                            batchItem.purchaseUnitName = val.purchaseUnitName;	
+			                            batchItem.purchaseUnitCode = val.purchaseUnitCode;	
+			                            batchItem.changePrice = val.vPrice;	
+			                            batchItem.changeTaxPrice = val.vTaxPrice;	
+			                            batchItem.changeFileList = [];	
+			                            
+			                            var maxLineNo=(batchArr.length==0)?$PoLineList[$PoLineList.length-1].changeLineNo:batchArr[batchArr.length-1].changeLineNo;
+			                            batchItem.changeLineNo = maxLineNo+1;		                 
+			                            batchItem.changeType = 3;		                 
+			                            batchItem.changeQty = val.poSubLineInfo[i].purchaseQty;		                 
+			                            batchItem.changeValuationQty = val.poSubLineInfo[i].valuationQty;	
+			                            batchItem.changeExpectedDeliveryStr = val.poSubLineInfo[i].expectedDelivery;	     	             
+			                            batchItem.changeLineAmount = (val.changePrice*val.changeValuationQty);
+			                            batchItem.changeTaxLineTotal = (val.changeTaxPrice*val.changeValuationQty);
+			                            batchArr.push(batchItem);
+			                        }
+			                    }
+			                }
+			                //异动类型
+			                if( val.price != val.changePrice || 
+			                    val.purchaseQty != val.changeQty || 
+			                    val.expectedDelivery != val.changeExpectedDeliveryStr || 
+			                    val.lineAmount != val.changeLineAmount ){
+
+			                    val.changeType = 2;
+			                }
+			            });
+			            $PoLineList = $PoLineList.concat( batchArr );
+
+			        }else if( that.changeType == 4 ){
+			            $PoLineList.forEach(function(val) {
+			                //初始化 变更后与变更前一样 
+			                val.changeQty = val.purchaseQty;		                 
+			                val.changeValuationQty = val.valuationQty;	 
+			                val.changePrice = val.price;		     	             
+			                val.changeTaxPrice = val.taxPrice;		     	             
+			                val.changeLineAmount = val.lineAmount;		     	             
+			                val.changeTaxLineTotal = val.taxLineTotal;		     	     
+			                val.changeExpectedDeliveryStr = val.expectedDelivery;	                
+			            });
+			        }else if( that.changeType == 2 ){
+			            $PoLineList.forEach(function(val) {
+			                val.changeType = 2;
+			                //变更后的单价、交期等于原单价、交期，变更后的数量默认为0（都不允许修改）
+			                //变更后的费用等于0（不允许修改）
+			                //总价、小计均为0
+			                val.changeQty = 0;		                 
+			                val.changeValuationQty = 0;	 
+			                val.changePrice = val.price;		     	             
+			                val.changeTaxPrice = val.taxPrice;		     	             
+			                val.changeLineAmount = 0;		     	             
+			                val.changeTaxLineTotal = 0;		     	     
+			                val.changeExpectedDeliveryStr = val.expectedDelivery;	                
+			            });
+			        }
+			        $scope.poLineList = $PoLineList;
+
+
             		html = '<h2 class="m-title">采购明细</h2>';
-            		if(that.changeType!=2){
-	            		for(var i=0, len=lineList.length; i<len; i++){
+            		if(that.changeType==1){
+	            		for(var i=0, len=data.poLineList.length; i<len; i++){
 	                		html+='<div class="item-wrap">'
 								+'	<ul>'
-								+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
-								+'		<li><span>物料名称：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodScale +'</p></li>'
-								+'		<li><section><span>数量：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
-							if(lineList[i].poSubLineInfo.length){
-								for(var j=0; j<lineList[i].poSubLineInfo.length; j++){
-									html+='<li class="changeItem"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>变更：</span><em>'+ lineList[i].poSubLineInfo[j].purchaseQty +'</em>'+ lineList[i].vAnswerUnitName +'/<em>'+ lineList[i].poSubLineInfo[j].valuationQty +'</em>'+ lineList[i].vValuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>预交期：</span><em>'+ lineList[i].poSubLineInfo[j].expectedDelivery +'</em></section></li>'
+								+'		<li class="prodCode"><span>物料编码：</span><b>'+ data.poLineList[i].prodCode +'</b></li>'
+								+'		<li><span>物料名称：</span><p>'+ data.poLineList[i].prodName + ' ' + data.poLineList[i].prodScale +'</p></li>'
+								+'		<li><section><span>数量：</span><em>'+ data.poLineList[i].purchaseQty +'</em>'+ data.poLineList[i].purchaseUnitName +'/<em>'+ data.poLineList[i].valuationQty +'</em>'+ data.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(data.poLineList[i].expectedDelivery) +'</em></section></li>'
+							if(data.poLineList[i].poSubLineInfo.length){
+								for(var j=0; j<data.poLineList[i].poSubLineInfo.length; j++){
+									html+='<li class="changeItem"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>变更：</span><em>'+ data.poLineList[i].poSubLineInfo[j].purchaseQty +'</em>'+ data.poLineList[i].vAnswerUnitName +'/<em>'+ data.poLineList[i].poSubLineInfo[j].valuationQty +'</em>'+ data.poLineList[i].vValuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>预交期：</span><em>'+ data.poLineList[i].poSubLineInfo[j].expectedDelivery +'</em></section></li>'
 								}
 							}else{
-								html+='<li class=""><section><span>供应方：</span><em>'+ lineList[i].vPurchaseQty +'</em>'+ lineList[i].vAnswerUnitName +'/<em>'+ lineList[i].vValuationQty +'</em>'+ lineList[i].vValuationUnitName +'</section><section><span>预交期：</span><em>'+ lineList[i].vExpectedDelivery +'</em></section></li>'
+								html+='<li class=""><section><span>变更：</span><em>'+ data.poLineList[i].vPurchaseQty +'</em>'+ data.poLineList[i].vAnswerUnitName +'/<em>'+ data.poLineList[i].vValuationQty +'</em>'+ data.poLineList[i].vValuationUnitName +'</section><section><span>预交期：</span><em>'+ data.poLineList[i].vExpectedDelivery +'</em></section></li>'
 							}	
-							html+='		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].taxPrice) : formatMoney(lineList[i].price)) +'/'+ lineList[i].valuationUnitName +'</li>'
+							html+='		<li class="price"><span>变更前单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(data.poLineList[i].taxPrice) : formatMoney(data.poLineList[i].price)) +'/'+ data.poLineList[i].valuationUnitName +'</li>'
+								+'		<li><span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(data.poLineList[i].vTaxPrice) : formatMoney(data.poLineList[i].vPrice)) +'/'+ data.poLineList[i].valuationUnitName +'</li>'
 								+'		<li class="files"><span>附件：</span></li>'
-								+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
-								+'		<li class="changeItem changeLineTotal"><span>答交小计：</span>'+ $currencySymbol + formatMoney(lineList[i].vTaxLineTotal) +'</li>'			
+								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney(data.poLineList[i].taxLineTotal) +'</b></li>'
+								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(data.poLineList[i].vTaxLineTotal) +'</li>'			
 								+'	</ul>'
 								+'</div>'
 	            		}            			
-            		}else{
-	            		for(var i=0, len=lineList.length; i<len; i++){
+            		}else if(that.changeType==2){
+	            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
 	                		html+='<div class="item-wrap">'
 								+'	<ul>'
-								+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
-								+'		<li><span>物料名称：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodScale +'</p></li>'
-								+'		<li><section><span>变更前：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
-								+'		<li class="changeItem"><section><span>变更后：</span><em>0</em>'+ lineList[i].purchaseUnitName +'/<em>0</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'	
-								+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].taxPrice) : formatMoney(lineList[i].price)) +'/'+ lineList[i].valuationUnitName +'</li>'
+								+'		<li class="prodCode"><span>物料编码：</span><b>'+ $scope.poLineList[i].prodCode +'</b></li>'
+								+'		<li><span>物料名称：</span><p>'+ $scope.poLineList[i].prodName + ' ' + $scope.poLineList[i].prodScale +'</p></li>'
+								+'		<li><section><span>变更前：</span><em>'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate($scope.poLineList[i].expectedDelivery) +'</em></section></li>'
+								+'		<li class="changeItem"><section><span>变更后：</span><em>0</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>0</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate($scope.poLineList[i].expectedDelivery) +'</em></section></li>'	
+								+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice) : formatMoney($scope.poLineList[i].price)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
 								+'		<li class="files"><span>附件：</span></li>'
-								+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
-								+'		<li class="changeItem changeLineTotal"><span>答交小计：</span>'+ $currencySymbol + formatMoney(0) +'</li>'			
+								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal) +'</b></li>'
+								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(0) +'</li>'			
 								+'	</ul>'
 								+'</div>'
 	            		}
+            		}else if(that.changeType==4){
+	            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
+	                		html+='<div class="item-wrap" data-index="'+ i +'">'
+								+'	<ul>'
+								+'		<li class="prodCode"><span>物料编码：</span>'+ $scope.poLineList[i].prodCode +'</li>'
+								+'		<li><span>物料名称：</span><p>'+ $scope.poLineList[i].prodName + ' ' + $scope.poLineList[i].prodScale +'</p></li>'
+								+'		<li><section><span>数量：</span><em>'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate($scope.poLineList[i].expectedDelivery) +'</em></section></li>'
+								+'		<li class="changeQty_'+ i +'"><section><span>变更：</span><em>'+ $scope.poLineList[i].changeQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].changeValuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ $scope.poLineList[i].changeExpectedDeliveryStr +'</em></section></li>'
+								+'		<li class="price"><span>变更前单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice) : formatMoney($scope.poLineList[i].price)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
+								+'		<li class="changePrice_'+ i +'"><span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].changeTaxPrice) : formatMoney($scope.poLineList[i].changePrice)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'				
+								+'		<li class="files"><span>附件：</span></li>'
+								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal) +'</b></li>'
+								+'		<li class="changeItem changeLineTotal changeLineTotal_'+ i +'"><span>变更后小计：</span>'+ $currencySymbol + formatMoney($scope.poLineList[i].changeTaxLineTotal) +'</li>'		
+								+'	</ul>'
+								+'	<span name="bodyInfos" class="edit"></span>'
+								+'</div>'
+	            		}             			
             		}
 
             		that.load = true;
@@ -150,6 +316,7 @@ Lists.prototype = {
 		})
 		return html;
 	},
+	//其他费用--------------------------------------------------------------------------------------
 	othersCost: function(){
 		var that=this, html='', subtotal=0, resubtotal=0;
 		if(!that.load)return;
@@ -162,16 +329,32 @@ Lists.prototype = {
             success:function(data){
             	data = data || {};
             	if(data.success){
-            		var costList = data.poOtherCostList;
-            		that._othersCost = costList;
+	            	var costList = data.poOtherCostList;
+					costList.isChecked = false;   
+			        costList.forEach( function( val ){
+			            val.changeType = 1;    
+			            val.isChecked = false;
+			            val.vCostAmount==''?val.costAmount:val.vCostAmount;
+			            if( that.changeType == 4 ){
+			                val.vCostAmount = val.costAmount;
+			            }else if(that.changeType == 2){
+			                val.vCostAmount = 0;
+			            }
+			        });
+			        costList.sort(function(a1,a2){
+			            return a1.lineNo-a2.lineNo;
+			        });
+			        $scope.poOtherCostList = costList;
+
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>';
-            		for(var i=0, len=costList.length; i<len; i++){
-            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount) +'</b><b class="dj"><em class="money">'+ ((that.changeType==2)?'0.00':(formatMoney((costList[i].vCostAmount=='') ? costList[i].costAmount : costList[i].vCostAmount))) +'</em></b></li>';
-            			resubtotal += costList[i].vCostAmount;
+            		for(var i=0, len=$scope.poOtherCostList.length; i<len; i++){
+            			html+='<li><span>'+ $scope.poOtherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney($scope.poOtherCostList[i].costAmount) +'</b><b class="dj"><em class="money">'+ formatMoney($scope.poOtherCostList[i].vCostAmount) +'</em></b></li>';
+            			resubtotal += $scope.poOtherCostList[i].vCostAmount;
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.cOtherCostTotal) +'</b></li>'
-            			+'<li id="changeCost" class="response changeLineTotal"><span>答交小计：</span>'+ $currencySymbol + ((that.changeType==2) ? formatMoney(0) : formatMoney(resubtotal)) +'</li>'
+            		html+='<li id="othersCostSubtotal" class="subtotal"><span>变更前：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.cOtherCostTotal) +'</b></li>'
+            			+'<li id="changeCost" class="response changeLineTotal"><span>变更后：</span>'+ $currencySymbol + (formatMoney(resubtotal)) +'</li>'
             			+'</ul>'
+            			+((that.changeType==4) ? '<span name="otherCostInfos" class="edit editOther"></span>' : '')
             			+'</div>';
             		$('#othersCost').html(html);
             	}
@@ -187,11 +370,18 @@ Lists.prototype = {
 		    value: currValue
 		});
 	},
+	//日期控件
+	dateFn: function(){
+		$('.timeBox').mdater({
+			minDate : new Date()
+		});
+	},
 	start: function(){
 		var that = this;
 		var orderHeadInfo = document.getElementById('orderHeadInfo');
 		var prodBodyInfo = document.getElementById('prodBodyInfo');
 		orderHeadInfo.innerHTML = that.orderBaseInfo();
+		that.dateFn();
 
 		//获取所有平台币种及小数位
 		var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
@@ -201,6 +391,8 @@ Lists.prototype = {
 				for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
 					if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
 						$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
+						$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
+						$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
 						return false;
 					}
 				}
@@ -233,8 +425,8 @@ Lists.prototype = {
 
 		// 单身附件
 		// function fileListOB(){
-		// 	for(var i=0, l=that._lineLists.length; i<l; i++){
-		// 		var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.companyId,"id":that._lineLists[i].id,"fileSource":1,"searchType":2,"docType":10,"commonParam":commonParam()};
+		// 	for(var i=0, l=$scope.poLineList.length; i<l; i++){
+		// 		var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.companyId,"id":$scope.poLineList[i].id,"fileSource":1,"searchType":2,"docType":10,"commonParam":commonParam()};
 		// 		GetAJAXData('POST',param,function(fileListData2){
 		// 			if(fileListData2.success){
 		// 				$fileListData2 = fileListData2;
@@ -255,16 +447,106 @@ Lists.prototype = {
 		});
 
 
-		$('.item-total').html('本方采购总计：'+$currencySymbol+formatMoney(that.orderInfo.cTotalAmount)).show();
-		$('.item-total-dj').html('供应商答交总计：'+$currencySymbol+formatMoney(((that.changeType==2)?0:that.orderInfo.vTotalAmount))).show();
+		//计算计价数量
+		function countChangeValuationQty( item ){
+			if ( isEmpty(item) ) {
+	            return;                                             
+	        }
+	        item.changeValuationQty = parseFloat(item.valuationQty)/parseFloat(item.purchaseQty)*parseFloat(item.changeQty);
+	        item.changeValuationQty = !item.changeValuationQty?"":item.changeValuationQty;
+            countLineTotal( item );
+		}
+	    //计算 不含税单价=含税单价/（1+税率）
+	    function countChangePrice( item ){
+	        item.changePrice = parseFloat(item.changeTaxPrice)/( 1+parseFloat(that.orderInfo.taxRate) );
+	        item.changePrice = parseFloat( item.changePrice.toFixed($priceDecimalNum) );
+	        countLineTotal( item );
+	    };
+	    //计算 含税单价=不含税单价*（1+税率）
+	    function countChangeTaxPrice( item ){
+	        if ( isEmpty(item) ) {
+	            return;                                             
+	        }
+	        item.changeTaxPrice = parseFloat(item.changePrice)*( 1+parseFloat(that.orderInfo.taxRate) );
+	        item.changeTaxPrice = parseFloat( item.changeTaxPrice.toFixed($priceDecimalNum) )
+	        countLineTotal( item );
+	    };
+	    //计算订单各种地方的金额
+	    function countLineTotal( item ){
+	        if( !isEmpty(item) ){
+	            //计算每条单身的 未税金额 和 含税金额
+	            //不含税金额=不含税单价*计价数量
+	            item.changeLineAmount = parseFloat(item.changePrice)*parseFloat(item.changeValuationQty);
+	            item.changeLineAmount = parseFloat(item.changeLineAmount.toFixed($amountDecimalNum));
+	            //含税金额=含税单价*计价数量
+	            item.changeTaxLineTotal = parseFloat(item.changeTaxPrice)*parseFloat(item.changeValuationQty);
+	            item.changeTaxLineTotal = parseFloat(item.changeTaxLineTotal.toFixed($amountDecimalNum));
+	        }
+	        //计算商品未税总额、含税总额、总额
+	        var orderTotal = 0;
+	        var orderTaxTotal = 0;
+	        for( var i=0;i<$scope.poLineList.length;i++ ){
+	            if( isNaN($scope.poLineList[i].changeLineAmount) ||   
+	                isNaN($scope.poLineList[i].changeTaxLineTotal)){
+
+	                continue;
+	            }
+	            orderTotal += parseFloat($scope.poLineList[i].changeLineAmount);
+	            orderTaxTotal += parseFloat($scope.poLineList[i].changeTaxLineTotal);
+	        }
+	        
+	        //未税总额
+	        that.addval_total = orderTotal;   
+	        //含税总额
+	        that.addval_taxTotal = orderTaxTotal;  
+	        //订单总金额
+	        that.addval_totalAmount = parseFloat(that.addval_taxTotal)+parseFloat(that.addval_otherCostTotal);
+	        $('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount));
+	    }
+	    //改变订单明细的数量，交期，单价的显示值
+	    function countChangeShowVal(i){
+	    	$('.changeQty_'+i).html('<section><span>变更后：</span><em>'+ $scope.poLineList[i].changeQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].changeValuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ $scope.poLineList[i].changeExpectedDeliveryStr +'</em></section>');
+	    	$('.changePrice_'+i).html('<span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].changeTaxPrice) : formatMoney($scope.poLineList[i].changePrice)) +'/'+ $scope.poLineList[i].valuationUnitName);
+	    	$('.changeLineTotal_'+i).html('<span>变更后小计：</span>'+ $currencySymbol + formatMoney($scope.poLineList[i].changeTaxLineTotal));
+	    }
+
+	    //其他费用中输入框值改变
+	    function changeOtherCost( arr ) {
+	        var reg = /^(-?\d+)(\.\d+)?$/; //判断数字
+
+	        //其他费用列表
+	        var otherTotal = 0;
+	        $scope.poOtherCostList.forEach(function (val, key) {
+	        	val.vCostAmount = parseFloat(arr[key]);
+		        if( !reg.test(val.vCostAmount) ){
+		            val.vCostAmount = "";
+		        }	        	
+	            otherTotal += parseFloat(val.vCostAmount);
+	            $('#othersCost').find('.dj .money').eq(key).html(formatMoney(val.vCostAmount));
+	        });
+	        that.addval_otherCostTotal = otherTotal;//其他费用总金额
+	        //订单总金额
+	        that.addval_totalAmount = parseFloat(that.addval_taxTotal)+parseFloat(that.addval_otherCostTotal);
+	        $('#changeCost').html('<span>变更后：</span>'+ $currencySymbol + formatMoney(that.addval_otherCostTotal));
+	        $('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount));
+	    };
+
+		$('.item-total').html('变更前商品总金额：'+$currencySymbol+formatMoney(that.orderInfo.cTotalAmount)).show();
+		$('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount)).show();
 
 		//通用底部
 		bottomBar(['share'],that.orderInfo.vAuditid,'','提交变更');
 
 		//订单维护
-		container.on('click','a.item-link',function(){
-			var _this = $(this), name = _this.attr('name'), scrollTop = $body.scrollTop();
+		container.on('click','span.edit, a.item-link',function(){
+			var _this = $(this), name = _this.attr('name'), scrollTop = $body.scrollTop(), index = _this.parent('.item-wrap').attr('data-index');
 			switch(name){
+				case 'bodyInfos':
+					orderReviseInfoCon.html(that.editBodyInfo(index,scrollTop));
+					break;
+				case 'otherCostInfos':
+					orderReviseInfoCon.html(that.editOtherCost(scrollTop));
+					break;
 				case 'payInfo':
 					orderReviseInfoCon.html(that.payInfo(scrollTop));
 					break;
@@ -280,7 +562,27 @@ Lists.prototype = {
 			container.addClass('contarinEdit');
 			$('#jBottom').addClass('m-bottom-hide');
 		}).on('click','.btn-wrap .btnB',function(){
-			var _this = $(this), scrollTop = _this.attr('data-scrollTop');
+			var _this = $(this), scrollTop = _this.attr('data-scrollTop'), i = _this.attr('data-index');
+			if(_this.is('#saveBodyInfo')){
+				$scope.poLineList[i].changeQty = parseFloat($('.changeQty').val());
+				$scope.poLineList[i].changeExpectedDeliveryStr = $('.timeBox').html();
+				countChangeValuationQty( $scope.poLineList[i] )
+				if(that.orderInfo.isContainTax==1){
+					$scope.poLineList[i].changeTaxPrice = parseFloat($('.changePrice').val());
+					countChangePrice( $scope.poLineList[i] )
+				}else{
+					$scope.poLineList[i].changePrice = parseFloat($('.changePrice').val());
+					countChangeTaxPrice( $scope.poLineList[i] )
+				}
+				countChangeShowVal(i);
+			}
+			if(_this.is('#changeCostInfo')){
+				var vCostAmountArr = [];
+				_this.parents('#orderReviseInfoCon').find('input').forEach(function(val){
+					vCostAmountArr.push(val.value);
+				})
+				changeOtherCost( vCostAmountArr );
+			}
 			if(_this.is('#saveChangeCause')){
 				var changeCauseSelect3 = $('#changeCause').select3('value') || '';
 				if(changeCauseSelect3){
@@ -304,11 +606,11 @@ Lists.prototype = {
 	changeCause: function(scrollTop){
 		var that = this;
 		var html = '<div class="m-item m-item-select">'
-					+'	<h2 class="m-title">变更类型：</h2>'
+					+'	<h2 class="m-title">变更原因：</h2>'
 					+'	<div id="changeCause" class="select3-input"></div>'
 					+'</div>'
 					+'<div class="m-item">'
-					+'	<h2 class="m-title">变更原因：</h2>'
+					+'	<h2 class="m-title">变更说明：</h2>'
 					+'	<div class="item-wrap int-remarks">'
 					+'		<textarea name="" id="intRemarks" placeholder="在此处录入变更的备注和说明"></textarea>'
 					+'	</div>'
@@ -327,6 +629,34 @@ Lists.prototype = {
 			that.initSelect3('#changeCause',that.changeReason,$changeCauseVal);
 		}
 	},
+	//产品明细变更
+	editBodyInfo: function(idx,scrollTop){
+		var that = this, html = '', list = $scope.poLineList[idx];
+		html+='<div class="m-item">'
+			+'	<h2 class="m-title">产品明细变更</h2>'
+			+'	<div class="item-wrap item-wrap-change" data-index="'+ idx +'">'
+			+'		<ul>'
+			+'			<li class="prodCode"><span>物料编码：</span>'+ list.prodCode +'</li>'
+			+'			<li><span>物料名称：</span><p>'+ list.prodName + ' ' + list.prodScale +'</p></li>'
+			+'			<li><span>采购数量：</span><input class="changeQty" type="text" value="'+ list.changeQty +'"> '+ list.purchaseUnitName +'</li>'
+			+'			<li><span>预交期：</span><div class="timeBox">'+ list.changeExpectedDeliveryStr +'</div><input type="hidden" value="'+ list.changeExpectedDeliveryStr +'"></li>'
+			+'			<li><span class="price">单价：</span><input class="changePrice" type="text" value="'+ ((that.orderInfo.isContainTax===1) ? list.changeTaxPrice : list.changePrice) +'"> /'+ list.valuationUnitName +'</li>'
+			+'		</ul>'
+			+'	</div>'
+			+'</div>'
+			+'<div class="btn-wrap"><a href="javascript:;" id="saveBodyInfo" class="btnB" data-scrollTop="'+scrollTop+'" data-index="'+idx+'">完成</a></div>'
+		return html;
+	},
+	//其他费用变更
+	editOtherCost: function(scrollTop){
+		var that = this, html = '';
+		html+='<div class="m-item"><h2 class="m-title">其他费用变更</h2><div class="item-wrap item-wrap-change"><ul>'
+		$scope.poOtherCostList.forEach(function(val){
+			html+='<li><span>'+ val.costName +'：</span>'+ $currencySymbol + formatMoney(val.costAmount) +'<i class="gap"></i>'+$currencySymbol+'<input type="text" value="'+ val.vCostAmount +'" /></b></li>'
+		})
+		html+='</ul></div></div><div class="btn-wrap"><a href="javascript:;" id="changeCostInfo" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+		return html;
+	},
 	payInfo: function(scrollTop){
 		var that = this, infos = that.orderInfo;
 
@@ -335,11 +665,15 @@ Lists.prototype = {
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType=='3') ? '自提点':'收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>(收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +')</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
-			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+		if(infos.invoice==1){
+			html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+		}else{
+			html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+				+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+				+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+		}
+			html+='</ul>'
+				+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
 	},
 	remark: function(scrollTop){
@@ -374,158 +708,6 @@ Lists.prototype = {
 	},
 	submitBt: function(operationState){
 		var that = this;
-
-        //变更后价格总计
-        if( that.changeType != 2 ){
-            that.addval_total = (that.orderInfo.vTotal=="")?that.orderInfo.cTotal:that.orderInfo.vTotal;   
-            that.addval_taxTotal = (that.orderInfo.vTaxTotal=="")?that.orderInfo.cTaxTotal:that.orderInfo.vTaxTotal;   
-            that.addval_totalAmount = (that.orderInfo.vTotalAmount=="")?that.orderInfo.cTotalAmount:that.orderInfo.vTotalAmount;   
-            that.addval_otherCostTotal = (that.orderInfo.vOtherCostTotal=="")?that.orderInfo.cOtherCostTotal:that.orderInfo.vOtherCostTotal;  
-        }else{
-            that.addval_total = 0;
-            that.addval_taxTotal = 0;
-            that.addval_totalAmount = 0;
-            that.addval_otherCostTotal = 0;
-        }
-
-    	//采购明细-----------------------------------------------------------------------
-    	$PoLineList = that._lineLists
-        $PoLineList.sort(function(a1,a2){
-            return a1.lineNo-a2.lineNo;
-        });
-        //初始化异动类型、变更附件、变更备注 
-        $PoLineList.isChecked = false;   
-        $PoLineList.forEach(function(val) {
-            val.changeLineNo = val.lineNo;
-            val.changeType = 1;  //异动类型（1-未变化、2-修改、3-新增）
-            val.changeFileList = [];
-            val.changeRemark = "";	
-            val.isChecked = false;   
-		});
-        /**
-         * @采购明细 备注和附件
-         * 取消订单和强制结案状态 下只需要取出 订单附件和备注并且显示 
-         * 答交差异变更和调整采购信息状态下 需要上传附件 添加备注  并保存
-         */
-        if( that.changeType == 3 ){
-            $PoLineList.forEach(function(val) {
-                //变更后采购明细 与 订单信息一样 
-                val.changeQty = val.purchaseQty;		                 
-                val.changeValuationQty = val.valuationQty;	 
-                val.changePrice = val.price;		     	             
-                val.changeTaxPrice = val.taxPrice;		     	             
-                val.changeLineAmount = val.lineAmount;		     	             
-                val.changeTaxLineTotal = val.taxLineTotal;		     	     
-                val.changeExpectedDeliveryStr = val.expectedDelivery;	
-            });
-        }else if( that.changeType == 1){
-            var batchArr = [];//分批答交 临时数组
-
-            //答交差异变更 分批答交拆开
-            $PoLineList.forEach(function(val) {
-                //变更后采购明细 与 答交信息一样 
-                val.changeQty = val.vPurchaseQty;		                 
-                val.changeValuationQty = val.vValuationQty;
-                val.changePrice = val.vPrice;	
-                val.changeTaxPrice = val.vTaxPrice;		     	             
-                val.changeLineAmount = val.vLineAmount;		     	             
-                val.changeTaxLineTotal = val.vTaxLineTotal;		     	     
-                val.changeExpectedDeliveryStr = val.vExpectedDelivery;	
-
-                //分批答交 拆分操作
-                if( val.vBatchAnswer == 1 ){                        
-                    for( var i=0;i<val.poSubLineInfo.length;i++ ){
-                        if( i==0 ){
-                            val.changeQty = val.poSubLineInfo[i].purchaseQty;
-                            val.changeValuationQty = val.poSubLineInfo[i].valuationQty;	
-                            val.changeExpectedDeliveryStr = val.poSubLineInfo[i].expectedDelivery;
-                            val.changeLineAmount = (val.changePrice*val.changeValuationQty);
-                            val.changeTaxLineTotal = (val.changeTaxPrice*val.changeValuationQty);
-                            val.changeType = 2;
-                        }else{
-                            var batchItem = {};
-                            batchItem.prodId = val.prodId;		                 
-                            batchItem.prodCode = val.prodCode;		                 
-                            batchItem.prodName = val.prodName;		                 
-                            batchItem.prodScale = val.prodScale;		                 
-                            batchItem.prodDesc = val.prodDesc;		                 
-                            batchItem.valuationUnitId = val.valuationUnitId;		                 
-                            batchItem.valuationUnitCode = val.valuationUnitCode;		                 
-                            batchItem.valuationUnitName = val.valuationUnitName;	
-                            batchItem.purchaseUnitId = val.purchaseUnitId;	
-                            batchItem.purchaseUnitName = val.purchaseUnitName;	
-                            batchItem.purchaseUnitCode = val.purchaseUnitCode;	
-                            batchItem.changePrice = val.vPrice;	
-                            batchItem.changeTaxPrice = val.vTaxPrice;	
-                            batchItem.changeFileList = [];	
-                            
-                            var maxLineNo=(batchArr.length==0)?$PoLineList[$PoLineList.length-1].changeLineNo:batchArr[batchArr.length-1].changeLineNo;
-                            batchItem.changeLineNo = maxLineNo+1;		                 
-                            batchItem.changeType = 3;		                 
-                            batchItem.changeQty = val.poSubLineInfo[i].purchaseQty;		                 
-                            batchItem.changeValuationQty = val.poSubLineInfo[i].valuationQty;	
-                            batchItem.changeExpectedDeliveryStr = val.poSubLineInfo[i].expectedDelivery;	     	             
-                            batchItem.changeLineAmount = (val.changePrice*val.changeValuationQty);
-                            batchItem.changeTaxLineTotal = (val.changeTaxPrice*val.changeValuationQty);
-                            batchArr.push(batchItem);
-                        }
-                    }
-                }
-                //异动类型
-                if( val.price != val.changePrice || 
-                    val.purchaseQty != val.changeQty || 
-                    val.expectedDelivery != val.changeExpectedDeliveryStr || 
-                    val.lineAmount != val.changeLineAmount ){
-
-                    val.changeType = 2;
-                }
-            });
-            $PoLineList = $PoLineList.concat( batchArr );
-        }else if( $scope.changeType == 4 ){
-            $PoLineList.forEach(function(val) {
-                //初始化 变更后与变更前一样 
-                val.changeQty = val.purchaseQty;		                 
-                val.changeValuationQty = val.valuationQty;	 
-                val.changePrice = val.price;		     	             
-                val.changeTaxPrice = val.taxPrice;		     	             
-                val.changeLineAmount = val.lineAmount;		     	             
-                val.changeTaxLineTotal = val.taxLineTotal;		     	     
-                val.changeExpectedDeliveryStr = val.expectedDelivery;	                
-            });
-        }else if( $scope.changeType == 2 ){
-            $PoLineList.forEach(function(val) {
-                val.changeType = 2;
-                //变更后的单价、交期等于原单价、交期，变更后的数量默认为0（都不允许修改）
-                //变更后的费用等于0（不允许修改）
-                //总价、小计均为0
-                val.changeQty = 0;		                 
-                val.changeValuationQty = 0;	 
-                val.changePrice = val.price;		     	             
-                val.changeTaxPrice = val.taxPrice;		     	             
-                val.changeLineAmount = 0;		     	             
-                val.changeTaxLineTotal = 0;		     	     
-                val.changeExpectedDeliveryStr = val.expectedDelivery;	                
-            });
-        }
-        $scope.poLineList = $PoLineList;
-
-        //其他费用--------------------------------------------------------------------------------------
-        that._othersCost.isChecked = false;   
-        that._othersCost.forEach( function( val ){
-            val.changeType = 1;    
-            val.isChecked = false;  
-            if( that.changeType == 4 ){
-                val.vCostAmount = val.costAmount;
-            }else if(that.changeType == 2){
-                val.vCostAmount = 0;
-            }
-        });
-        that._othersCost.sort(function(a1,a2){
-            return a1.lineNo-a2.lineNo;
-        });
-        $scope.poOtherCostList = that._othersCost;
-
-
 
         //提交变更  保存:operationState=1;提交:operationState=2;----------------------------------------
 	    //that.changeType 1答交差异变更，3结案订单，2取消订单，4采购信息调整
@@ -816,7 +998,7 @@ Lists.prototype = {
 			})			
 		}
 		$body.on('click','.bottom-btn-confirm',function(){
-			if(that.changeType==1){
+			if(that.changeType!=2){
 				//同意差异，变更原采购单
 				that.popup('confirm', '', '确定提交变更吗？', function(){
 					//取消
@@ -826,11 +1008,12 @@ Lists.prototype = {
 					ajaxLoad(function(){
 						fnTip.success(2000,'提交成功');
 		                setTimeout(function(){
-		                	window.location.href=config.htmlUrl+'orderHandedOut.html?param={"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'"}'
+		                	//window.location.href=config.htmlUrl+'orderHandedOut.html?param={"poId":"'+ _vParams.poId +'","companyId":"'+ _vParams.companyId +'","secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'"}'
+		                	goBack();
 		                },2000);
-					},2);	
+					},2);
 				})
-			}else if(that.changeType==2){
+			}else{
 				//取消订单
 				that.popup('confirm', '', '确定取消变更吗？', function(){
 					//取消
@@ -839,7 +1022,8 @@ Lists.prototype = {
 					ajaxLoad(function(returnData){
 						fnTip.success(2000,'取消成功');
 						setTimeout(function(){
-		                	window.location.href=config.htmlUrl+'purchase_change.html?param={"id":"'+ returnData.id +'","companyId":"'+ _vParams.companyId +'","secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'"}'
+		                	//window.location.href=config.htmlUrl+'purchase_change.html?param={"id":"'+ returnData.id +'","companyId":"'+ _vParams.companyId +'","secretNumber":"'+ _vParams.secretNumber +'","token":"'+ _vParams.token +'"}'
+		                	goBack();
 		                },2000);
 					});
 				})

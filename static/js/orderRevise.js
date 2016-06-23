@@ -650,7 +650,7 @@ orderRevise.prototype = {
 			+'		<section class="clearfix">'
 			+'			<span class="c-label"><b>我方编码：</b></span>'
 			+'			<div class="wfItem">'
-			+'				<p><input type="text" class="s-int" value="'+ list.vProdCode +'" /></p>'
+			+'				<p class="wfItem-int"><input type="text" class="s-int" value="'+ list.vProdCode +'" /><i></i></p>'
 			+'				<p>'+ list.vProdName + ' ' + list.vProdScale + '</p>'
 			+'			</div>'
 			+'		</section>'
@@ -1051,7 +1051,7 @@ orderRevise.prototype = {
 		    "taxRate":addval_taxRate,
 
             "provinceCode":that.orderInfo.provinceCode,	  
-            "provinceName":that.orderInfo.provinceName,	    
+            "provinceName":that.orderInfo.provinceName,
             
             "customerCode":that.orderInfo.companyCode,	     
             "customerId":that.orderInfo.companyId,	         
