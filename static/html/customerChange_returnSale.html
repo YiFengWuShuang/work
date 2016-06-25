@@ -10,40 +10,40 @@
 	<meta name="screen-orientation" content="portrait">
 	<!-- QQ强制竖屏 -->
 	<meta name="x5-orientation" content="portrait">
-	<link rel="stylesheet" href="../css/public_0800fb0.css">
-	<link rel="stylesheet" href="../css/popup_d67a362.css">
-	<link rel="stylesheet" href="../css/select3_feb906e.css">
-	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list_c0979fa.css">
-<!-- 	<link class="shareCss" data-cssname="orderMt" rel="stylesheet" href="../css/orderMt.css"> -->
+	<link rel="stylesheet" href="../css/public.css">
+	<link rel="stylesheet" href="../css/popup.css">
+	<link rel="stylesheet" href="../css/zepto.mdater.css">
+	<link rel="stylesheet" href="../css/select3.css">
+	<link class="shareCss" data-cssname="list" rel="stylesheet" href="../css/list.css">
+	<link class="shareCss" data-cssname="orderMt" rel="stylesheet" href="../css/orderMt.css">
 	<title></title>
 </head>
-<body>
+<body class="return-sale">
 	<div class="contarin" style="display:none;">
 		<div id="orderBaseInfoCon" class="orderBaseInfoCon showItemCon">
 			<div class="item-tips"><i></i><span></span></div>
-			<div id="orderHeadInfo" class="m-item"></div>
-			<!-- <a href="javascript:;" class="item-wrap item-link" name="changeCause">变更原因及说明<span class="arrow_down"></span></a> -->
-			<input type="hidden" id="changeCauseVal1" value="">
-			<input type="hidden" id="changeCauseVal2" value="">
+			<div id="orderChangeInfo" class="m-item"></div>
+			<a href="javascript:;" class="item-wrap item-link" name="changeCause">变更原因及说明<span class="arrow_down"></span></a>
+			<div id="orderHeadInfo" class="m-item m-item2"></div>
 			<div id="prodBodyInfo" class="m-item m-item2"></div>
 			<div id="othersCost" class="m-item"></div>
 			<div class="item-wrap item-total"></div>
 			<div class="item-wrap item-total-dj"></div>
-			<a href="javascript:;" class="item-wrap item-link" name="baseInfo">基础信息<span class="arrow_down"></span></a>
 			<a href="javascript:;" class="item-wrap item-link" name="payInfo">物流和发票信息<span class="arrow_down"></span></a>
 			<a href="javascript:;" class="item-wrap item-link" name="remark">补充条款，备注与订单附件<span class="arrow_down"></span></a>
 		</div>
 		<div id="orderReviseInfoCon" class="hideItemCon"></div>
 	</div>
-	<script src="../js/lib/zepto-min_52cd85c.js"></script>
-	<script src="../js/public/public_227366e.js"></script>
+	<script src="../js/lib/zepto-min.js"></script>
+	<script src="../js/public/public.js"></script>
 	<script>fnTip.loading()</script>
-	<script src="../js/lib/popup_1e75f47.js"></script>
-	<script src="../js/lib/select3-full-min_01e7b1f.js"></script>
-	<script src="../js/customer_change_4d8190b.js"></script>
-	<script src="../js/bottom_d711649.js"></script>
+	<script src="../js/lib/popup.js"></script>
+	<script src="../js/lib/zepto.mdater.js"></script>
+	<script src="../js/lib/select3-full-min.js"></script>
+	<script src="../js/customer_change_return_sale.js"></script>
+	<script src="../js/bottom.js"></script>
 	<script>
-		new Lists();
+		new returnSale();
 	</script>
 
 </body>

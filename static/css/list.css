@@ -67,6 +67,10 @@
 .purchase-change #prodBodyInfo .changeItem section span.nth0{ color: #f45252;}
 .item-wrap-change input[type="text"]{ width: 5rem; height: 1.4rem; line-height: 1.4rem; border:1px solid #b0b0b0; padding:0 .2rem;}
 .item-wrap-change li .timeBox{ margin-left: 0; border-color: #b0b0b0; width: 5rem; padding:0 .2rem;}
+.return-sale .m-bottom-wrap .bottom-btn{ width: 40%;}
+#orderChangeInfo li span{ min-width: 5rem;}
+
+.select3-input .select3-single-select .select3-single-selected-item{ float: none; text-align: left; color: #000;}
 
 @media screen and (max-width: 320px){
 	.responseBox li .timeBox{ margin-left: 1rem;}

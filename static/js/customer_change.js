@@ -46,11 +46,14 @@ Lists.prototype = {
 				that.POCNStatus = data.dataSet.data.detail;
 			}
 		});
+		//发票信息
+		requestFn("B02_Invoice",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceInfoName = data.dataSet.data.detail;
+			}
+		});
 
 		that.start();
-
-		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount)).show();
-		$('.item-total-dj').html('变更后总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount)).show();
 
 	},
 	orderBaseInfo: function(){
@@ -97,30 +100,30 @@ Lists.prototype = {
 		return html;
 	},
 	//附件
-	fileList: function(){
-		var that = this;
-		if(!that.load)return;
-		//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
-		var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"commonParam": commonParam(),"fileSource":"1","searchType":"1","id":_vParams.id,"docType":25}
-		$.ajax({
-			type:"POST",
-            url:config.serviceUrl,
-            data:'param='+JSON.stringify(params),
-            success:function(data){
-            	data = data || {};
-            	if(data.success){
-            		var file = data.fileList;
-            		for(var i=0, len=file.length; i<len; i++){
-            			//that._files.push(file[i]);
-            			if(file[i].fileName!=''){
-            				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (_reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
-            			}
-            		}
-            		that._files = file;
-            	}
-            }
-		})
-	},
+	// fileList: function(){
+	// 	var that = this;
+	// 	if(!that.load)return;
+	// 	//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
+	// 	var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"commonParam": commonParam(),"fileSource":"1","searchType":"1","id":_vParams.id,"docType":25}
+	// 	$.ajax({
+	// 		type:"POST",
+ //            url:config.serviceUrl,
+ //            data:'param='+JSON.stringify(params),
+ //            success:function(data){
+ //            	data = data || {};
+ //            	if(data.success){
+ //            		var file = data.fileList;
+ //            		for(var i=0, len=file.length; i<len; i++){
+ //            			//that._files.push(file[i]);
+ //            			if(file[i].fileName!=''){
+ //            				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (_reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
+ //            			}
+ //            		}
+ //            		that._files = file;
+ //            	}
+ //            }
+	// 	})
+	// },
 	prodBodyInfo: function(){
 		var that = this, html = '';
 		var params = {"serviceId": "B03_findPocNoticeLineList","companyId":_vParams.companyId,"pocId":_vParams.id,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};
@@ -193,6 +196,8 @@ Lists.prototype = {
 		orderHeadInfo.innerHTML = that.orderBaseInfo();
 		prodBodyInfo.innerHTML = that.prodBodyInfo();
 		that.othersCost();
+		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount)).show();
+		$('.item-total-dj').html('变更后总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount)).show();
 
 		//通用底部
 		//vStatus==2 待转销售变更
@@ -208,6 +213,9 @@ Lists.prototype = {
 		container.on('click','a.item-link',function(){
 			var _this = $(this), name = _this.attr('name'), scrollTop = $body.scrollTop();
 			switch(name){
+				case 'baseInfo':
+					orderReviseInfoCon.html(that.baseInfo(scrollTop));
+					break;
 				case 'payInfo':
 					orderReviseInfoCon.html(that.payInfo(scrollTop));
 					break;
@@ -240,26 +248,40 @@ Lists.prototype = {
 			that.refuse();	
 		})
 	},
+	baseInfo: function(scrollTop){
+		var that = this, infos = that.orderInfo;
+		var html = '<div class="item-wrap"><ul>'
+				 +'		<li><span>采购日期：</span>'+ infos.poFormDate +'</li>'
+				 +'		<li><span>交易币别：</span>'+ infos.currencyName +'</li>'
+				 +'		<li><span>交易税别：</span>'+ infos.taxName +'<label class="checkbox'+ ((infos.isContainTax==1) ? ' on':'') +'"><input type="checkbox" checked="checked" disabled>含税'+ infos.taxRate*100 +'%</label></li>'
+				 +'		<li><span>交易条件：</span>'+ infos.conditionName +'</li>'
+				 +'		<li><span>付款条件：</span>'+ infos.payWayName +'</li>'
+				 +'		<li><span>采购员：</span>'+ infos.poManName +'</li>'
+				 +'</ul></div><div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>';
+		return html;
+	},
 	payInfo: function(scrollTop){
 		var that = this, infos = that.orderInfo;
 
-		var html = '<ul class="payInfoList">'
-			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
+		var html = '<div class="item-wrap"><ul>'
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
-			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
-			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+		if(infos.invoice==1){
+			html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+		}else{
+			html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+				+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+				+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+		}
+		html+='</ul></div>'
+			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	remark: function(scrollTop){
 		var that = this;
 		var html = '<div class="remarks-wrap"><div id="provisions" class="item-wrap clause">'
 				 +'	<h2>补充条款：</h2>'
-				 +'	<p>'+ that.orderInfo.agreement +'</p>'
+				 +'	<p>'+ that.orderInfo.agreeMent +'</p>'
 				 +'</div>'
 				 +'<div id="taRemarks" class="item-wrap taRemarks">'
 				 +'	<h2>备注信息：</h2>'
@@ -267,9 +289,8 @@ Lists.prototype = {
 				 +'</div>'
 				 +'<div id="files" class="item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
-
-			html +='</div>'
-				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+				 +'</div>'
+				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	popup: function(type, title, content, closeCallBack, okCallBack){
