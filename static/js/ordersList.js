@@ -10,6 +10,7 @@ var $platformCurrencyList;
 var $currencySymbol;
 var $prodMapList = [];
 var $fileData;
+var $btnTxet = '分批答交';
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var Lists = function(){
@@ -169,13 +170,13 @@ Lists.prototype = {
 						+'	</li>'
 						+'	<li class="myProductInfo">'
 						+'		<span>我方：</span>'
-						+'		<p>物料编码：'+ $prodMapList[index].prodCode +'<br>'+ $prodMapList[index].prodName +' '+ $prodMapList[index].prodScale +'</p>'
+						+'		<p>物料编码：'+ ($prodMapList[index].prodCode||'') +'<br>'+ ($prodMapList[index].prodName||lineLists[index].prodName) +' '+ ($prodMapList[index].prodScale||lineLists[index].prodScale) +'</p>'
 						+'	</li>'
 						+'	<li><span>数量：</span><em>'+ lineLists[index].purchaseQty + lineLists[index].purchaseUnitName +' /</em><em>'+ lineLists[index].valuationQty + lineLists[index].valuationUnitName +'</em><span>交期：</span><em class="em03">'+ lineLists[index].expectedDelivery +'</em></li>'
 						+'	<li class="bfline"><span>我方：</span><input type="text" class="int01_all" value="'+ mobiPoItem(0) +'"><input type="text" class="int02_all" value="'+ mobiPoItem(1) +'"><div class="timeBox">'+ mobiPoItem(2) +'</div><input type="hidden" value="'+ mobiPoItem(2) +'"></li>'
 						+	newResponseItem()
 						+'</ul>'
-						+'<div class="btnBox"><a href="javascript:;" class="addResponse">新增答交栏</a></div>'
+						+'<div class="btnBox"><a href="javascript:;" class="addResponse">'+$btnTxet+'</a></div>'
 						+'<ul class="responseBox2">'
 						+'	<li><span>单价：</span>¥'+((that.orderInfo.isContainTax===1) ? formatMoney(lineLists[index].taxPrice) : formatMoney(lineLists[index].price)) +'/'+ lineLists[index].valuationUnitName +'</li>'
 						+'	<li><span>备注：</span><p>'+ lineLists[index].remark +'</p></li>'
@@ -559,8 +560,6 @@ Lists.prototype = {
 				GetAJAXData('POST',params,function(vProdData){
 					if(vProdData.success){
 						$prodMapList.push(vProdData.prodMap);
-					}else{
-						$prodMapList.push({});
 					}
 				})
 			}
@@ -712,6 +711,15 @@ Lists.prototype = {
 			closeCallBack:closeCallBack,
 			okCallBack:okCallBack
 		});
+	},
+	//计算计价数量
+	countChangeValuationQty: function( item ){
+		if ( isEmpty(item) ) {
+            return;                                             
+        }
+        item.changeValuationQty = parseFloat(item.valuationQty)/parseFloat(item.purchaseQty)*parseFloat(item.changeQty);
+        item.changeValuationQty = !item.changeValuationQty?"":item.changeValuationQty;
+        countLineTotal( item );
 	},
 	//供应商品无税总计
 	vTotal: function(){

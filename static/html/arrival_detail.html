@@ -10,27 +10,29 @@
 	<meta name="screen-orientation" content="portrait">
 	<!-- QQ强制竖屏 -->
 	<meta name="x5-orientation" content="portrait">
-	<link rel="stylesheet" href="../css/public_0800fb0.css">
-	<link rel="stylesheet" href="../css/list_56b8020.css">
+	<link rel="stylesheet" href="../css/public.css">
+	<link rel="stylesheet" href="../css/popup.css">
+	<link rel="stylesheet" href="../css/list.css">
 	<style>
-	.item-wrap li span:first-child{min-width:4.2rem}
+		.item-wrap li span:first-child{ width: 4.2rem;}
 	</style>
 	<title></title>
 </head>
 <body>
-	<div class="contarin deliveryOrder">
+	<div class="contarin receiveOrder" style="display:none">
 		<div class="m-item orderInfo"></div>
-		<div class="m-item deliveryOrderDetail"></div>
+		<div class="m-item receivOrderDetail"></div>
 		<div class="m-item remarks"></div>
 	</div>
-	<script src="../js/lib/sea_b0dff5b.js"></script>
-	<script src="../js/lib/zepto-min_52cd85c.js"></script>
-	<script src="../js/public/public_227366e.js"></script>
+	<script src="../js/lib/sea.js"></script>
+	<script src="../js/lib/zepto-min.js"></script>
+	<script src="../js/public/public.js"></script>
 	<script>fnTip.loading()</script>
-	<script src="../js/deliveryOrder_52e70a2.js"></script>
-	<script src="../js/bottom_d711649.js"></script>
+	<script src="../js/lib/popup.js"></script>
+	<script src="../js/arrival_detail.js"></script>
+	<script src="../js/bottom.js"></script>
 	<script>
-		new deliveryOrder();
+		new arrivalOrder();
 	</script>
 
 </body>

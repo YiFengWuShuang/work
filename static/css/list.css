@@ -31,7 +31,7 @@
 .responseBox li span:nth-child(4){ float: none;}
 .responseBox li input{ width: 18%; height: 1.4rem; border: 1px solid #979797; padding: 0 .1rem; margin-right: .4rem; overflow: hidden;}
 .responseBox li input.int03{ width: 30%; margin-right: 0; margin-left: 1.3rem;}
-.item-wrap li .timeBox{display: inline-block; width: 30%; height: 1.4rem; line-height: 1.4rem; border: 1px solid #979797; margin-left: 1.3rem; padding: 0 .1rem; vertical-align: middle;}
+.timeBox{display: inline-block; width: 30%; height: 1.4rem; line-height: 1.4rem; border: 1px solid #979797; margin-left: 1.3rem; padding: 0 .1rem; vertical-align: middle;}
 .responseBox li em{ display: inline-block; width: 18%; margin-right: .4rem; font-style: normal;}
 .responseBox li em.em03{ width: 28%;}
 .responseBox li p{ overflow: hidden;}
@@ -68,7 +68,7 @@
 .item-wrap-change input[type="text"]{ width: 5rem; height: 1.4rem; line-height: 1.4rem; border:1px solid #b0b0b0; padding:0 .2rem;}
 .item-wrap-change li .timeBox{ margin-left: 0; border-color: #b0b0b0; width: 5rem; padding:0 .2rem;}
 .return-sale .m-bottom-wrap .bottom-btn{ width: 40%;}
-#orderChangeInfo li span{ min-width: 5rem;}
+#orderChangeInfo li span,.receiveOrder .item-wrap li span{ min-width: 5rem;}
 
 .select3-input .select3-single-select .select3-single-selected-item{ float: none; text-align: left; color: #000;}
 
