@@ -120,7 +120,7 @@ orderRevise.prototype = {
 							+'		<li class="prodDetail"><span>物料详细：</span><p><em>'+ lineList[i].vProdName +'</em><em>'+ lineList[i].vProdScale +'</em></p></li>'
 							+'		<li><section><span>数量：</span><em>'+ lineList[i].vPurchaseQty +'</em>'+ lineList[i].vAnswerUnitName +'/<em>'+ lineList[i].vValuationQty +'</em>'+ lineList[i].vValuationUnitName +'</section><section><span>交期：</span><em>'+ lineList[i].expectedDelivery +'</em></section></li>'
 							+'		<li class="price"><span>单价：</span>&yen; '+ ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].vTaxPrice) : formatMoney(lineList[i].vPrice)) +'/'+ lineList[i].vValuationUnitName +'</li>'
-							+'		<li class="files"><span>附件：</span><p><a href="#"><i class="i-word"></i>fsdfsldfjslfjls</a><a href="#"><i class="i-word"></i>fsdfsldfjslfjls</a></p></li>'
+							+'		<li class="files"><span>附件：</span></li>'
 							+'		<li class="subtotal"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].vTaxLineTotal) +'</b></li>'
 							+'	</ul>'
 							+'  <span name="bodyInfos" class="edit"></span>'

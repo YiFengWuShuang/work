@@ -1,10 +1,12 @@
 /*
-收货
+收货单详情
 */
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
+var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $scope = {};
+var $fileData = {};
 var receivOrder = function(){
 	this.init();
 }
@@ -47,12 +49,36 @@ receivOrder.prototype = {
 						+'		</ul>'
 						+'	</div>'
 					$('.orderInfo').html(html);
-	        	}
+	        	}else{
+            		fnTip.hideLoading();
+            		container.show().html('<p style="line-height:2rem; text-align:center">'+ data.errorMsg +'</p>')
+            	}
 	        }
 		})
 	},
 	orderBody: function(){
 		var that = this, html = '';
+
+	    //加载单身附件
+	    function f_init_l_file(line){
+	        line.l_file = [];
+
+	        GetAJAXData('POST',{"serviceId":"B01_findFileList", "docType":15, "companyId":_vParams.companyId, "searchType":2, "id":line.lineId, "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()},function(data){
+				if(data.success){
+					data.fileList.forEach(function(v){
+	                    line.l_file.push({
+	                        "id": v.id,
+	                        "fileName":v.fileName,
+	                        "fileSize":v.fileSize,
+	                        "fileUrl": v.fileUrl,
+	                        "lineNo": v.lineNo
+	                    });
+	                });
+				}
+			});	
+	    }
+
+
 		$.ajax({
 			type:"POST",
 	        url:config.serviceUrl,
@@ -65,20 +91,33 @@ receivOrder.prototype = {
 	        		$scope.roLineList = data.roLineList, L = $scope.roLineList.length
 	        		html+='<h2 class="m-title">收货产品</h2>'
 					for(var i=0; i<L; i++){
+						var unitName = true;
+						if($scope.roLineList[i].receiveUnitName==$scope.roLineList[i].valuationUnitName){
+							unitName = false;
+						}
 						html+='<div class="item-wrap">'
 							+'	<ul>'
-							+'		<li><span>收货产品：</span>' + $scope.roLineList[i].prodName + ' ' + $scope.roLineList[i].prodScale +'</li>'
-							+'		<li><span>来源单据：</span><p>采购单：' + $scope.roLineList[i].sourcePoNo + '-' + $scope.roLineList[i].sourcePoLineNo +'<br>送货单：' + $scope.roLineList[i].sourceDoNo + '-' + $scope.roLineList[i].sourceDoLineNo +'</p></li>'
+							+'		<li><span>收货产品：</span><p>' + $scope.roLineList[i].prodName + ' ' + $scope.roLineList[i].prodScale +'</p></li>'
+							+'		<li><span>来源单据：</span><p>采购单：' + $scope.roLineList[i].sourcePoNo + '-' + $scope.roLineList[i].sourcePoLineNo +(($scope.roLineList[i].sourceDoNo=='') ? '' : '<br>送货单：' + $scope.roLineList[i].sourceDoNo + '-' + $scope.roLineList[i].sourceDoLineNo) +'</p></li>'
 							+'		<li><span>收货批号：</span>'+ $scope.roLineList[i].batchNo +'</li>'
-							+'		<li><span>收货数量：</span>'+ $scope.roLineList[i].receiveQty +'/'+ $scope.roLineList[i].receiveValuationQty +'</li>'
-							+'		<li><span>验退数量：</span>'+ $scope.roLineList[i].prQty +'/'+ $scope.roLineList[i].prValuationQty +'</li>'
+							+'		<li><span>收货数量：</span>'+ ($scope.roLineList[i].receiveQty||0) + $scope.roLineList[i].receiveUnitName + (unitName ? ('/'+ ($scope.roLineList[i].receiveValuationQty||0) + $scope.roLineList[i].valuationUnitName):'') +'</li>'
+							+'		<li><span>验退数量：</span>'+ ($scope.roLineList[i].prQty||0) + $scope.roLineList[i].receiveUnitName + (unitName ? ('/'+ ($scope.roLineList[i].prValuationQty||0) + $scope.roLineList[i].valuationUnitName):'') +'</li>'
 							+'		<li><span>收货仓库：</span>'+ $scope.roLineList[i].invName +'</li>'
 							+'		<li><span>备注：</span><p>'+ $scope.roLineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
 							+'	</ul>'
 							+'</div>'
+						f_init_l_file($scope.roLineList[i]);
 					}
 					$('.receivOrderOrderDetail').html(html);
+					$scope.roLineList.forEach(function(line,idx){
+						var fileHTML = '<p>'
+						line.l_file.forEach(function(val){
+							fileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
+						})
+						fileHTML += '</p>'
+						$('.receivOrderOrderDetail .files').eq(idx).html('<span>附件：</span>'+fileHTML).show();
+					})
 	        	}else{
             		fnTip.hideLoading();
             		container.show().html('<p style="line-height:2rem; text-align:center">'+ data.errorMsg +'</p>')
@@ -87,7 +126,8 @@ receivOrder.prototype = {
 		})
 	},
 	remark: function(){
-		var html='';
+		var html='', fileHTML = '<p>';
+
 		html+='<h2 class="m-title">备注</h2>'
 			+'	<div class="item-wrap">'
 			+'		<ul>'
@@ -96,6 +136,19 @@ receivOrder.prototype = {
 			+'		</ul>'
 			+'	</div>'
 		$('.remarks').html(html);
+
+		//单头附件
+		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":$scope.orderInfo.companyId, "id":_vParams.roId, "commonParam":commonParam(), "docType":"15","fileSource":1,"searchType":1};//searchType查询类型1单头2单身
+		GetAJAXData('POST',fileParam,function(fileData){
+			if(fileData.success){
+				$fileData = fileData.fileList;
+				$fileData.forEach(function(val){
+					fileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
+				})
+				fileHTML += '</p>';
+				$('.remarks .files').html('<span>附件：</span>'+fileHTML).show();
+			}
+		})
 	},
 	start: function(){
 		var that = this;
@@ -104,6 +157,7 @@ receivOrder.prototype = {
 		setTimeout(function(){
 			fnTip.hideLoading();
 		},0);
+
 		that.remark();
 		//通用底部
 		//bottomBar(['share'],'',true);
