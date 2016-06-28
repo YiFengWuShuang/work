@@ -6,7 +6,7 @@ a{-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-tap-highlight-color: transpa
 .md_panel a{text-decoration: none;}
 .md_selectarea{display: inline-block;width: 50%;position: relative;}
 .md_head{height: 40px;line-height: 40px;}
-.md_body{position: relative;height: 268px;}
+.md_body{position: relative;min-height: 316px;}
 .md_headtext{display: inline-block;width: 100%;text-align: center;font-size: 1.125em;color: #333;}
 .md_prev, .md_next{position: absolute;top: 0;font-family: arial;font-size: 1.6em;display: inline-block;width: 40px;height: 40px;text-align: center;}
 .md_prev{left: 0;}

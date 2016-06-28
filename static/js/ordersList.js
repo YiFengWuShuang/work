@@ -36,6 +36,10 @@ Lists.prototype = {
 		
 		//答交
 		container.on('click','span.edit',function(){
+			if($('.responseBox').length){
+				popup('alert','','请先"取消/确定"未完成操作再继续！');
+				return false;
+			}
 			var _this = $(this),
 				item = _this.parent('.item-wrap');
 			var index = item.attr('data-index');
@@ -45,7 +49,6 @@ Lists.prototype = {
 				return false;
 			}
 			that.editResponse(item,index);
-			that.addNewResponse(index);
 		})
 
 		//限制答交数量
@@ -85,14 +88,16 @@ Lists.prototype = {
             		that.memberId = that.orderInfo.poManId;
             		that.status = that.orderInfo.status;
 					that.vStatus = that.orderInfo.vStatus;
-            		html += '<h2 class="m-title">基本信息</h2>'
+            		html += '<h2 class="m-title">基础信息</h2>'
             			 +'<div class="item-wrap">'
 						 +'	<ul>'
 						 +'		<li><span>平台单号：</span><b>'+ that.orderInfo.poFormNo +'</b></li>'
 						 +'		<li><span>内部单号：</span><b>'+ that.orderInfo.poInsideNo +'</b></li>'
 						 +'		<li><span>客户：</span><b>'+ that.orderInfo.companyCode + '-' + that.orderInfo.companyAbbr +'</b></li>'
-						 +'		<li><span>交易货币：</span>'+ that.orderInfo.currencyName +'</li>'
+						 +'		<li><span>交易币别：</span>'+ that.orderInfo.currencyName +'</li>'
 						 +'		<li><span>交易税别：</span>'+ that.orderInfo.taxName + '<label class="checkbox'+ ((that.orderInfo.isContainTax==1) ? ' on':'') +'"><input type="checkbox" checked="checked" disabled>含税'+ that.orderInfo.taxRate*100 +'%</label></li>'
+						 +'		<li><span>交易条件：</span>'+ that.orderInfo.conditionName +'</li>'
+						 +'		<li><span>付款条件：</span>'+ that.orderInfo.payWayName +'</li>'
 						 +'		<li><span>采购日期：</span>'+ that.orderInfo.poFormDate +'</li>'
 						 +'	</ul>'
 						 +'</div>'
@@ -128,11 +133,12 @@ Lists.prototype = {
 						html+='		<li class="price" data-taxPrice="'+ lineList[i].taxPrice +'" data-price="'+ lineList[i].price +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].taxPrice) : formatMoney(lineList[i].price)) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].vTaxLineTotal!=''||lineList[i].vTaxLineTotal!=0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
+							+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].vTaxLineTotal!=''||lineList[i].vTaxLineTotal!=0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 							+		((that.vStatus!=1)?'<li class="response responseTotal" data-vLineAmount="'+ lineList[i].vLineAmount +'" data-vTaxLineTotal="'+ lineList[i].vTaxLineTotal +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney((lineList[i].vTaxLineTotal=='')?lineList[i].taxLineTotal:lineList[i].vTaxLineTotal) +'</li>':'')
 							+'	</ul>'
 							+( that.vStatus==2 ? '<span class="edit"></span>' : '')
 							+'</div>'
+						that.countQtyRate(lineList[i]);
 						that.totals+=Number(lineList[i].taxLineTotal);
             		}
             		that.load = true;
@@ -146,34 +152,38 @@ Lists.prototype = {
 	},
 	editResponse: function(item,index){
 		var that = this,
-			lineLists = that._lineLists;
+			lineLists = that._lineLists,
+			responseItem = item.find('.responseBatch'), responseLen = responseItem.length;
 
 		function mobiPoItem(emIdx){
 			var mobiItem = item.find('.bfline');
 			return mobiItem.find('em').eq(emIdx).html();
 		}
 		function newResponseItem(){
-			var responseItem = item.find('.response').not('.responseTotal'), responseLen = responseItem.length, html = '';
+			var html = '';
 			if(responseLen!=0){
 				for(var i=0; i<responseLen; i++){
 					var ems = responseItem.eq(i).find('em');
-					html += '<li class="myResponse"><span'+ ((i==0)?' class="nth0"':'') +'>分批：</span><input type="text" class="int01" name="int01" value="'+ ems.eq(0).html() +'"><input type="text" class="int02" name="int02" value="'+ ems.eq(1).html() +'"><div class="timeBox">'+ ems.eq(2).html() +'</div><input type="hidden" value="'+ ems.eq(2).html() +'"><i class="btn-del"></i></li>'
+					html += '<li class="myResponse"><span'+ ((i==0)?' class="nth0"':'') +'>分批：</span><input type="text" class="int01" name="int01" value="'+ ems.eq(0).html() +'"><input type="text" class="int02" name="int02" value="'+ ems.eq(1).html() +'" disabled><div class="timeBox">'+ ems.eq(2).html() +'</div><input type="hidden" value="'+ ems.eq(2).html() +'"><i class="btn-del"></i></li>'
 				}					
 			}
 			return html;
 		}
-		var editHTML = '<div class="responseBox" data-index="'+ index +'">'
+		if(responseLen>0){
+			$btnTxet = '新增';
+		}
+		var editHTML = '<div class="responseBox'+ ((responseLen>0)?' batchBox':'') +'" data-index="'+ index +'">'
 						+'<ul class="responseBox1">'
 						+'	<li>'
 						+'		<span>对方：</span>'
 						+'		<p>物料编码：'+ lineLists[index].prodCode +'<br>'+ lineLists[index].prodName +' '+ lineLists[index].prodScale +'</p>'
 						+'	</li>'
 						+'	<li class="myProductInfo">'
-						+'		<span>我方：</span>'
+						+'		<span>本方：</span>'
 						+'		<p>物料编码：'+ ($prodMapList[index].prodCode||'') +'<br>'+ ($prodMapList[index].prodName||lineLists[index].prodName) +' '+ ($prodMapList[index].prodScale||lineLists[index].prodScale) +'</p>'
 						+'	</li>'
 						+'	<li><span>数量：</span><em>'+ lineLists[index].purchaseQty + lineLists[index].purchaseUnitName +' /</em><em>'+ lineLists[index].valuationQty + lineLists[index].valuationUnitName +'</em><span>交期：</span><em class="em03">'+ lineLists[index].expectedDelivery +'</em></li>'
-						+'	<li class="bfline"><span>我方：</span><input type="text" class="int01_all" value="'+ mobiPoItem(0) +'"><input type="text" class="int02_all" value="'+ mobiPoItem(1) +'"><div class="timeBox">'+ mobiPoItem(2) +'</div><input type="hidden" value="'+ mobiPoItem(2) +'"></li>'
+						+'	<li class="bfline"><span>本方：</span><input type="text" class="int01_all" value="'+ mobiPoItem(0) +'"'+ ((responseLen>0)?' disabled':'') +'><input type="text" class="int02_all" value="'+ mobiPoItem(1) +'" disabled><div class="timeBox">'+ mobiPoItem(2) +'</div><input type="hidden" value="'+ mobiPoItem(2) +'"></li>'
 						+	newResponseItem()
 						+'</ul>'
 						+'<div class="btnBox"><a href="javascript:;" class="addResponse">'+$btnTxet+'</a></div>'
@@ -190,17 +200,79 @@ Lists.prototype = {
 		item.hide();
 		item.after(editHTML);
 		$body.append(formTip);
-		$body.on('input','input.int01,input.int02',function(){
+
+		//数量答交 输入框值改变
+		$body.on('input','input.int01_all',function(){
+			var _this = $(this), i = _this.parents('.responseBox').attr('data-index'), val = (isNaN(_this.val())?0:_this.val());
+			_this.val(val);
+			_this.next('.int02_all').val(that._lineLists[i].countQtyRate*val);
+		})
+		$body.on('input','input.int01',function(){
+			var _this = $(this), i = _this.parents('.responseBox').attr('data-index'), val = (isNaN(_this.val())?0:_this.val()), int_all = _this.parents('.responseBox').find('.int01_all');
 			that.reQtysAll($(this));
+			_this.val(val);
+			_this.next('.int02').val(that._lineLists[i].countQtyRate*val);
+			int_all.trigger('input');
+		})
+
+		//批量答交
+		$('.addResponse').eq(0).on('click',function(){
+			var _this = $(this),
+				parents = _this.parents('.responseBox'),
+				$responseBox1 = parents.find('.responseBox1'),
+				inputs = $responseBox1.find('li.myResponse').find('input'),
+				index = parents.attr('data-index');
+			var value1 = '';
+			var value2 = '';
+			var value3 = that._lineLists[index].expectedDelivery;
+			var isAdd = true;
+			var int01sVal;
+			var int02sVal;
+			if(inputs.length>1){
+				inputs.forEach(function(item){
+					if(item.value==''){
+						$('#formTip').html('此分批答交完成后才能继续新增分批！').addClass('formTipShow');
+						isAdd=false;
+						return;
+					}
+				})
+			}
+
+			function f_QtyVal(){
+				int01sVal = 0;
+				int02sVal = 0;
+				$responseBox1.find('.int01').forEach(function(v){
+					int01sVal += parseFloat(v.value||0);
+				})	
+				$responseBox1.find('.int02').forEach(function(v){
+					int02sVal += parseFloat(v.value||0);
+				})				
+			}
+			f_QtyVal();
+
+			value1 = parseFloat(lineLists[index].purchaseQty)-int01sVal;
+			value2 = parseFloat(lineLists[index].valuationQty)-int02sVal;
+			value1 = ((value1<=0)?'':value1);
+			value2 = ((value2<=0)?'':value2);
+			var cost = '<li class="myResponse"><span>分批：</span><input type="text" class="int01" name="int01" value="'+value1+'" /><input type="text" class="int02" name="int02" value="'+value2+'" disabled /><div class="timeBox">'+value3+'</div><input type="hidden" value="'+value3+'" /><i class="btn-del"></i></li>';
+			if(isAdd){
+				$responseBox1.append(cost);
+				f_QtyVal();
+				$responseBox1.find('.int01_all').val(int01sVal);
+				$responseBox1.find('.int02_all').val(int02sVal);
+				parents.addClass('batchBox');
+				parents.find('.int01_all').prop('disabled',true);
+				_this.html('新增');
+			}
 		})
 
 		//取消
-		prodAnswerCon.on('click','.btn-cancel',function(e){
+		$('.btn-cancel').eq(0).on('click',function(e){
 			that.cancel($(this),prodAnswerCon);
 			e.preventDefault();
 		})
 		//确定
-		prodAnswerCon.on('click','.btn-save',function(e){
+		$('.btn-save').eq(0).on('click',function(e){
 			e.preventDefault();
 			that.save($(this),prodAnswerCon);
 			//重置单身明细
@@ -213,41 +285,12 @@ Lists.prototype = {
 		parent.find('.item-wrap').eq(idx).show();
 		$('#formTip').remove();
 	},
-	addNewResponse: function(index){
-		var that = this;
-		var isAdd = true;
-		var Qtys = that._lineLists[index].valuationQty;
-		var cost = '<li class="myResponse"><span>分批：</span><input type="text" class="int01" name="int01" /><input type="text" class="int02" name="int02" /><div class="timeBox"></div><input type="hidden" /><i class="btn-del"></i></li>';
-
-		$body.on('click','.addResponse',function(){
-			var _this = $(this),
-				parents = _this.parents('.responseBox'),
-				$responseBox1 = parents.find('.responseBox1'),
-				inputs = $responseBox1.find('li.myResponse').find('input');
-			isAdd = true;
-			//限制数量
-			// if(that.reQtys(parents,index)==Qtys)return;
-			if(inputs.length>1){
-				inputs.forEach(function(item){
-					if(item.value==''){
-						$('#formTip').html('新增答交内容为空不能继续新增！').addClass('formTipShow');
-						isAdd=false;
-						return;
-					}
-				})
-			}
-			if(isAdd){
-				$responseBox1.append(cost);					
-			}
-		})
-	},
 	othersCost: function(){
 		var that=this, html='', subtotal=0, resubtotal=0, _responseCost=false;
 		if(!that.load)return;
 		var params = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B03_findPoAnswerOtherCostList", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()};
 		$.ajax({
 			type:"POST",
-            //dataType: "json",
             async: false,
             url:config.serviceUrl,
 		    data:'param='+JSON.stringify(params),
@@ -310,12 +353,12 @@ Lists.prototype = {
 		item.after(editHtmlCost);
 		$body.append(formTip);
 		//取消
-		othersCostCon.on('click','.btn-cancel',function(e){
+		$('.btn-cancel').eq(0).on('click',function(e){
 			that.cancel($(this),othersCostCon);
 			e.preventDefault();
 		})
 		//确定
-		othersCostCon.on('click','.btn-save',function(e){
+		$('.btn-save').eq(0).on('click',function(e){
 			that.save($(this),othersCostCon);
 			e.preventDefault();
 		})
@@ -331,7 +374,7 @@ Lists.prototype = {
 			if(inputs.length>1){
 				inputs.forEach(function(item){
 					if(item.value==''){
-						$('#formTip').html('新增费用内容为空不能继续新增！').addClass('formTipShow');
+						$('#formTip').html('此项费用完成后才能继续新增费用！').addClass('formTipShow');
 						isAdd=false;
 						return;
 					}
@@ -397,7 +440,12 @@ Lists.prototype = {
 		that.itemshow(self,parent);
 		parent.find('.item-wrap').eq(idx).find('.response').remove();
 		if(type=='isProdAnswer'){
-			parent.find('.item-wrap').eq(idx).find('.price').before(html);
+			if(lens>0){
+				parent.find('.item-wrap').eq(idx).find('.bfline').hide();
+				parent.find('.item-wrap').eq(idx).find('.price').before(html);				
+			}else{
+				parent.find('.item-wrap').eq(idx).find('.bfline').show();
+			}
 			var values = that.reQtys(self.parents('.responseBox'),idx);
 			if(values!=''||values!=undefined){
 				var _subtotal = parent.find('.item-wrap').eq(idx).find('.subtotal'), _subTotalPrice = _subtotal.attr('data-total'), $prices = parent.find('.item-wrap').eq(idx).find('.price'), _taxPrice = $prices.attr('data-taxPrice'), _price = $prices.attr('data-price');
@@ -424,7 +472,7 @@ Lists.prototype = {
 		$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol + formatMoney(that.reCostTotalFn())).show();
 	},
 	modiResponse: function(self,index){
-		var that = this, $bfline = prodAnswerCon.find('.item-wrap').eq(index).find('.bfline'), $reBfline = self.parents('.responseBox').eq(index).find('.bfline').eq(0);
+		var that = this, $bfline = prodAnswerCon.find('.item-wrap').eq(index).find('.bfline'), $reBfline = self.parents('.responseBox').eq(0).find('.bfline').eq(0);
 		$bfline.find('em').eq(0).html($reBfline.find('input').eq(0).val());
 		$bfline.find('em').eq(1).html($reBfline.find('input').eq(1).val());
 		$bfline.find('em').eq(2).html($reBfline.find('input').eq(2).val());
@@ -444,9 +492,32 @@ Lists.prototype = {
 	delResponse: function(){
 		var that = this, content = '<p>您确定要删除此条答交？</p>';
 		container.on('click','.btn-del',function(){
-			var _this = $(this), parent = _this.parent('li');
+			var _this = $(this), parent = _this.parent('li'), $responseBox = _this.parents('.responseBox'), $responseBox1 = _this.parents('.responseBox1'), i = $responseBox.attr('data-index');
 			that.popup('confirm', '', content, '', function(){
 				parent.remove();
+				//删除一个分批答交
+				if(_this.parent('li').is('.myResponse')){
+					if($responseBox1.find('.myResponse').length==0){alert(1)
+						$responseBox.removeClass('batchBox');
+						$responseBox1.find('.int01_all').prop('disabled',false);
+						$responseBox1.find('.int02_all').prop('disabled',false);
+						$responseBox1.find('.int01_all').val(that._lineLists[i].purchaseQty);
+						$responseBox1.find('.int02_all').val(that._lineLists[i].valuationQty);
+						return false;
+					}
+					var int01sVal = 0;
+					var int02sVal = 0;
+					var val01 = $responseBox1.find('.int01_all').val();
+					var val02 = $responseBox1.find('.int02_all').val();
+					$responseBox1.find('.int01').forEach(function(v){
+						int01sVal += parseFloat(v.value||0);
+					})
+					$responseBox1.find('.int02').forEach(function(v){
+						int02sVal += parseFloat(v.value||0);
+					})	
+					$responseBox1.find('.int01_all').val(int01sVal);
+					$responseBox1.find('.int02_all').val(int02sVal);				
+				}
 			})
 		})
 	},
@@ -571,7 +642,7 @@ Lists.prototype = {
 			if(that.vStatus==1){
 				bottomBar(['share'],that.memberId,'','接收订单','拒绝订单');
 			}else if(that.vStatus==2){
-				bottomBar(['share'],that.memberId,'','答交订单');
+				bottomBar(['share'],that.memberId,'','答交订单','拒绝订单');
 			}else if(that.vStatus==3){
 				bottomBar(['share'],that.memberId,'','提醒确认');
 			}else if(that.vStatus==4){
@@ -598,7 +669,7 @@ Lists.prototype = {
 		}).on('click','.btn-wrap .btnB',function(){
 			var _this = $(this), scrollTop = _this.attr('data-scrollTop');
 			if(_this.is('#saveRemark')){
-				// 我方备注
+				// 本方备注
 				$('#vRemark').val($('#intRemarks').val());
 			}
 			container.removeClass('contarinEdit');
@@ -613,7 +684,7 @@ Lists.prototype = {
 				that.vendorPoAnswer(vendorReceiveParam);
 			}
 			if(that.vStatus==2){
-				that.popup('confirm', '', '确定提交答交吗？', function(){
+				that.popup('confirm', '', '您确定提交答交吗？', function(){
 					//取消
 				},function(){
 					//答交提交
@@ -626,7 +697,11 @@ Lists.prototype = {
 			if(that.vStatus==3){
 				//待客户确认
 				var poRemindParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_poRemindAnswer", "poId":_vParams.poAnswerId, "companyId":that.orderInfo.companyId, "commonParam":commonParam()}
-				that.vendorPoAnswer(poRemindParam,true);
+				that.vendorPoAnswer(poRemindParam,function(){
+					setTimeout(function(){
+						goBack();
+					},2000);
+				},true);
 			}
 			if(that.vStatus==4){
 				//转销售订单
@@ -634,10 +709,18 @@ Lists.prototype = {
 			}
 		})
 		$body.on('click','.bottom-btn-cancel',function(){
-			if(that.vStatus==1){
+			if(that.vStatus==1||that.vStatus==2){
 				//拒绝订单
-				var vendorRefuseReceiveParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_vendorRefuseReceivePoAnswer", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()}
-				that.vendorPoAnswer(vendorRefuseReceiveParam);
+				that.popup('confirm', '', '您确定要拒绝订单吗？', function(){
+					//取消
+				},function(){
+					var vendorRefuseReceiveParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_vendorRefuseReceivePoAnswer", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()}
+					that.vendorPoAnswer(vendorRefuseReceiveParam,function(){
+						setTimeout(function(){
+							goBack();
+						},2000);
+					},true);					
+				})
 			}
 		})
 
@@ -689,12 +772,12 @@ Lists.prototype = {
 			html +='</div>'
 		if(that.vStatus==2){
 			html +='<div class="item-wrap int-remarks">'
-				 +'	<textarea name="" id="intRemarks" placeholder="填写我方备注"></textarea>'
+				 +'	<textarea name="" id="intRemarks" placeholder="填写本方备注"></textarea>'
 				 +'</div>'
 		}
-		if(that.vStatus!=1){
+		if(that.vStatus!=1&&that.vStatus!=2){
 			html +='<div class="item-wrap">'
-				 +'	<h2>我方备注：</h2>'
+				 +'	<h2>本方备注：</h2>'
 				 +'	<p>'+ that.orderInfo.vRemark +'</p>'
 				 +'</div>'
 		}
@@ -712,14 +795,12 @@ Lists.prototype = {
 			okCallBack:okCallBack
 		});
 	},
-	//计算计价数量
-	countChangeValuationQty: function( item ){
+	//计算数量比率
+	countQtyRate: function( item ){
 		if ( isEmpty(item) ) {
             return;                                             
         }
-        item.changeValuationQty = parseFloat(item.valuationQty)/parseFloat(item.purchaseQty)*parseFloat(item.changeQty);
-        item.changeValuationQty = !item.changeValuationQty?"":item.changeValuationQty;
-        countLineTotal( item );
+        item.countQtyRate = parseFloat(item.valuationQty)/parseFloat(item.purchaseQty);
 	},
 	//供应商品无税总计
 	vTotal: function(){
@@ -943,7 +1024,7 @@ Lists.prototype = {
             }
 		})
 	},
-	vendorPoAnswer: function(addparams,noReLoad){
+	vendorPoAnswer: function(addparams,callBack,noReload){
 		var that = this;
 		$.ajax({
 			type:"POST",
@@ -955,7 +1036,8 @@ Lists.prototype = {
             	data = data || {};
             	if(data.success){
                 	fnTip.success(2000);
-                	if(noReLoad)return;
+                	callBack&&callBack();
+                	if(noReload)return;
                 	setTimeout(function(){window.location.reload(true)},2000);
             	}else{
             		that.popup('alert','','提交失败：'+data.errorMsg)
