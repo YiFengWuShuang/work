@@ -1,7 +1,9 @@
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var container = $('.contarin');
 var $platformCurrencyList;
-var $currencySymbol;
+var $currencySymbol = '';
+var $priceDecimalNum = '';
+var $amountDecimalNum = '';
 var orderReviseInfoCon = $('#orderReviseInfoCon');
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var OrderHandedOut = function(){
@@ -269,6 +271,8 @@ OrderHandedOut.prototype = {
 				for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
 					if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
 						$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
+						$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
+						$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
 						return false;
 					}
 				}

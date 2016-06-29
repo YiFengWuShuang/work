@@ -9,7 +9,8 @@ var config = {
     userInfo:""
 };
 
-config.serviceUrl = 'http://54.222.203.245:7000/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
+// config.serviceUrl = 'http://54.222.203.245:7000/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
+config.serviceUrl = 'http://prod-supplycenter-789909153.cn-north-1.elb.amazonaws.com.cn/supplyCenter/services/invokeRestfulSrv/supplyCloudService';
 config.ossConfigUrl = "http://172.31.10.168:19790/oss/config/api";
 config.ossNotifyUrl = "http://172.31.10.155:19890/oss/notify/api";
 config.ussUrl = "http://172.31.10.168/usersystem";

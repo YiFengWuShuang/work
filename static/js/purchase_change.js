@@ -4,6 +4,9 @@ var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
+var $currencySymbol = '';
+var $priceDecimalNum = '';
+var $amountDecimalNum = '';
 var Lists = function(){
 	this.init();
 }
@@ -69,6 +72,22 @@ Lists.prototype = {
 						 +'		<li><span>变更备注：</span>'+ that.orderInfo.remark +'</li>'
 						 +'	</ul>'
 						 +'</div>'
+
+						//获取所有平台币种及小数位
+						var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
+						GetAJAXData('POST',CurrencyParam,function(unitdata){
+							if(unitdata.success){
+								$platformCurrencyList = unitdata;
+								for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
+									if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
+										$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
+										$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
+										$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
+										return false;
+									}
+								}
+							}
+						});
             	}
             }
 		})
@@ -120,10 +139,10 @@ Lists.prototype = {
 							+'		<li><span>物料名称：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodScale +'</p></li>'
 							+'		<li><section><span>数量：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
 							// +'		<li class="changeItem"><section><span>变更：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
-							+'		<li class="price"><span>单价：</span>&yen; '+ formatMoney(lineList[i].taxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
+							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + formatMoney(lineList[i].taxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal"><span>小计：</span><b>&yen; '+ formatMoney(lineList[i].taxLineTotal) +'</b></li>'
+							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
 							+'	</ul>'
 							+'</div>'
 						that.totals+=parseInt(lineList[i].taxLineTotal,10);
@@ -157,10 +176,10 @@ Lists.prototype = {
             		that._othersCost = costList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=costList.length; i<len; i++){
-            			html+='<li><span>'+ costList[i].costName +'：</span><b>&yen; '+ formatMoney(costList[i].costAmount) +'</b><b class="dj"><em class="money"></em></b></li>';
+            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol+formatMoney(costList[i].costAmount) +'</b><b class="dj"><em class="money"></em></b></li>';
             			subtotal += Number(costList[i].costAmount=='' ? 0 : costList[i].costAmount);
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>&yen; '+ formatMoney(subtotal) +'</b></li>'
+            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol+formatMoney(subtotal) +'</b></li>'
             			+'</ul>'
             			+'</div>';
             		$('#othersCost').html(html);
@@ -177,7 +196,7 @@ Lists.prototype = {
 		that.fileList();
 		that.othersCost();
 
-		$('.item-total').html('变更前总金额：&yen;'+formatMoney(that.orderInfo.poTotalAmount)).show();
+		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount)).show();
 
 		//通用底部
 		// bottomBar(['share'],that.orderInfo.mobile,true);

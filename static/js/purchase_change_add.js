@@ -11,9 +11,9 @@ var privateDefultUser;
 var $PoLineList;
 var $scope = {};
 var $platformCurrencyList;
-var $currencySymbol;
-var $priceDecimalNum;//单价小数位数
-var $amountDecimalNum;//金额小数位数
+var $currencySymbol = '';
+var $priceDecimalNum = '';//单价小数位数
+var $amountDecimalNum = '';//金额小数位数
 var $fileListData1;
 //that.changeType 1答交差异变更，3结案订单，2取消订单，4采购信息调整
 var Lists = function(){

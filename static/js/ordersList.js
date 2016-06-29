@@ -7,7 +7,9 @@ var prodAnswerCon = $('#prodAnswerInfo');
 var othersCostCon = $('#othersCost');
 var $scope = {};
 var $platformCurrencyList;
-var $currencySymbol;
+var $currencySymbol = '';
+var $priceDecimalNum = '';
+var $amountDecimalNum = '';
 var $prodMapList = [];
 var $fileData;
 var $btnTxet = '分批答交';
@@ -575,6 +577,8 @@ Lists.prototype = {
 				for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
 					if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
 						$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
+						$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
+						$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
 						return false;
 					}
 				}
