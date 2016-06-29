@@ -41,7 +41,12 @@ Lists.prototype = {
 				that.invoiceType = data.dataSet.data.detail;
 			}
 		});
-
+		//发票信息
+		requestFn("B02_Invoice",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceInfoName = data.dataSet.data.detail;
+			}
+		});
 		that.start();
 
 		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount)).show();
@@ -107,12 +112,16 @@ Lists.prototype = {
             		that._lineLists = lineList;
             		html = '<h2 class="m-title">销售明细</h2>';
             		for(var i=0, len=lineList.length; i<len; i++){
+            			var unitName = true;
+						if(lineList[i].saleUnitName==lineList[i].valuationUnitName){
+							unitName = false;
+						}           			
                 		html+='<div class="item-wrap" data-index="'+ i +'">'
 							+'	<ul>'
 							+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
-							+'		<li><span>物料详细：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodDesc +'</p></li>'
-							+'		<li><section><span>数量：</span><em>'+ lineList[i].salesQty +'</em>'+ lineList[i].saleUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
-							+'		<li class="changeItem"><section><span>变更：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].saleUnitName +'/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
+							+'		<li><span>物料详细：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodScale +'</p></li>'
+							+'		<li><section><span>数量：</span><em>'+ lineList[i].salesQty +'</em>'+ lineList[i].saleUnitName + ((unitName)?('/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName):'') +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
+							+'		<li class="changeItem"><section><span>变更：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].saleUnitName + ((unitName)?('/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName):'') +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
 							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax==1) ? formatMoney(lineList[i].taxPrice) : formatMoney(lineList[i].price)) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
@@ -207,10 +216,14 @@ Lists.prototype = {
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
+			if(infos.invoice==1){
+				html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+			}else{
+				html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+					+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+					+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+			}
+			html+='</ul>'
 			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
 	},

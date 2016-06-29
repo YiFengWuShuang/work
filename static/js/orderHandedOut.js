@@ -27,7 +27,23 @@ OrderHandedOut.prototype = {
 				that.POVNStatus = data.dataSet.data.detail;
 			}
 		});
-
+		//查询枚举值
+		requestFn("B02_LogisticsType",function(data){
+			if(data.errorCode=='0'){
+				that.logisticsType = data.dataSet.data.detail;
+			}
+		});
+		requestFn("B02_InvoiceType",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceType = data.dataSet.data.detail;
+			}
+		});
+		//发票信息
+		requestFn("B02_Invoice",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceInfoName = data.dataSet.data.detail;
+			}
+		});
 		that.start();
 		
 	},
@@ -105,31 +121,35 @@ OrderHandedOut.prototype = {
             		var prodInfos = data.poLineList;
             		html = '<h2 class="m-title">产品明细</h2>';
             		for(var i=0, len=prodInfos.length; i<len; i++){
+            			var unitName = true;
+						if(prodInfos[i].purchaseUnitName==prodInfos[i].valuationUnitName){
+							unitName = false;
+						}            			
             			html+='<div class="item-wrap">'
 							+'	<ul>'
 							+'		<li><span>物料编码：</span><b>'+ prodInfos[i].prodCode +'</b></li>'
 							+'		<li><span>物料详细：</span><p>'+ prodInfos[i].prodName + ' ' + prodInfos[i].prodDesc +'</p></li>'
-							+'		<li><section><span>本方数量：</span>'+ prodInfos[i].purchaseQty + prodInfos[i].purchaseUnitName +'/'+ prodInfos[i].valuationQty + prodInfos[i].valuationUnitName +'</section><section><span>交期：</span>'+ prodInfos[i].expectedDelivery +'</section></li>'
+							+'		<li><section><span>采购数量：</span>'+ prodInfos[i].purchaseQty + prodInfos[i].purchaseUnitName + ((unitName)?('/'+ prodInfos[i].valuationQty + prodInfos[i].valuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].expectedDelivery +'</section></li>'
 						if(that.status==3){
 							if(prodInfos[i].poSubLineInfo.length>0){
 								for(var j=0, L=prodInfos[i].poSubLineInfo.length; j<L; j++){
-									html+='<li class="response"><section><span>分批答交：</span>'+ prodInfos[i].poSubLineInfo[j].purchaseQty + prodInfos[i].vAnswerUnitName +'/'+ prodInfos[i].poSubLineInfo[j].valuationQty + prodInfos[i].vValuationUnitName +'</section><section><span>交期：</span>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</section></li>'
+									html+='<li class="response"><section><span>分批答交：</span>'+ prodInfos[i].poSubLineInfo[j].purchaseQty + prodInfos[i].vAnswerUnitName + ((unitName)?('/'+ prodInfos[i].poSubLineInfo[j].valuationQty + prodInfos[i].vValuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</section></li>'
 								}
 							}else{
-								html+=' <li class="response"><section><span><span>答交数量：</span>'+ prodInfos[i].vPurchaseQty + prodInfos[i].vAnswerUnitName +'/'+ prodInfos[i].vValuationQty + prodInfos[i].vValuationUnitName +'</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'							
+								html+=' <li class="response"><section><span><span>答交数量：</span>'+ prodInfos[i].vPurchaseQty + prodInfos[i].vAnswerUnitName + ((unitName)?('/'+ prodInfos[i].vValuationQty + prodInfos[i].vValuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'							
 							}
 
 						}
-						if(that.status==4){
-							//待收货
-							html+=' <li><span>累计发货：</span><p>'+ prodInfos[i].deliveryValuationQty + ' ' + prodInfos[i].valuationUnitName +'</p></li>'
-								+'  <li><span>累计签收：</span><p>'+ prodInfos[i].receiveValuationQty + ' ' + prodInfos[i].valuationUnitName +'</p></li>'
-								+'  <li><span>累计退货：</span><p>'+ prodInfos[i].returnValuationQty + ' ' + prodInfos[i].valuationUnitName +'</p></li>'
+						if(that.status==4||that.status==5){
+							//待收货&部分收货
+							html+=' <li><span>累计发货：</span><p>'+ prodInfos[i].deliveryQty + ' ' + prodInfos[i].purchaseUnitName +'</p></li>'
+								+'  <li><span>累计签收：</span><p>'+ prodInfos[i].receiveQty + ' ' + prodInfos[i].purchaseUnitName +'</p></li>'
+								+'  <li><span>累计退货：</span><p>'+ prodInfos[i].returnQty + ' ' + prodInfos[i].purchaseUnitName +'</p></li>'
 						}
 						html+='		<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice) : formatMoney(prodInfos[i].price)) +'/'+ prodInfos[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>小计：</span><b>'+ $currencySymbol + formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
+							+'		<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
 							+		((that.status==3)?'<li class="response changeLineTotal" data-changeTotal="'+ ((prodInfos[i].vTaxLineTotal=='')?0:prodInfos[i].vTaxLineTotal) +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(prodInfos[i].vTaxLineTotal) +'</li>':'')
 							+'	</ul>'
 							+'</div>'
@@ -164,7 +184,7 @@ OrderHandedOut.prototype = {
             		var costList = data.poOtherCostList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=costList.length; i<len; i++){
-            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount) +'</b>'+ ((that.status==4)? '' : '<b class="dj"><em class="money" data-money="'+ (costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount) +'">'+ (costList[i].vCostAmount=='' ? '' : formatMoney(costList[i].vCostAmount)) +'</em></b>')+'</li>';
+            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount) +'</b>'+ ((that.status==4||that.status==5)? '' : '<b class="dj"><em class="money" data-money="'+ (costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount) +'">'+ (costList[i].vCostAmount=='' ? '' : formatMoney(costList[i].vCostAmount)) +'</em></b>')+'</li>';
             			subtotal += Number(costList[i].costAmount=='' ? 0 : costList[i].costAmount);
             			resubtotal += Number(costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount);
             		}
@@ -192,27 +212,20 @@ OrderHandedOut.prototype = {
 	},
 	payInfo: function(scrollTop){
 		var that = this, infos = that.orderInfo;
-		//查询枚举值
-		requestFn("B02_LogisticsType",function(data){
-			if(data.errorCode=='0'){
-				that.logisticsType = data.dataSet.data.detail;
-			}
-		});
-		requestFn("B02_InvoiceType",function(data){
-			if(data.errorCode=='0'){
-				that.invoiceType = data.dataSet.data.detail;
-			}
-		});
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType=='3') ? '自提点':'收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>(收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +')</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
+			if(infos.invoice==1){
+				html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+			}else{
+				html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+					+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+					+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+			}
+			html+='</ul>'
 			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
 	},
@@ -295,8 +308,8 @@ OrderHandedOut.prototype = {
 				}
 			}
 
-			//------------------待收货
-			if(that.status==4){
+			//------------------待收货&部分收货
+			if(that.status==4||that.status==5){
 				bottomBar(['share'],that.memberId,'','我要收货');
 			}
 		}
@@ -351,8 +364,8 @@ OrderHandedOut.prototype = {
 				window.location.href=config.htmlUrl+purchase_change_add(1)
 				return false;
 			}
-			//------------------待收货
-			if(that.status==4){
+			//------------------待收货&部分收货
+			if(that.status==4||that.status==5){
 				//---》跳转至app收货单新建
 				if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
 					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function(responseData) {});

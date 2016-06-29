@@ -23,6 +23,23 @@ salesDetail.prototype = {
 			container.show();
 			fnTip.hideLoading();
 		},0)
+		//查询枚举值
+		requestFn("B02_LogisticsType",function(data){
+			if(data.errorCode=='0'){
+				that.logisticsType = data.dataSet.data.detail;
+			}
+		});
+		requestFn("B02_InvoiceType",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceType = data.dataSet.data.detail;
+			}
+		});
+		//发票信息
+		requestFn("B02_Invoice",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceInfoName = data.dataSet.data.detail;
+			}
+		});
 		that.orderBaseInfo();
 		that.prodsInfo();
 		that.otherCostList();
@@ -43,7 +60,7 @@ salesDetail.prototype = {
             	if(data.success){
             		that.orderInfo = data.salesOrderInfo;
             		that.status = that.orderInfo.status;
-            		that.memberId = that.orderInfo.soManPid;
+            		that.memberId = that.orderInfo.modibyid;
             		html += '<h2 class="m-title">基础信息</h2>'
 						 +'<div class="item-wrap">'
 						 +'	<ul>'
@@ -92,13 +109,17 @@ salesDetail.prototype = {
             		var prodInfos = data.prodDetailList;
             		html = '<h2 class="m-title">产品明细</h2>';
             		for(var i=0, len=prodInfos.length; i<len; i++){
+            			var unitName = true;
+						if(prodInfos[i].salesUnitName==prodInfos[i].valuationUnitName){
+							unitName = false;
+						}
             			html+='<div class="item-wrap">'
 							+'	<ul>'
 							+'		<li><span>客户编码：</span><b>'+ prodInfos[i].cProdCode +'</b></li>'
-							+'		<li><span>物料详细：</span><p>'+ prodInfos[i].cProdName +'  '+ prodInfos[i].cProdDesc +'</p></li>'
+							+'		<li><span>物料详细：</span><p>'+ prodInfos[i].cProdName +'  '+ prodInfos[i].cProdScale +'</p></li>'
 							+'		<li><span>本方编码：</span><b>'+ prodInfos[i].vProdCode +'</b></li>'
-							+'		<li><span>物料详细：</span><p>'+ prodInfos[i].vProdName +'  '+ prodInfos[i].vProdDesc +'</p></li>'
-							+'		<li><section><span>数量：</span>'+ prodInfos[i].salesQty + prodInfos[i].salesUnitName +'/'+ prodInfos[i].valuationQty + prodInfos[i].valuationUnitName +'</section><section><span>预交期：</span>'+ transDate(prodInfos[i].expectedDelivery) +'</section></li>'
+							+'		<li><span>物料详细：</span><p>'+ prodInfos[i].vProdName +'  '+ prodInfos[i].vProdScale +'</p></li>'
+							+'		<li><section><span>数量：</span>'+ prodInfos[i].salesQty + prodInfos[i].salesUnitName + ((unitName) ? ('/'+ prodInfos[i].valuationQty + prodInfos[i].valuationUnitName) : '') +'</section><section><span>预交期：</span>'+ transDate(prodInfos[i].expectedDelivery) +'</section></li>'
 							+'		<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice) : formatMoney(prodInfos[i].price)) +'/'+ prodInfos[i].valuationUnitName +'</li>'
 							+'		<li><span>客户备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
@@ -201,27 +222,20 @@ salesDetail.prototype = {
 	},
 	payInfo: function(scrollTop){
 		var that = this, infos = that.orderInfo;
-		//查询枚举值
-		requestFn("B02_LogisticsType",function(data){
-			if(data.errorCode=='0'){
-				that.logisticsType = data.dataSet.data.detail;
-			}
-		});
-		requestFn("B02_InvoiceType",function(data){
-			if(data.errorCode=='0'){
-				that.invoiceType = data.dataSet.data.detail;
-			}
-		});
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
+			if(infos.invoice==1){
+				html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+			}else{
+				html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+					+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+					+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+			}
+			html+='</ul>'
 			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
 	},
@@ -237,13 +251,7 @@ salesDetail.prototype = {
 				 +'</div>'
 				 +'<div id="files" class="item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
-			if($fileData.fileList.length==0){
-				html+='<p><b>0个附件</b></p>'
-			}
-			for(var i=0; i<$fileData.fileList.length;i++){
-				html+='<p><a href="'+ $fileData.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileData.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileData.fileList[i].fileName +'</a></p>'
-			}
-			html +='</div>'
+				 +'</div>'
 				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
 	},

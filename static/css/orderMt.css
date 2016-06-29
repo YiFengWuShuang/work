@@ -7,6 +7,7 @@
 .item-wrap .c-cont2{ width: 100%;}
 .item-wrap i.qrCode{ width: 1.5rem; height: 1.5rem; background: url(../img/public/qrCode.png) no-repeat; background-size: 1.5rem 1.5rem; margin-right: 0; margin-left: .25rem; vertical-align: middle;}
 .c-cont .select3-input{ margin-bottom: .25rem;}
+.c-cont .select3-unit{ width: 6rem;}
 .c-cont .curSelect span{ margin-right: 1rem;}
 .c-cont .curSelect span:last-child{ margin-right: 0;}
 .c-cont2 .select3-input{ width: 50%;}
