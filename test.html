@@ -1,0 +1,174 @@
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>
+        js调用java
+    </title>
+</head>
+
+<body>
+<p>
+    <xmp id="show">
+    </xmp>
+</p>
+<p>
+    <xmp id="init">
+    </xmp>
+</p>
+<p>
+    <input type="text" id="text1" value="用户名(username)" />
+</p>
+<p>
+    <input type="text" id="text2" value="password" />
+</p>
+<p>
+    <input type="button" id="enter"   value="发消息给Native" onclick="testClick();"
+    />
+</p>
+<p>
+    <input type="button" id="enter1" value="qrcode" onclick="qrcode();"/>
+</p>
+<p>
+    <input type="button" id="enter2" value="call" onclick="call();"/>
+</p>
+<p>
+    <input type="button" id="enter3" value="chat" onclick="chat();"/>
+</p>
+<p>
+    <input type="button" id="enter4" value="back" onclick="back();"/>
+</p>
+<p>
+    <input type="button" id="enter5" value="exit" onclick="exit();"/>
+</p>
+<p>
+    <input type="button" id="enter6"  type="hidden"  value="显示html" onclick="testDiv();" />
+</p>
+<p>
+    <input type="button" value="camera" onclick="camera()" />
+</p>
+<p>
+    <input type="button" id="enter7" value="title" onclick="titles();"/>
+</p>
+<p>
+    <a href="http://www.baidu.com">百度一下</a>
+</p>
+</body>
+<script>
+        function testDiv() {
+            document.getElementById("show").innerHTML = document.getElementsByTagName("html")[0].innerHTML;
+        }
+        function testClick() {
+            var str1 = document.getElementById("text1").value;
+            var str2 = document.getElementById("text2").value;
+
+            //send message to native
+            var data = {id: 1, content: "这是一个图片 <img src=\"a.png\"/> test\r\nhahaha"};
+            window.WebViewJavascriptBridge.send(
+                data
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "repsonseData from java, data = " + responseData
+                }
+            );
+
+        }
+        function qrcode() {
+            var str1 = document.getElementById("text1").value;
+            var str2 = document.getElementById("text2").value;
+
+            //call native method
+            window.WebViewJavascriptBridge.callHandler(
+                'qrcode'
+                , {'param': '中文测试'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function camera(){
+            window.WebViewJavascriptBridge.callHandler(
+                'camera'
+                , {'param': '中文测试'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function call(){
+            window.WebViewJavascriptBridge.callHandler(
+                'call'
+                , {'param': '中文测试'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function chat(){
+            window.WebViewJavascriptBridge.callHandler(
+                'chat'
+                , {'param': '中文测试'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function back(){
+            window.WebViewJavascriptBridge.callHandler(
+                'back'
+                , {'param': '中文测试'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function exit(){
+            window.WebViewJavascriptBridge.callHandler(
+                'exit'
+                , {'param': '中文测试'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function titles(){
+            window.WebViewJavascriptBridge.callHandler(
+                'title'
+                , {'param': 'set title'}
+                , function(responseData) {
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+            );
+        }
+        function bridgeLog(logContent) {
+            document.getElementById("show").innerHTML = logContent;
+        }
+        function connectWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                callback(WebViewJavascriptBridge)
+            } else {
+                document.addEventListener(
+                    'WebViewJavascriptBridgeReady'
+                    , function() {
+                        callback(WebViewJavascriptBridge)
+                    },
+                    false
+                );
+            }
+        }
+        connectWebViewJavascriptBridge(function(bridge) {
+            bridge.init(function(message, responseCallback) {
+                console.log('JS got a message', message);
+                var data = {
+                    'Javascript Responds': '测试中文!'
+                };
+                console.log('JS responding with', data);
+                responseCallback(data);
+            });
+
+            bridge.registerHandler("InJsShow", function(data, responseCallback) {
+                document.getElementById("show").innerHTML = ("data from Java: = " + data);
+                var responseData = "Javascript Says Right back aka!";
+                responseCallback(responseData);
+            });
+        })
+    </script>
+</html>
