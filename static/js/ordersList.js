@@ -60,7 +60,7 @@ Lists.prototype = {
 		// 		parents = _this.parents('.responseBox'),
 		// 		index = parents.attr('data-index'),
 		// 		val = _this.val();
-		// 	var Qtys = that._lineLists[index].valuationQty;
+		// 	var Qtys = $scope.poLineList[index].valuationQty;
 
 		// 	values = that.reQtys(parents,index);
 
@@ -119,29 +119,28 @@ Lists.prototype = {
             success:function(data){
             	data = data || {};
             	if(data.success){
-            		var lineList = data.poLineList;
-            		that._lineLists = lineList;
+            		$scope.poLineList = data.poLineList;
             		html = '<h2 class="m-title">产品信息</h2>';
-            		for(var i=0, len=lineList.length; i<len; i++){
+            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
                 		html+='<div class="item-wrap" data-index="'+ i +'">'
 							+'	<ul>'
-							+'		<li class="prodCode" data-prodCode="'+ lineList[i].prodCode +'" data-prodId="'+ lineList[i].prodId +'"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
-							+'		<li><span>物料详细：</span><p>'+ lineList[i].prodName +' '+ lineList[i].prodScale +'</p></li>'
-							+'		<li><section><span>客户数量：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ lineList[i].expectedDelivery +'</em></section></li>'
-							+		((that.vStatus==1)? '' : ((lineList[i].poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em class="vValuationQty">'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em class="vExpectedDelivery">'+ lineList[i].expectedDelivery +'</em></section></li>' : ''))
-						for(var j=0; j<lineList[i].poSubLineList.length; j++){
-							html+='<li class="response"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em class="purchaseQty">'+ lineList[i].poSubLineList[j].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em class="valuationQty">'+ lineList[i].poSubLineList[j].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ lineList[i].poSubLineList[j].expectedDelivery +'</em></section></li>'
+							+'		<li class="prodCode" data-prodCode="'+ $scope.poLineList[i].prodCode +'" data-prodId="'+ $scope.poLineList[i].prodId +'"><span>物料编码：</span><b>'+ $scope.poLineList[i].prodCode +'</b></li>'
+							+'		<li><span>物料详细：</span><p>'+ $scope.poLineList[i].prodName +' '+ $scope.poLineList[i].prodScale +'</p></li>'
+							+		((that.vStatus!=4)?'<li><section><span>客户数量：</span><em>'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ $scope.poLineList[i].expectedDelivery +'</em></section></li>':'')
+							+		((that.vStatus==1)? '' : (($scope.poLineList[i].poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em class="vValuationQty">'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>交期：</span><em class="vExpectedDelivery">'+ $scope.poLineList[i].expectedDelivery +'</em></section></li>' : ''))
+						for(var j=0; j<$scope.poLineList[i].poSubLineList.length; j++){
+							html+='<li class="response'+ ((j==0) ? ' bfline' : '') +'"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em class="purchaseQty">'+ $scope.poLineList[i].poSubLineList[j].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em class="valuationQty">'+ $scope.poLineList[i].poSubLineList[j].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ $scope.poLineList[i].poSubLineList[j].expectedDelivery +'</em></section></li>'
 						}
-						html+='		<li class="price" data-taxPrice="'+ lineList[i].taxPrice +'" data-price="'+ lineList[i].price +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].taxPrice) : formatMoney(lineList[i].price)) +'/'+ lineList[i].valuationUnitName +'</li>'
-							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
+						html+='		<li class="price" data-taxPrice="'+ $scope.poLineList[i].taxPrice +'" data-price="'+ $scope.poLineList[i].price +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice) : formatMoney($scope.poLineList[i].price)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
+							+'		<li><span>备注：</span><p>'+ $scope.poLineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal" data-total="'+ lineList[i].taxLineTotal +'" data-vTotal="'+ ((lineList[i].vTaxLineTotal!=''||lineList[i].vTaxLineTotal!=0) ? lineList[i].vTaxLineTotal : lineList[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
-							+		((that.vStatus!=1)?'<li class="response responseTotal" data-vLineAmount="'+ lineList[i].vLineAmount +'" data-vTaxLineTotal="'+ lineList[i].vTaxLineTotal +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney((lineList[i].vTaxLineTotal=='')?lineList[i].taxLineTotal:lineList[i].vTaxLineTotal) +'</li>':'')
+							+'		<li class="subtotal" data-total="'+ $scope.poLineList[i].taxLineTotal +'" data-vTotal="'+ (($scope.poLineList[i].vTaxLineTotal!=''||$scope.poLineList[i].vTaxLineTotal!=0) ? $scope.poLineList[i].vTaxLineTotal : $scope.poLineList[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal) +'</b></li>'
+							+		((that.vStatus!=1&&that.vStatus!=4)?'<li class="response responseTotal" data-vLineAmount="'+ $scope.poLineList[i].vLineAmount +'" data-vTaxLineTotal="'+ $scope.poLineList[i].vTaxLineTotal +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(($scope.poLineList[i].vTaxLineTotal=='')?$scope.poLineList[i].taxLineTotal:$scope.poLineList[i].vTaxLineTotal) +'</li>':'')
 							+'	</ul>'
 							+( that.vStatus==2 ? '<span class="edit"></span>' : '')
 							+'</div>'
-						that.countQtyRate(lineList[i]);
-						that.totals+=Number(lineList[i].taxLineTotal);
+						that.countQtyRate($scope.poLineList[i]);
+						that.totals+=parseFloat($scope.poLineList[i].taxLineTotal);
             		}
             		that.load = true;
             	}else{
@@ -154,7 +153,7 @@ Lists.prototype = {
 	},
 	editResponse: function(item,index){
 		var that = this,
-			lineLists = that._lineLists,
+			lineLists = $scope.poLineList,
 			responseItem = item.find('.responseBatch'), responseLen = responseItem.length;
 
 		function mobiPoItem(emIdx){
@@ -207,13 +206,13 @@ Lists.prototype = {
 		$body.on('input','input.int01_all',function(){
 			var _this = $(this), i = _this.parents('.responseBox').attr('data-index'), val = (isNaN(_this.val())?0:_this.val());
 			_this.val(val);
-			_this.next('.int02_all').val(that._lineLists[i].countQtyRate*val);
+			_this.next('.int02_all').val($scope.poLineList[i].countQtyRate*val);
 		})
 		$body.on('input','input.int01',function(){
 			var _this = $(this), i = _this.parents('.responseBox').attr('data-index'), val = (isNaN(_this.val())?0:_this.val()), int_all = _this.parents('.responseBox').find('.int01_all');
 			that.reQtysAll($(this));
 			_this.val(val);
-			_this.next('.int02').val(that._lineLists[i].countQtyRate*val);
+			_this.next('.int02').val($scope.poLineList[i].countQtyRate*val);
 			int_all.trigger('input');
 		})
 
@@ -226,7 +225,7 @@ Lists.prototype = {
 				index = parents.attr('data-index');
 			var value1 = '';
 			var value2 = '';
-			var value3 = that._lineLists[index].expectedDelivery;
+			var value3 = $scope.poLineList[index].expectedDelivery;
 			var isAdd = true;
 			var int01sVal;
 			var int02sVal;
@@ -303,21 +302,21 @@ Lists.prototype = {
             		that._othersCost = otherCostList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=otherCostList.length; i<len; i++){
-            			html+='<li class="mobiCostItem costItem" data-costName="'+ otherCostList[i].costName +'" data-costAmount="'+ otherCostList[i].costAmount +'" data-vCostAmount="'+ otherCostList[i].vCostAmount +'"><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].costAmount) +'</b>'+ ((that.vStatus==1) ? '' : '<b class="dj"><em class="money" data-money="'+ (otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount) +'">'+ (otherCostList[i].vCostAmount=='' ? formatMoney(otherCostList[i].costAmount) : formatMoney(otherCostList[i].vCostAmount)) +'</em></b>') +'</li>';
-            			subtotal += Number(otherCostList[i].costAmount=='' ? 0 : otherCostList[i].costAmount);
-            			resubtotal += Number(otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount);
+            			html+='<li class="mobiCostItem costItem" data-costName="'+ otherCostList[i].costName +'" data-costAmount="'+ otherCostList[i].costAmount +'" data-vCostAmount="'+ otherCostList[i].vCostAmount +'"><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].costAmount) +'</b>'+ ((that.vStatus==1||(that.vStatus==4)) ? '' : '<b class="dj"><em class="money" data-money="'+ (otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount) +'">'+ (otherCostList[i].vCostAmount=='' ? formatMoney(otherCostList[i].costAmount) : formatMoney(otherCostList[i].vCostAmount)) +'</em></b>') +'</li>';
+            			subtotal += parseFloat(otherCostList[i].costAmount=='' ? 0 : otherCostList[i].costAmount);
+            			resubtotal += parseFloat(otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount);
             			if(otherCostList[i].vCostAmount!=''){
             				_responseCost = true;
             			}
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>客户小计：</span><b>'+ $currencySymbol + formatMoney(subtotal) +'</b></li>'
+            		html+=((that.vStatus!=4)?'<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>客户小计：</span><b>'+ $currencySymbol + formatMoney(subtotal) +'</b></li>':'')
             		if(that.vStatus!=1){
             			html+='<li id="changeCost" class="response" data-otherMoney="'+ resubtotal +'"><span>本方小计：</span>'+ $currencySymbol + formatMoney(resubtotal) +'</li>'            			
             		}
             		html+='</ul>'
             		html+=( that.vStatus==2 ? '<span class="edit editOther"></span>' : '' )
             		html+='</div>';
-            		that.totals+=Number(subtotal);
+            		that.totals+=parseFloat(subtotal);
             	}
             }
 		})
@@ -418,7 +417,7 @@ Lists.prototype = {
 	},
 	createResponse: function(objs,sum,self,parent,type){
 		var that = this, lens = objs.length, html = '', vals = new Array(),
-			lineLists = that._lineLists, idx = self.parents('.responseBox').attr('data-index');
+			lineLists = $scope.poLineList, idx = self.parents('.responseBox').attr('data-index');
 		for(var i=0; i<lens; i++){
 			vals[i]=new Array();
 			for(var j=0; j<sum; j++){
@@ -452,20 +451,27 @@ Lists.prototype = {
 			if(values!=''||values!=undefined){
 				var _subtotal = parent.find('.item-wrap').eq(idx).find('.subtotal'), _subTotalPrice = _subtotal.attr('data-total'), $prices = parent.find('.item-wrap').eq(idx).find('.price'), _taxPrice = $prices.attr('data-taxPrice'), _price = $prices.attr('data-price');
 				//重新计算子答交小计
-				if(values==0){
-					_subtotal.attr('data-vtotal',_subTotalPrice);
+				// if(values==0){
+				// 	_subtotal.attr('data-vtotal',_subTotalPrice);
+				// }else{
+				// 	_subtotal.attr('data-vtotal',values*_taxPrice);
+				// }
+				var $subtotal=0;
+				if(that.orderInfo.isContainTax==1){
+					$subtotal=values*_taxPrice;
 				}else{
-					_subtotal.attr('data-vtotal',values*_taxPrice);
+					$subtotal=values*_price*(1+that.orderInfo.taxRate);
 				}
+				_subtotal.attr('data-vtotal',$subtotal);
 				//重新计算子答交金额
-				parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal" data-vLineAmount="'+ values*_price +'" data-vTaxLineTotal="'+ values*_taxPrice +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney((values*_taxPrice)) +'</li>')
+				parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal" data-vLineAmount="'+ values*_price +'" data-vTaxLineTotal="'+ values*_taxPrice +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(($subtotal)) +'</li>')
 			}
 		}else{
 			$('#othersCostSubtotal').before(html);
 			//变更费用
 			var moneys = 0;
 			othersCostCon.find('.costItem').forEach(function(dom){
-				moneys += Number($(dom).attr('data-vcostamount'))
+				moneys += parseFloat($(dom).attr('data-vcostamount'))
 			})
 
 			$('#othersCostSubtotal').attr('data-vtotal',moneys);
@@ -499,12 +505,12 @@ Lists.prototype = {
 				parent.remove();
 				//删除一个分批答交
 				if(_this.parent('li').is('.myResponse')){
-					if($responseBox1.find('.myResponse').length==0){alert(1)
+					if($responseBox1.find('.myResponse').length==0){
 						$responseBox.removeClass('batchBox');
 						$responseBox1.find('.int01_all').prop('disabled',false);
 						$responseBox1.find('.int02_all').prop('disabled',false);
-						$responseBox1.find('.int01_all').val(that._lineLists[i].purchaseQty);
-						$responseBox1.find('.int02_all').val(that._lineLists[i].valuationQty);
+						$responseBox1.find('.int01_all').val($scope.poLineList[i].purchaseQty);
+						$responseBox1.find('.int02_all').val($scope.poLineList[i].valuationQty);
 						return false;
 					}
 					var int01sVal = 0;
@@ -543,7 +549,7 @@ Lists.prototype = {
 		}else{
 			parents.find('.int02').each(function(){
 				var _this = $(this);
-				vals += Number(_this.val());
+				vals += parseFloat(_this.val());
 			})			
 		}
 
@@ -553,7 +559,7 @@ Lists.prototype = {
 	reQtysAll: function(input){
 		var name = input.attr('name'), parent = input.parents('.responseBox'), val = 0;
 		parent.find('.'+name).forEach(function(dom){
-			val += Number($(dom).val());
+			val += parseFloat($(dom).val());
 		})
 		parent.find('.'+name+'_all').val(val);
 	},
@@ -562,7 +568,7 @@ Lists.prototype = {
 		var that = this,
 			totals = 0;
 		container.find('.subtotal').each(function(){
-			totals += Number($(this).attr('data-vtotal'));
+			totals += parseFloat($(this).attr('data-vtotal'));
 		})
 		return totals;
 	},
@@ -585,12 +591,10 @@ Lists.prototype = {
 			}
 		});
 		prodAnswerCon.html(that.prodAnswerInfo());
-		//$itemTips.addClass('tips-error').find('span').html('答交异常');
-		//$itemTips.addClass('tips-success').find('span').html('答交无误');
 		othersCostCon.html(that.othersCost());
 
 		$('.item-total').html('订单总金额：'+$currencySymbol + formatMoney(that.orderInfo.cTotalAmount)).show();
-		if(that.vStatus!=1){
+		if(that.vStatus!=1&&that.vStatus!=4){
 			$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount||that.orderInfo.cTotalAmount)).show();			
 		}
 
@@ -598,7 +602,7 @@ Lists.prototype = {
 		//单身附件
         function getObFileList(){
         	var list;
-        	that._lineLists.forEach(function(val,i){
+        	$scope.poLineList.forEach(function(val,i){
         		list = '';
         		val.vFileList = [];
 				var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":val.id, "commonParam":commonParam(), "docType":"24","fileSource":1,"searchType":2};//searchType查询类型1单头2单身
@@ -614,8 +618,7 @@ Lists.prototype = {
 					}
 				},true)
         	})
-        	$scope.poLineList = that._lineLists;
-        	// console.log(JSON.stringify(that._lineLists))
+        	// console.log(JSON.stringify($scope.poLineList))
         	// console.log(JSON.stringify($scope.poLineList))
         }
         getObFileList();
@@ -629,9 +632,8 @@ Lists.prototype = {
 		},true)
 
 		function getProdByCustomerProd(){
-			var poLineList = that._lineLists;
-			for(var i=0, l=poLineList.length; i<l; i++){
-				var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":poLineList[i].prodCode,"commonParam":commonParam(),"customerId":that.orderInfo.companyId};
+			for(var i=0, l=$scope.poLineList.length; i<l; i++){
+				var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":$scope.poLineList[i].prodCode,"commonParam":commonParam(),"customerId":that.orderInfo.companyId};
 				GetAJAXData('POST',params,function(vProdData){
 					if(vProdData.success){
 						$prodMapList.push(vProdData.prodMap);
@@ -808,9 +810,9 @@ Lists.prototype = {
 	},
 	//供应商品无税总计
 	vTotal: function(){
-		var that = this, linelist = that._lineLists, item = prodAnswerCon.find('.item-wrap'), valuationQty = 0;
-		for(var i=0, L=linelist.length; i<L; i++){
-			valuationQty += Number(item.eq(i).find('.bfline').find('em').eq(1).html())*linelist[i].price;
+		var that = this, item = prodAnswerCon.find('.item-wrap'), valuationQty = 0;
+		for(var i=0, L=$scope.poLineList.length; i<L; i++){
+			valuationQty += parseFloat(item.eq(i).find('.bfline').find('em').eq(1).html())*$scope.poLineList[i].price;
 		}
 		return valuationQty;
 	},
@@ -836,7 +838,7 @@ Lists.prototype = {
         var $othersCost = othersCostCon.find('.costItem.response'), addCostItem;
         for(var c = 0, cLen = $othersCost.length; c < cLen; c++){
         	addCostItem = {
-        		"vCostAmount":Number($othersCost.eq(c).attr('data-vcostamount')),
+        		"vCostAmount":parseFloat($othersCost.eq(c).attr('data-vcostamount')),
         		"costName":$othersCost.eq(c).attr('data-costname'),
         		"isNewAdd": true,//是否页面上新增加的
         		"costSource": 2,//costSource = 1：客户(不能删除)，2：供应商
@@ -979,8 +981,8 @@ Lists.prototype = {
             }
         }
 
-        var vOtherCostTotal = Number($('#changeCost').attr('data-othermoney')),
-        	vTotalAmount = Number($('.item-total-dj').eq(0).attr('data-vtotalamount')),
+        var vOtherCostTotal = parseFloat($('#changeCost').attr('data-othermoney')),
+        	vTotalAmount = parseFloat($('.item-total-dj').eq(0).attr('data-vtotalamount')),
         	vTaxTotal = vTotalAmount - vOtherCostTotal;
         return {
             "vStatus": 3,//2-保存 3-提交
@@ -1000,7 +1002,8 @@ Lists.prototype = {
             },
             "addPoFileList": addPoFileList,//附件列表
             "delPoFileList": delPoFileList,//删除文件主键
-            "vRemark": $('#vRemark').val()
+            "vRemark": $('#vRemark').val(),
+            "lockVersion": that.orderInfo.lockVersion//锁版本
         };
 	},
 	submitFn: function(callBack){
@@ -1011,7 +1014,7 @@ Lists.prototype = {
 		var inParams = that.getParam();
 		inParams.token = _vParams.token;
 		inParams.secretNumber = _vParams.secretNumber;
-		console.log(JSON.stringify(inParams))
+		//console.log(JSON.stringify(inParams))
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,
@@ -1050,7 +1053,3 @@ Lists.prototype = {
 		})
 	}
 }
-
-
-
-	

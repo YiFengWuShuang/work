@@ -4,7 +4,9 @@ var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
-var $currencySymbol;
+var $currencySymbol = '';
+var $priceDecimalNum = '';
+var $amountDecimalNum = '';
 var Lists = function(){
 	this.init();
 }
@@ -49,8 +51,8 @@ Lists.prototype = {
 		});
 		that.start();
 
-		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount)).show();
-		$('.item-total-dj').html('变更后总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount)).show();
+		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount)).show();
+		$('.item-total-dj').html('变更后总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount)).show();
 
 	},
 	orderBaseInfo: function(){
@@ -68,8 +70,8 @@ Lists.prototype = {
             		that.orderInfo = data.socChange;
             		html +='<h2 class="m-title">变更信息</h2><div class="item-wrap">'
 						 +'	<ul>'
-						 +'		<li><span>平台变更单号：</span><b>'+ that.orderInfo.socFormNo +'</b></li>'
-						 +'		<li><span>内部变更单号：</span><b>'+ that.orderInfo.soInsideNo +'</b></li>'
+						 +'		<li><span>内部销售单号：</span><b>'+ that.orderInfo.soInsideNo +'</b></li>'
+						 +'		<li><span>内部变更单号：</span><b>'+ that.orderInfo.socFormNo +'</b></li>'
 						 +'		<li><span>客户简称：</span>'+ that.orderInfo.companyAbbr +'</li>'
 						 +'		<li><span>变更类型：</span>'+ enumFn(that.changeType,that.orderInfo.changeType) +'</li>'
 						 +'		<li><span>变更日期：</span>'+ transDate(that.orderInfo.socFormDate) +'</li>'
@@ -86,6 +88,9 @@ Lists.prototype = {
 							for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
 								if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
 									$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
+									$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
+									
+									$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
 									return false;
 								}
 							}
@@ -121,12 +126,12 @@ Lists.prototype = {
 							+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
 							+'		<li><span>物料详细：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodScale +'</p></li>'
 							+'		<li><section><span>数量：</span><em>'+ lineList[i].salesQty +'</em>'+ lineList[i].saleUnitName + ((unitName)?('/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName):'') +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
-							+'		<li class="changeItem"><section><span>变更：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].saleUnitName + ((unitName)?('/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName):'') +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
+							+'		<li class="changeItem"><section><span>变更后：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].saleUnitName + ((unitName)?('/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName):'') +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
 							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax==1) ? formatMoney(lineList[i].taxPrice) : formatMoney(lineList[i].price)) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
-							+		((lineList[i].changeTaxLineTotal!='') ? '<li class="changeItem changeLineTotal" data-changeTotal="'+ lineList[i].changeTaxLineTotal +'"><span>变更金额：</span>'+ $currencySymbol + formatMoney(lineList[i].changeTaxLineTotal) +'</li>':'')
+							+'		<li class="subtotal"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
+							+		((lineList[i].changeTaxLineTotal!='') ? '<li class="changeItem changeLineTotal" data-changeTotal="'+ lineList[i].changeTaxLineTotal +'"><span>变更小计：</span>'+ $currencySymbol + formatMoney(lineList[i].changeTaxLineTotal) +'</li>':'')
 							+'	</ul>'
 							+'</div>'
             		}

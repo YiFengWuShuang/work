@@ -21,9 +21,9 @@ var $payWayData = {};
 var $logisticsType = {};
 var $AddrData = {};
 var $fileData = {};
-var $currencySymbol = '';
-var $priceDecimalNum = '';
-var $amountDecimalNum = '';
+var $currencySymbol = '';//币种符号
+var $priceDecimalNum = '';//单价小数位
+var $amountDecimalNum = '';//金额小数位
 var addval_taxInfo = false;
 var addval_conditionInfo = false;
 var addval_paywayInfo = false;
@@ -175,9 +175,9 @@ orderRevise.prototype = {
 							+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].vPoInfo.prodCode +'</b></li>'
 							+'		<li class="prodDetail"><span>物料详细：</span><p>'+ lineList[i].vPoInfo.prodName +' '+ lineList[i].vPoInfo.prodScale +'</p></li>'
 							+'		<li><section><span>数量：</span><em>'+ lineList[i].vPurchaseQty +'</em>'+ lineList[i].vAnswerUnitName + ((unitName) ? ('/<em>'+ lineList[i].vValuationQty +'</em>'+ lineList[i].vValuationUnitName) : '') +'</section><section><span>交期：</span><em>'+ lineList[i].expectedDelivery +'</em></section></li>'
-							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].vTaxPrice) : formatMoney(lineList[i].vPrice)) +'/'+ lineList[i].vValuationUnitName +'</li>'
+							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].vTaxPrice,$priceDecimalNum) : formatMoney(lineList[i].vPrice,$priceDecimalNum)) +'/'+ lineList[i].vValuationUnitName +'</li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].vTaxLineTotal) +'</b></li>'
+							+'		<li class="subtotal"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].vTaxLineTotal,$amountDecimalNum) +'</b></li>'
 							+'	</ul>'
 							+'  <span name="bodyInfos" class="edit"></span>'
 							+'</div>'
@@ -220,9 +220,9 @@ orderRevise.prototype = {
             		that._othersCost = otherCostList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=otherCostList.length; i<len; i++){
-            			html+='<li class="costName" data-costName="'+ otherCostList[i].costName +'"><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].vCostAmount) +'</b></li>';
+            			html+='<li class="costName" data-costName="'+ otherCostList[i].costName +'"><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].vCostAmount,$amountDecimalNum) +'</b></li>';
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.vOtherCostTotal) +'</b></li>'
+            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.vOtherCostTotal,$amountDecimalNum) +'</b></li>'
             		html+='</ul>'
             		html+=((otherCostList.length==0)? '' : '<span name="otherCostInfos" class="edit editOther"></span>')
             		html+='</div>';
@@ -273,7 +273,7 @@ orderRevise.prototype = {
 		that.prodAnswerInfo();
 		that.othersCost();
 
-		$('.item-total').html('订单总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount)).show();
+		$('.item-total').html('订单总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount,$amountDecimalNum)).show();
 
 		//单身附件
     //     function getObFileList(){
@@ -344,6 +344,7 @@ orderRevise.prototype = {
 					}
 				})					
 			}
+
 		})
 
 		//默认交易税别
@@ -511,13 +512,16 @@ orderRevise.prototype = {
 			bottomBar(['share'],that.memberId,'','确定转销售');
 		}
 
+
 		//订单维护
 		container.on('click','span.edit, a.item-link',function(){
 			var _this = $(this), parent = _this.parents('.item-wrap'), name = _this.attr('name'), scrollTop = $body.scrollTop();
 			switch(name){
 				case 'headInfos':
 					orderReviseInfoCon.html(that.editHeadInfo(scrollTop));
-					$('.curSelect').html('本位币：' + $ExchangeRateData.baseCurrencyName + '&nbsp;&nbsp;&nbsp;&nbsp;汇率：').show();
+					if(that.isDisplayRate){
+						$('.curSelect').html('本位币：' + that.addval_localCurrencyName + '&nbsp;&nbsp;&nbsp;&nbsp;汇率：').show();
+					}
 					setTimeout(function(){
 						that.taxTypeSelect3();
 					},300)
@@ -525,10 +529,31 @@ orderRevise.prototype = {
 				case 'bodyInfos':
 					var index = _this.parent('.item-wrap').attr('data-index');
 					orderReviseInfoCon.html(that.editBodyInfo(index,scrollTop));
+					$('.i-search').eq(0).on('click',function(){
+						that.findCompanyProdList(index);
+					})
 					setTimeout(function(){
 						that.units(index);
-						that.editProdCode();
-					},300)
+					},0);
+					var value1 = $('.wfItem-int').eq(0).find('input').val();
+					$('.wfItem-int').eq(0).find('input').blur(function(){
+						var _this = $(this), value2 = _this.val();
+						if(value2!=''&&(value1!=value2)){
+							that.editProdCode(value2,function(jsonProd){
+					            $scope.poLineList[index].vPoInfo.id = jsonProd.prodInfo.id;
+					            $scope.poLineList[index].vPoInfo.prodCode = jsonProd.prodInfo.prodCode;
+					            $scope.poLineList[index].vPoInfo.prodName = jsonProd.prodInfo.prodName;
+					            $scope.poLineList[index].vPoInfo.prodScale = jsonProd.prodInfo.prodScale;
+					            $scope.poLineList[index].vPoInfo.prodDesc = jsonProd.prodInfo.remark;
+
+					            $('.wfItem-int').eq(0).find('input').val($scope.poLineList[index].vPoInfo.prodCode);
+					            $('.wfItem-int').eq(0).siblings('p').html($scope.poLineList[index].vPoInfo.prodName +' '+ $scope.poLineList[index].vPoInfo.prodScale);
+
+								prodAnswerCon.find('.prodCode').eq(index).find('b').html($scope.poLineList[index].vPoInfo.prodCode);
+								prodAnswerCon.find('.prodDetail').eq(index).find('p').html($scope.poLineList[index].vPoInfo.prodName +' '+ $scope.poLineList[index].vPoInfo.prodScale);								
+							});
+						}
+					})
 					break;
 				case 'otherCostInfos':
 					orderReviseInfoCon.html(that.editOthersCost(scrollTop));
@@ -564,15 +589,6 @@ orderRevise.prototype = {
 			}
 			if(_this.is('#saveBodyInfo')){
 				//维护单身信息
-				// var idx = _this.attr('data-index'),
-				// 	wfItem = $('.hideItemCon').find('.wfItem'),
-				// 	itemWrap = $('#prodAnswerInfo').find('.item-wrap').eq(idx);
-
-				// itemWrap.find('.prodCode').find('b').html(wfItem.find('p').eq(0).html())
-				// itemWrap.find('.prodDetail').find('p').html(wfItem.find('p').eq(1).html())
-				// $('.hideItemCon').find('.select3-input').forEach(function(val,item){
-				// 	itemWrap.find('em.unit').eq(item).html($(val).select3('value'))
-				// })
 			}
 			if(_this.is('#saveOthersCost')){
 				//维护其他费用
@@ -645,6 +661,44 @@ orderRevise.prototype = {
 		    showSearchInputInDropdown: false,
 		    value: currValue
 		});
+	},
+	findCompanyProdList: function(idx){
+		var that = this, content = '', i=0;
+		var param = {"companyId":_vParams.companyId, "serviceId":"B01_findCompanyProdList", "token":_vParams.token, "secretNumber":_vParams.secretNumber, "commonParam":commonParam()};
+		GetAJAXData('POST',param,function(jsonProd){
+			if(jsonProd.success){
+				$scope.prodList = jsonProd.prodList;
+				$scope.prodList.forEach(function(val,key){
+					content += '<tr data-index="'+key+'"><td><div>'+val.prodCode+'</div></td><td><div>'+val.prodName+'</div></td><td><div>'+val.prodScale+'</div></td><td><span>选择</span></td></tr>';
+					i++;
+				})
+			}
+		})
+		if(i<10){
+			that.popup('alert','',MProdList(content),'','','取消');
+		}else{
+			that.popup('alert','',MProdList(content,'overflow'),'','','取消');
+		}
+
+		//开窗产品选择
+		$('.MProdList tbody tr').on('click',function(){
+			var _this = $(this), index = _this.attr('data-index');
+
+            $scope.poLineList[idx].vPoInfo.id = $scope.prodList[index].id;
+            $scope.poLineList[idx].vPoInfo.prodCode = $scope.prodList[index].prodCode;
+            $scope.poLineList[idx].vPoInfo.prodName = $scope.prodList[index].prodName;
+            $scope.poLineList[idx].vPoInfo.prodScale = $scope.prodList[index].prodScale;
+            $scope.poLineList[idx].vPoInfo.prodDesc = $scope.prodList[index].remark;
+
+            $('.wfItem-int').eq(0).find('input').val($scope.poLineList[idx].vPoInfo.prodCode);
+            $('.wfItem-int').eq(0).siblings('p').html($scope.poLineList[idx].vPoInfo.prodName +' '+ $scope.poLineList[idx].vPoInfo.prodScale);
+
+			prodAnswerCon.find('.prodCode').eq(idx).find('b').html($scope.poLineList[idx].vPoInfo.prodCode);
+			prodAnswerCon.find('.prodDetail').eq(idx).find('p').html($scope.poLineList[idx].vPoInfo.prodName +' '+ $scope.poLineList[idx].vPoInfo.prodScale);
+			
+			$('#popup_btn_container').trigger('click');
+		})
+
 	},
 	// 维护订单单头
 	editHeadInfo: function(scrollTop){
@@ -728,7 +782,7 @@ orderRevise.prototype = {
 			+'		<section class="clearfix">'
 			+'			<span class="c-label"><b>我方编码：</b></span>'
 			+'			<div class="wfItem">'
-			+'				<p class="wfItem-int"><input type="text" class="s-int" value="'+ list.vPoInfo.prodCode +'" /><i></i></p>'
+			+'				<p class="wfItem-int"><input type="text" class="s-int" value="'+ list.vPoInfo.prodCode +'" /><i class="i-search"></i></p>'
 			+'				<p>'+ list.vPoInfo.prodName +' '+ list.vPoInfo.prodScale + '</p>'
 			+'			</div>'
 			+'		</section>'
@@ -789,59 +843,27 @@ orderRevise.prototype = {
 			})
 		})
 	},
-	editProdCode: function(){
+	editProdCode: function(prodCode,callback){
 		var that = this;
-		container.on('click','.poBodyEdit',function(){
-			var _this = $(this),
-				parent = _this.parent('.item-wrap');
-			_this.hide();
-			parent.find('.wfItem').hide();
-			parent.find('.itemEdit').show();
-			$body.append(formTip);
-		}).on('click','.btn-save',function(){
-			var _this = $(this);
-			var code = _this.parents('.itemEdit').find('.int-search').val();
-			$.ajax({
-				type:"POST",
-                url:config.serviceUrl,
-                data: {
-			        "param": '{"serviceId": "B01_getProdInfoByCode","companyId":"'+ _vParams.companyId +'","prodCode":"'+ code +'","commonParam":'+ that.commonParam +','+ that.tokens +'}'
-			    },
-                success:function(data){
-                	data = data || {};
-                	if(data.success){
-                		var prodInfos = data.prodInfo;
-                		if(prodInfos==undefined){
-                			$('#formTip').html('产品编码错误，请重新输入').addClass('formTipShow');
-                			return false;
-                		}
-                		if(code==prodInfos.prodCode){
-                			_this.parents('.item-wrap').find('.wfItem').html(prodInfos.prodCode + '<p>'+ prodInfos.prodName + ' ' + prodInfos.prodScale +'</p>');
-                			resumed(_this);
-                		}
-                	}
-                }
-			})
-
-		}).on('click','.btn-cancel',function(){
-			var _this = $(this);
-			resumed(_this);
+		var param = {"prodCode":prodCode, "companyId":_vParams.companyId, "serviceId":"B01_getProdInfoByCode", "token":_vParams.token, "secretNumber":_vParams.secretNumber, "commonParam":commonParam()};
+		GetAJAXData('POST',param,function(jsonProd){
+			if(!jsonProd.success){
+				that.popup('alert','',jsonProd.errorMsg);
+				return false;
+			}
+			if( !isEmpty(jsonProd.prodInfo) ){
+				callback&&callback(jsonProd);
+			}else{
+				that.popup('alert','','无对应商品！');
+			}
 		})
-
-		function resumed(self){
-			var parent = self.parents('.item-wrap');
-			parent.find('.wfItem').show();
-			parent.find('.itemEdit').hide();
-			parent.find('.edit').show();
-			$('#formTip').remove();
-		}
 	},
 	editOthersCost: function(scrollTop){
 		var that = this, list = that._othersCost, len=list.length, costName = $('.showItemCon').find('.costName');
 		var html = '<div class="m-item"><h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>';
 
 		for(var i=0; i<len; i++){
-			html+='<li><span>'+ costName.eq(i).attr('data-costName') +'：</span><b>'+ $currencySymbol+formatMoney(list[i].vCostAmount) +'</b></li>'
+			html+='<li><span>'+ costName.eq(i).attr('data-costName') +'：</span><b>'+ $currencySymbol+formatMoney(list[i].vCostAmount,$amountDecimalNum) +'</b></li>'
 		}			
 
 		html+='</ul></div></div>';
@@ -851,7 +873,7 @@ orderRevise.prototype = {
 			html+='<section class="m-select clearfix">'
 					+'	<div class="c-cont c-cont2">'
 					+'		<input type="text" class="costName" value="'+ costName.eq(j).attr('data-costName') +'">'
-					+'		<p class="fy">'+ $currencySymbol+formatMoney(list[j].vCostAmount) +'</p>'
+					+'		<p class="fy">'+ $currencySymbol+formatMoney(list[j].vCostAmount,$amountDecimalNum) +'</p>'
 					+'	</div>'
 					+'</section>'
 		}
@@ -1007,12 +1029,12 @@ orderRevise.prototype = {
 				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
 	},
-	popup: function(type, title, content, closeCallBack, okCallBack){
+	popup: function(type, title, content, closeCallBack, okCallBack, okTxt){
 		new Popup({
 			type:type,
 			title:title,
 			content:content,
-			ok:'确定',
+			ok:((!okTxt)?'确定':okTxt),
 			cancel:'取消',
 			closeCallBack:closeCallBack,
 			okCallBack:okCallBack
@@ -1029,10 +1051,18 @@ orderRevise.prototype = {
         var addval_isContainTax = $taxData.taxInfo.isContainTax;
 
         //业务员
-        var addval_soManCode = privateDefultUser.employeeCode;
-        var addval_soManId = privateDefultUser.employeeId;
-        var addval_soManName = privateDefultUser.employeeName;
-        var addval_soManPid = privateDefultUser.memberId;
+        if( !isEmpty(privateDefultUser) ){
+	        var addval_soManCode = privateDefultUser.employeeCode;
+	        var addval_soManId = privateDefultUser.employeeId;
+	        var addval_soManName = privateDefultUser.employeeName;
+	        var addval_soManPid = privateDefultUser.memberId;
+        }else{
+	        var addval_soManCode = that.orderInfo.poManCode;
+	        var addval_soManId = that.orderInfo.poManId;
+	        var addval_soManName = that.orderInfo.poManName;
+	        var addval_soManPid = that.orderInfo.poManPid;        	
+        }
+
 
         //交易条件
         if(addval_conditionInfo){
@@ -1053,13 +1083,13 @@ orderRevise.prototype = {
 
 
         //物流商 添加值(H5暂无显示物流商,传默认值)
-        if( true ){
-            var addval_logisticsName = that.orderInfo.logisticsName;
-            var addval_logisticsCode= that.orderInfo.logisticsCode;
-        }else{
-            // var addval_logisticsCode = $scope.addval_logisticsInfo.logisticsCode;
-            // var addval_logisticsName = $scope.addval_logisticsInfo.logisticsName;
-        }
+        // if( true ){
+	        var addval_logisticsName = that.orderInfo.logisticsName||'ＥＭＳ';
+	        var addval_logisticsCode= "";
+        // }else{
+        //     var addval_logisticsCode = $scope.addval_logisticsInfo.logisticsCode;
+        //     var addval_logisticsName = $scope.addval_logisticsInfo.logisticsName;
+        // }
         //收货地址、自提点 添加值(收货地址暂时使用客户地址)
         // if(){
         //     $scope.addval_contactPerson = $scope.addval_addrInfo.contactPerson;
@@ -1153,7 +1183,12 @@ orderRevise.prototype = {
             "soManCode":addval_soManCode,	         
             "soManId":addval_soManId,	             
             "soManName":addval_soManName,	         
-            "soManPid":addval_soManPid
+            "soManPid":addval_soManPid,
+            //新增
+            "currencySymbol":that.orderInfo.currencySymbol,
+            "priceDecimalNum":that.orderInfo.priceDecimalNum,
+            "amountDecimalNum":that.orderInfo.amountDecimalNum,
+            "lockVersion":that.orderInfo.lockVersion
         }; 
         //支付信息
         var addval_payInfo = {

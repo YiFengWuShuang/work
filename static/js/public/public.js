@@ -16,6 +16,11 @@ config.ussUrl = "http://172.31.10.168/usersystem";
 config.htmlUrl = 'http://172.31.10.164/dist/html/';
 config.userInfo = 'http://54.222.203.245:7200/usersystem/login/getTokenList/v1';
 
+//产品开窗模板
+function MProdList(content,overflow){
+	return '<div class="MProdList"><table><thead><tr><th>产品编码</th><th>产品名称</th><th>产品规格</th><th>操作</th></tr></thead><tbody'+ (overflow?' class="overflow"':'') +'>'+content+'</tbody></table></div>';
+}
+
 //公共参数
 function commonParam() {
     return {
@@ -123,18 +128,10 @@ function transDate(tm){
 }
 
 //格式化金额
-function formatMoney(s) {
-	s=((s=='') ? 0 : s)
-	s = s.toString();
-	if(/[^0-9\.]/.test(s)) return '';
-	s = s.replace(/^(\d*)$/, '$1.');
-	s = (s + '00').replace(/(\d*\.\d\d)\d*/, '$1');
-	s = s.replace('.', ',');
-	var re = /(\d)(\d{3},)/;
-	while (re.test(s))
-		s = s.replace(re, '$1,$2');
-	s = s.replace(/,(\d\d)$/, '.$1');
-	return s.replace(/^\./, '0.')
+function formatMoney(num,decimalNum) {
+	num = ((num=='') ? 0 : parseFloat(num));
+	decimalNum = decimalNum || 2;
+	return num.toFixed(decimalNum);
 }
 
 //loadScript
@@ -147,22 +144,6 @@ function loadScript(url, callback) {
     script.src = url;
     document.body.appendChild(script);
 }
-
-//checkbox自定义样式
-// function resetCheckbox(){
-// 	$('.checkbox input').live('change',function(){
-// 		var _this = $(this), label = _this.parent();
-// 		if(_this.prop('checked')){
-// 			label.addClass('on');
-// 		}else{
-// 			label.removeClass('on');
-// 		}
-// 		if(_this.prop('disabled')){
-// 			label.css('color','#999');
-// 		}
-// 	})
-// };
-
 
 //数据来源
 function dataSource(){

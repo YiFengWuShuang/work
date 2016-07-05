@@ -482,6 +482,11 @@ returnSale.prototype = {
 	        param_return_sale.soChangeInfo.vRemark = $myRemark;//本方备注
 	        param_return_sale.soChangeInfo.remark = $change.changeRemark;
 
+	        //新增
+	        param_return_sale.soChangeInfo.currencySymbol = $scope.pocNoticeInfo.currencySymbol;
+	        param_return_sale.soChangeInfo.priceDecimalNum = $scope.pocNoticeInfo.priceDecimalNum;
+	        param_return_sale.soChangeInfo.amountDecimalNum = $scope.pocNoticeInfo.amountDecimalNum;
+
 	        //变更类型
 	        param_return_sale.soChangeInfo.changeType = $scope.pocNoticeInfo.changeType;
 

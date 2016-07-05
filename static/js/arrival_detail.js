@@ -146,10 +146,10 @@ arrivalOrder.prototype = {
 			},function(){
 				//---》跳转至app收货单新建
 				if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
-					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function(responseData) {});
+					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":$scope.orderInfo.deliveryOrderId}, function(responseData) {});
 				}else{
 					setupWebViewJavascriptBridge(function(bridge) {
-						bridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function responseCallback(responseData) {})
+						bridge.callHandler( "goodsReceive", {"param":$scope.orderInfo.deliveryOrderId}, function responseCallback(responseData) {})
 					})
 				}
 				return false;

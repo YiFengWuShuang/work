@@ -22,8 +22,6 @@ var Lists = function(){
 Lists.prototype = {
 	init: function(){
 		var that = this;
-		that._files = [];
-		that._othersCost = [];
 		that.changeReason = [];
 		that.totals = 0;
 		that.load = false;
@@ -75,7 +73,7 @@ Lists.prototype = {
             			that.changeType = '1'
             		}else if(data.purchaseOrderInfo.status==8){
             			that.changeType = '2'
-            		}else if(data.purchaseOrderInfo.status==4){
+            		}else if(data.purchaseOrderInfo.status!=3 || data.purchaseOrderInfo.status!=8){
             			that.changeType = '4'
             		}
             		html +='<h2 class="m-title">变更信息</h2><div class="item-wrap">'
@@ -89,6 +87,9 @@ Lists.prototype = {
 						 +'		<li><span>变更日期：</span>'+ transDate(new Date().getTime()) +'</li>'
 						 +'	</ul>'
 						 +'</div>'
+
+					$('#orderHeadInfo').html(html);
+
 					//发票类型
 					if(that.orderInfo.invoice!=1){
 						requestFn("B02_InvoiceType",function(data){
@@ -114,11 +115,30 @@ Lists.prototype = {
             	}
             }
 		})
-		return html;
 	},
 	//采购明细-----------------------------------------------------------------------
 	prodBodyInfo: function(){
 		var that = this, html = '';
+
+	    //加载单身附件
+		// function f_init_l_file(line){
+		//     line.vFileList = [];
+
+		//     GetAJAXData('POST',{"serviceId":"B01_findFileList", "docType":10, "companyId":_vParams.companyId, "searchType":2, "id":line.id, "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()},function(data){
+		// 		if(data.success){
+		// 			data.fileList.forEach(function(v){
+		//                 line.vFileList.push({
+		//                     "id": v.id,
+		//                     "fileName":v.fileName,
+		//                     "fileSize":v.fileSize,
+		//                     "fileUrl": v.fileUrl,
+		//                     "lineNo": v.lineNo
+		//                 });
+		//             });
+		// 		}
+		// 	});	
+		// }
+
 		var params = {"serviceId": "B03_findPoLineList","companyId":_vParams.companyId,"poId": _vParams.poId,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};
 		$.ajax({
 			type:"POST",
@@ -173,11 +193,11 @@ Lists.prototype = {
 
 			                //分批答交 拆分操作
 			                if( val.vBatchAnswer == 1 ){
-			                    for( var i=0;i<val.poSubLineInfo.length;i++ ){
-			                        if( i==0 ){
-			                            val.changeQty = val.poSubLineInfo[i].purchaseQty;
-			                            val.changeValuationQty = val.poSubLineInfo[i].valuationQty;	
-			                            val.changeExpectedDeliveryStr = val.poSubLineInfo[i].expectedDelivery;
+			                    for( var k=0;k<val.poSubLineInfo.length;k++ ){
+			                        if( k==0 ){
+			                            val.changeQty = val.poSubLineInfo[k].purchaseQty;
+			                            val.changeValuationQty = val.poSubLineInfo[k].valuationQty;	
+			                            val.changeExpectedDeliveryStr = val.poSubLineInfo[k].expectedDelivery;
 			                            val.changeLineAmount = (val.changePrice*val.changeValuationQty);
 			                            val.changeTaxLineTotal = (val.changeTaxPrice*val.changeValuationQty);
 			                            val.changeType = 2;
@@ -201,9 +221,9 @@ Lists.prototype = {
 			                            var maxLineNo=(batchArr.length==0)?$PoLineList[$PoLineList.length-1].changeLineNo:batchArr[batchArr.length-1].changeLineNo;
 			                            batchItem.changeLineNo = maxLineNo+1;		                 
 			                            batchItem.changeType = 3;		                 
-			                            batchItem.changeQty = val.poSubLineInfo[i].purchaseQty;		                 
-			                            batchItem.changeValuationQty = val.poSubLineInfo[i].valuationQty;	
-			                            batchItem.changeExpectedDeliveryStr = val.poSubLineInfo[i].expectedDelivery;	     	             
+			                            batchItem.changeQty = val.poSubLineInfo[k].purchaseQty;		                 
+			                            batchItem.changeValuationQty = val.poSubLineInfo[k].valuationQty;	
+			                            batchItem.changeExpectedDeliveryStr = val.poSubLineInfo[k].expectedDelivery;	     	             
 			                            batchItem.changeLineAmount = (val.changePrice*val.changeValuationQty);
 			                            batchItem.changeTaxLineTotal = (val.changeTaxPrice*val.changeValuationQty);
 			                            batchArr.push(batchItem);
@@ -249,7 +269,6 @@ Lists.prototype = {
 			        }
 			        $scope.poLineList = $PoLineList;
 
-
             		html = '<h2 class="m-title">采购明细</h2>';
             		if(that.changeType==1){
 	            		for(var i=0, len=data.poLineList.length; i<len; i++){
@@ -258,7 +277,7 @@ Lists.prototype = {
 								+'		<li class="prodCode"><span>物料编码：</span><b>'+ data.poLineList[i].prodCode +'</b></li>'
 								+'		<li><span>物料名称：</span><p>'+ data.poLineList[i].prodName + ' ' + data.poLineList[i].prodScale +'</p></li>'
 								+'		<li><section><span>数量：</span><em>'+ data.poLineList[i].purchaseQty +'</em>'+ data.poLineList[i].purchaseUnitName +'/<em>'+ data.poLineList[i].valuationQty +'</em>'+ data.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(data.poLineList[i].expectedDelivery) +'</em></section></li>'
-							if(data.poLineList[i].poSubLineInfo.length){
+							if(data.poLineList[i].vBatchAnswer==1){
 								for(var j=0; j<data.poLineList[i].poSubLineInfo.length; j++){
 									html+='<li class="changeItem"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>变更：</span><em>'+ data.poLineList[i].poSubLineInfo[j].purchaseQty +'</em>'+ data.poLineList[i].vAnswerUnitName +'/<em>'+ data.poLineList[i].poSubLineInfo[j].valuationQty +'</em>'+ data.poLineList[i].vValuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>预交期：</span><em>'+ data.poLineList[i].poSubLineInfo[j].expectedDelivery +'</em></section></li>'
 								}
@@ -272,6 +291,8 @@ Lists.prototype = {
 								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(data.poLineList[i].vTaxLineTotal) +'</li>'			
 								+'	</ul>'
 								+'</div>'
+
+							//f_init_l_file($scope.poLineList[i]);
 	            		}            			
             		}else if(that.changeType==2){
 	            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
@@ -287,6 +308,8 @@ Lists.prototype = {
 								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(0) +'</li>'			
 								+'	</ul>'
 								+'</div>'
+
+							//f_init_l_file($scope.poLineList[i]);
 	            		}
             		}else if(that.changeType==4){
 	            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
@@ -304,17 +327,29 @@ Lists.prototype = {
 								+'	</ul>'
 								+'	<span name="bodyInfos" class="edit"></span>'
 								+'</div>'
+
+							//f_init_l_file($scope.poLineList[i]);
 	            		}             			
             		}
 
+            		$('#prodBodyInfo').html(html);
             		that.load = true;
+    				//$scope.poLineList.forEach(function(line,idx){
+					// 	var fileHTML = '<p>'
+					// 	line.vFileList.forEach(function(val){
+					// 		fileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
+					// 	})
+					// 	fileHTML += '</p>'
+					// 	if(line.vFileList.length>0){
+					// 		$('#prodBodyInfo .files').eq(idx).html('<span>附件：</span>'+fileHTML).show();
+					// 	}
+					// })
             	}else{
             		container.show().html('<p style="text-align:center;">'+ data.errorMsg +'</p>');
 					fnTip.hideLoading();
             	}
             }
 		})
-		return html;
 	},
 	//其他费用--------------------------------------------------------------------------------------
 	othersCost: function(){
@@ -378,9 +413,7 @@ Lists.prototype = {
 	},
 	start: function(){
 		var that = this;
-		var orderHeadInfo = document.getElementById('orderHeadInfo');
-		var prodBodyInfo = document.getElementById('prodBodyInfo');
-		orderHeadInfo.innerHTML = that.orderBaseInfo();
+		that.orderBaseInfo();
 		that.dateFn();
 
 		//获取所有平台币种及小数位
@@ -399,7 +432,7 @@ Lists.prototype = {
 			}
 		});
 
-		prodBodyInfo.innerHTML = that.prodBodyInfo();
+		that.prodBodyInfo();
 		that.othersCost();
 
 
@@ -422,19 +455,6 @@ Lists.prototype = {
 		        }
 			}
 		})
-
-		// 单身附件
-		// function fileListOB(){
-		// 	for(var i=0, l=$scope.poLineList.length; i<l; i++){
-		// 		var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.companyId,"id":$scope.poLineList[i].id,"fileSource":1,"searchType":2,"docType":10,"commonParam":commonParam()};
-		// 		GetAJAXData('POST',param,function(fileListData2){
-		// 			if(fileListData2.success){
-		// 				$fileListData2 = fileListData2;
-		// 				//
-		// 			}
-		// 		})
-		// 	}
-		// }
 
 		//枚举，变更原因
 		requestFn("B03_POCReasonType",function(data){
@@ -688,8 +708,8 @@ Lists.prototype = {
 				 +'</div>'
 				 +'<div id="files" class="item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
-		for(var i=0; i<that._files.length;i++){
-			html+='<p><a href="'+ that._files[i].fileUrl +'"><i class=i-'+ (_reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></p>'
+		for(var i=0; i<$fileListData1.fileList.length;i++){
+			html+='<p><a href="'+ $fileListData1.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileListData1.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileListData1.fileList[i].fileName +'</a></p>'
 		}
 			html +='</div>'
 				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
@@ -716,10 +736,18 @@ Lists.prototype = {
             return;
         }
         //业务员
-        var addval_pocManCode = privateDefultUser.employeeCode;
-        var addval_pocManId = privateDefultUser.employeeId;
-        var addval_pocManName = privateDefultUser.employeeName;
-        var addval_pocManPid = privateDefultUser.memberId;
+        if(!isEmpty(privateDefultUser)){
+	        var addval_pocManCode = privateDefultUser.employeeCode;
+	        var addval_pocManId = privateDefultUser.employeeId;
+	        var addval_pocManName = privateDefultUser.employeeName;
+	        var addval_pocManPid = privateDefultUser.memberId;
+        }else{
+	        var addval_pocManCode = that.orderInfo.poManCode;
+	        var addval_pocManId = that.orderInfo.poManId;
+	        var addval_pocManName = that.orderInfo.poManName;
+	        var addval_pocManPid = that.orderInfo.poManPid;
+        }
+
 
         //采购明细
         var addval_pcLineList = [];

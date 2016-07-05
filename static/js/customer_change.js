@@ -99,31 +99,6 @@ Lists.prototype = {
 		})
 		return html;
 	},
-	//附件
-	// fileList: function(){
-	// 	var that = this;
-	// 	if(!that.load)return;
-	// 	//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
-	// 	var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"commonParam": commonParam(),"fileSource":"1","searchType":"1","id":_vParams.id,"docType":25}
-	// 	$.ajax({
-	// 		type:"POST",
- //            url:config.serviceUrl,
- //            data:'param='+JSON.stringify(params),
- //            success:function(data){
- //            	data = data || {};
- //            	if(data.success){
- //            		var file = data.fileList;
- //            		for(var i=0, len=file.length; i<len; i++){
- //            			//that._files.push(file[i]);
- //            			if(file[i].fileName!=''){
- //            				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (_reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
- //            			}
- //            		}
- //            		that._files = file;
- //            	}
- //            }
-	// 	})
-	// },
 	prodBodyInfo: function(){
 		var that = this, html = '';
 		var params = {"serviceId": "B03_findPocNoticeLineList","companyId":_vParams.companyId,"pocId":_vParams.id,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};

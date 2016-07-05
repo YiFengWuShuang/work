@@ -4,6 +4,8 @@ var $platformCurrencyList;
 var $currencySymbol = '';
 var $priceDecimalNum = '';
 var $amountDecimalNum = '';
+var $totalAmount = 0;
+var $vTotalAmount = 0;
 var orderReviseInfoCon = $('#orderReviseInfoCon');
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var OrderHandedOut = function(){
@@ -14,7 +16,6 @@ OrderHandedOut.prototype = {
 		var that = this;
 		that.commonParam = JSON.stringify(commonParam());
 		that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
-		that.totals = 0;
 		that.load = false;
 		that.memberId = '';
 
@@ -84,29 +85,6 @@ OrderHandedOut.prototype = {
 		})
 		return html;
 	},
-	// //附件
-	// fileList: function(){
-	// 	var that = this;
-	// 	$.ajax({
-	// 		type:"POST",
- //            url:config.serviceUrl,
- //            data: {//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
- //            	"param": '{'+ that.tokens +',"serviceId":"B01_findFileList","companyId":"'+ _vParams.companyId +'","fileSource":1,"searchType":2,"id":"'+ _vParams.poId +'","docType":"10", "commonParam":'+ that.commonParam +'}'
- //            },
- //            success:function(data){
- //            	data = data || {};
- //            	if(data.success){
- //            		var file = data.fileList, len=file.length;
- //            		for(var i=0; i<len; i++){
- //            			if(file[i].fileName!=''){
- //            				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (_reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
- //            			}
- //            		}
- //            		that._files = file;
- //            	}
- //            }
-	// 	})
-	// },
 	//产品明细
 	prodsInfo: function(){
 		var that = this, html = '';
@@ -135,10 +113,10 @@ OrderHandedOut.prototype = {
 						if(that.status==3){
 							if(prodInfos[i].poSubLineInfo.length>0){
 								for(var j=0, L=prodInfos[i].poSubLineInfo.length; j<L; j++){
-									html+='<li class="response"><section><span>分批答交：</span>'+ prodInfos[i].poSubLineInfo[j].purchaseQty + prodInfos[i].vAnswerUnitName + ((unitName)?('/'+ prodInfos[i].poSubLineInfo[j].valuationQty + prodInfos[i].vValuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</section></li>'
+									html+='<li class="response"><section><span>分批答交：</span>'+ prodInfos[i].poSubLineInfo[j].purchaseQty + prodInfos[i].purchaseUnitName + ((unitName)?('/'+ prodInfos[i].poSubLineInfo[j].valuationQty + prodInfos[i].valuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].poSubLineInfo[j].expectedDelivery +'</section></li>'
 								}
 							}else{
-								html+=' <li class="response"><section><span><span>答交数量：</span>'+ prodInfos[i].vPurchaseQty + prodInfos[i].vAnswerUnitName + ((unitName)?('/'+ prodInfos[i].vValuationQty + prodInfos[i].vValuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'							
+								html+=' <li class="response"><section><span><span>答交数量：</span>'+ prodInfos[i].vPurchaseQty + prodInfos[i].purchaseUnitName + ((unitName)?('/'+ prodInfos[i].vValuationQty + prodInfos[i].valuationUnitName):'') +'</section><section><span>交期：</span>'+ prodInfos[i].vExpectedDelivery +'</section></li>'							
 							}
 
 						}
@@ -148,14 +126,15 @@ OrderHandedOut.prototype = {
 								+'  <li><span>累计签收：</span><p>'+ prodInfos[i].receiveQty + ' ' + prodInfos[i].purchaseUnitName +'</p></li>'
 								+'  <li><span>累计退货：</span><p>'+ prodInfos[i].returnQty + ' ' + prodInfos[i].purchaseUnitName +'</p></li>'
 						}
-						html+='		<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice) : formatMoney(prodInfos[i].price)) +'/'+ prodInfos[i].valuationUnitName +'</li>'
+						html+=		((that.status==4||that.status==5)?'':'<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice,$priceDecimalNum) : formatMoney(prodInfos[i].price,$priceDecimalNum)) +'/'+ prodInfos[i].valuationUnitName +'</li>')
 							+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(prodInfos[i].taxLineTotal) +'</b></li>'
+							+		((that.status==4||that.status==5)?'':'<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(prodInfos[i].taxLineTotal) +'</b></li>')
 							+		((that.status==3)?'<li class="response changeLineTotal" data-changeTotal="'+ ((prodInfos[i].vTaxLineTotal=='')?0:prodInfos[i].vTaxLineTotal) +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(prodInfos[i].vTaxLineTotal) +'</li>':'')
 							+'	</ul>'
 							+'</div>'
-						that.totals+=Number(prodInfos[i].taxLineTotal);
+						$totalAmount+=parseFloat(prodInfos[i].taxLineTotal);
+						$vTotalAmount+=parseFloat(prodInfos[i].vTaxLineTotal);
             		}
             		that.load = true;
             		setTimeout(function(){
@@ -186,18 +165,19 @@ OrderHandedOut.prototype = {
             		var costList = data.poOtherCostList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=costList.length; i<len; i++){
-            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount) +'</b>'+ ((that.status==4||that.status==5)? '' : '<b class="dj"><em class="money" data-money="'+ (costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount) +'">'+ (costList[i].vCostAmount=='' ? '' : formatMoney(costList[i].vCostAmount)) +'</em></b>')+'</li>';
-            			subtotal += Number(costList[i].costAmount=='' ? 0 : costList[i].costAmount);
-            			resubtotal += Number(costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount);
+            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount,$amountDecimalNum) +'</b>'+ ((that.status==4||that.status==5)? '' : '<b class="dj"><em class="money" data-money="'+ (costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount) +'">'+ (costList[i].vCostAmount=='' ? '' : formatMoney(costList[i].vCostAmount,$amountDecimalNum)) +'</em></b>')+'</li>';
+            			subtotal += parseFloat(costList[i].costAmount=='' ? 0 : costList[i].costAmount);
+            			resubtotal += parseFloat(costList[i].vCostAmount=='' ? costList[i].costAmount : costList[i].vCostAmount);
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(subtotal) +'</b></li>'
+            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(subtotal,$amountDecimalNum) +'</b></li>'
             		if(that.status!=4 && (that.vStatus==3||that.vStatus==4||that.vStatus==5)){
-            			html+='<li id="changeCost" class="response changeLineTotal" data-changeTotal="'+ resubtotal +'"><span>变更费用：</span>'+ $currencySymbol + formatMoney(resubtotal) +'</li>'
+            			html+='<li id="changeCost" class="response changeLineTotal" data-changeTotal="'+ resubtotal +'"><span>变更费用：</span>'+ $currencySymbol + formatMoney(resubtotal,$amountDecimalNum) +'</li>'
             		}
             		html+='</ul>'
             			+'</div>';
             		$('#othersCost').html(html);
-            		that.totals+=Number(subtotal,10);
+            		$totalAmount+=parseFloat(subtotal);
+            		$vTotalAmount+=resubtotal;
             	}
             }
 		})
@@ -208,7 +188,7 @@ OrderHandedOut.prototype = {
 		var that = this,
 			totals = 0;
 		container.find('.changeLineTotal').each(function(){
-			totals += Number($(this).attr('data-changeTotal'));
+			totals += parseFloat($(this).attr('data-changeTotal'));
 		})
 		return totals;
 	},
@@ -279,11 +259,13 @@ OrderHandedOut.prototype = {
 			}
 		});
 		$('#prodListsInfo').html(that.prodsInfo());
-		$('#otherCost').html(that.otherCostList());
+		if(!(that.status==4||that.status==5)){
+			$('#otherCost').html(that.otherCostList());
 
-		$('.item-total').html('订单总金额：'+$currencySymbol + formatMoney(that.orderInfo.cTotalAmount)).show();
-		if(that.status!=1&&that.status!=2){
-			$('.item-total-dj').html('供应商答交总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount)).show();
+			$('.item-total').html('订单总金额：'+$currencySymbol + formatMoney(that.orderInfo.cTotalAmount,$amountDecimalNum)).show();
+			if(that.status!=1&&that.status!=2){
+				$('.item-total-dj').html('供应商答交总金额：'+$currencySymbol+formatMoney($vTotalAmount,$amountDecimalNum)).show();
+			}
 		}
 
 		function purchase_change_add(changeType){
@@ -347,7 +329,7 @@ OrderHandedOut.prototype = {
 						//转到待答交
 						fnTip.success(2000,'发布成功');
 						setTimeout(function(){window.location.reload(true);},2000);
-					});					
+					},true);					
 				})
 
 			}
@@ -372,10 +354,10 @@ OrderHandedOut.prototype = {
 			if(that.status==4||that.status==5){
 				//---》跳转至app收货单新建
 				if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
-					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function(responseData) {});
+					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":_vParams.poId}, function(responseData) {});
 				}else{
 					setupWebViewJavascriptBridge(function(bridge) {
-						bridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function responseCallback(responseData) {})
+						bridge.callHandler( "goodsReceive", {"param":_vParams.poId}, function responseCallback(responseData) {})
 					})
 				}
 				return false;
@@ -398,13 +380,18 @@ OrderHandedOut.prototype = {
 			})		
 		})
 	},
-	submitFn: function(serviceId,callback){
+	submitFn: function(serviceId,callback,lockVersion){
 		var that = this;
+		if(lockVersion){
+			lockVersion = ',"lockVersion":'+that.orderInfo.lockVersion;
+		}else{
+			lockVersion = '';
+		}
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,
 			data: {
-            	"param": '{ '+ that.tokens +', "serviceId":"'+serviceId+'", "poId":"'+ _vParams.poId +'", "companyId":'+ _vParams.companyId +', "commonParam":'+ that.commonParam +' }'
+            	"param": '{ '+ that.tokens +', "serviceId":"'+serviceId+'", "poId":"'+ _vParams.poId +'", "companyId":'+ _vParams.companyId +', "commonParam":'+ that.commonParam + lockVersion +' }'
             },
             success:function(data){
             	data = data || {};

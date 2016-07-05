@@ -66,6 +66,7 @@ salesDetail.prototype = {
             		html += '<h2 class="m-title">基础信息</h2>'
 						 +'<div class="item-wrap">'
 						 +'	<ul>'
+						 +'		<li><span>销售单号：</span><b>'+ that.orderInfo.soFormNo +'</b></li>'
 						 +'		<li><span>采购单号：</span><b>'+ that.orderInfo.poFormNo +'</b></li>'
 						 +'		<li><span>内部单号：</span><b>'+ that.orderInfo.soInsideNo +'</b></li>'
 						 +'		<li><span>销售日期：</span>'+ transDate(that.orderInfo.soFormDate) +'</li>'
@@ -216,10 +217,10 @@ salesDetail.prototype = {
 		$body.on('click','.bottom-btn-confirm',function(){
 			//跳转至出货单新建
 			if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
-				window.WebViewJavascriptBridge.callHandler( "goodsDelivery", {"param":that.orderInfo.soFormNo}, function(responseData) {});
+				window.WebViewJavascriptBridge.callHandler( "goodsDelivery", {"param":that.orderInfo.id}, function(responseData) {});
 			}else{
 				setupWebViewJavascriptBridge(function(bridge) {
-					bridge.callHandler( "goodsDelivery", {"param":that.orderInfo.soFormNo}, function responseCallback(responseData) {})
+					bridge.callHandler( "goodsDelivery", {"param":that.orderInfo.id}, function responseCallback(responseData) {})
 				})				
 			}
 		})

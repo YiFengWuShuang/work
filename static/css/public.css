@@ -42,7 +42,7 @@ textarea { overflow: auto; resize: vertical; }
 optgroup { font-weight: bold; }
 
 table { border-collapse: collapse; border-spacing: 0; }
-td, th { padding: 0; }
+td, th { padding: 0; font-weight: 400; text-align: left;}
 
 html, button, input, select, textarea { font-family: "Helvetica Neue", Helvetica, STHeiTi, Arial, sans-serif; }
 h1, h2, h3, h4, h5, h6, p, figure, form, blockquote { margin: 0; }
@@ -93,6 +93,7 @@ button.btnBig{ border: 0 none;}
 .item-wrap i{ display: inline-block; width: .8rem; height: .8rem; margin-right: .25rem; vertical-align:-2px; background-repeat: no-repeat; background-size: .8rem .8rem;}
 .item-wrap .i-word{ background-image: url(../img/public/word.png);}
 .item-wrap .i-image{ background-image: url(../img/public/image.png);}
+.item-wrap .i-search{ background: url(../img/public/icon-search.png) no-repeat center; width: 1.6rem; height: 1.5rem; margin-right: 0; background-size: 1rem 1rem;}
 .item-wrap li b.dj{/* margin-left: 2rem;*/ color: #f45252;}
 .item-wrap .edit{ position: absolute; right: 0; top: 0; width: 1.8rem; height: 1.9rem; background: url(../img/public/edit.png) no-repeat center; background-size: .85rem .9rem;}
 b.dj{ color: #f45252;}
@@ -136,6 +137,21 @@ label input{ margin-right: .15rem;}
 .m-bottom-btn{ float: right;}
 .m-bottom-btn .bottom-btn{ width: 4.5rem;}
 .m-bottom-btn .bottom-btn-cancel{ background-color: #37B6EB;}
+
+/* 产品开窗 */
+.MProdList{}
+.MProdList table{ width: 100%;}
+.MProdList thead{ background-color:rgba(6,181,223,0.2);}
+.MProdList tbody tr{ border-bottom: 1px dotted #ddd;}
+.MProdList tbody tr:last-child{ border-bottom: none;}
+.MProdList th,.MProdList td{ display: inline-block; width: 28%; font-size: .6rem; color: #606060;}
+.MProdList th{ padding:.15rem 0 .15rem .25rem;}
+.MProdList th:last-child,.MProdList tr td:last-child{ width: 16%; padding-left: 0; text-align: center;}
+.MProdList td{ padding:.6rem 0 .6rem .25rem;}
+.MProdList td div{ width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+.MProdList td span{ padding: .15rem .3rem; border-radius: 1px; background-color: #0091cd; color: #fff;}
+.MProdList tbody.overflow{ display: block; height: 12rem; overflow-y:auto;}
+.MProdList tbody.overflow tr{ display: block;}
 
 /* 左右滑动 */
 .showItemCon{ position: relative; left: 0; -webkit-transition:left ease .3s; transition:left ease .3s;}
