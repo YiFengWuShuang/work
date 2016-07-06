@@ -1,3 +1,6 @@
+/*
+ *订单答交 未使用
+ */
 var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
@@ -173,28 +176,17 @@ orderDajiao.prototype = {
 		                    val.vLineAmount = val.lineAmount;//未税总计
 		                    val.vTaxLineTotal = val.taxLineTotal;//含税总计
 		                }
-		                //本方采购数量和计价数量
-		                // val.vPurchaseQty = $filter('fmnumber')(val.vPurchaseQty, val.purchaseUnitCode);
-		                // val.vValuationQty = $filter('fmnumber')(val.vValuationQty, val.valuationUnitCode);
-		                //本方未税单价和含税单价
-		                // val.vPrice = $filter('fmcurrency')(val.vPrice, 'price', $scope.orderInfo.pCurrencyCode, true);
-		                // val.vTaxPrice = $filter('fmcurrency')(val.vTaxPrice, 'price', $scope.orderInfo.pCurrencyCode, true);
 
 		                val.defaultvPurchaseQty = val.vPurchaseQty;//采购数量
 		                val.defaultvValuationQty = val.vValuationQty;//计价数量
 		                val.defaultvExpectedDelivery = val.vExpectedDelivery;
-
-		                // val.poSubLineList.forEach(function (sub, subKey) {
-		                //     sub.purchaseQty = $filter('fmnumber')(sub.purchaseQty, val.purchaseUnitCode);
-		                //     sub.valuationQty = $filter('fmnumber')(sub.valuationQty, val.valuationUnitCode);
-		                // })
 						
 						//初始化
                 		html+='<div class="item-wrap" data-index="'+ i +'">'
 							+'	<ul>'
 							+'		<li><span>物料编码：</span><b>'+ val.prodCode +'</b></li>'
 							+'		<li><span>物料详细：</span><p>'+ val.prodName +' '+ val.prodScale +'</p></li>'
-							+'		<li><section><span>客户数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>交期：</span><em>'+ val.expectedDelivery +'</em></section></li>'
+							+		(($scope.orderInfo.vStatus!=4)?'<li><section><span>客户数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>交期：</span><em>'+ val.expectedDelivery +'</em></section></li>':'')
 							+		(($scope.orderInfo.vStatus==1)? '' : ((val.poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em>'+ val.vPurchaseQty +'</em>'+ val.vAnswerUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.vValuationUnitName +'</section><section><span>交期：</span><em>'+ val.vExpectedDelivery +'</em></section></li>' : ''))
 						for(var j=0; j<val.poSubLineList.length; j++){
 							html+='<li class="response"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em>'+ val.poSubLineList[j].purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.poSubLineList[j].valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ val.poSubLineList[j].expectedDelivery +'</em></section></li>'
@@ -202,8 +194,8 @@ orderDajiao.prototype = {
 						html+='		<li class="price"><span>单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax===1) ? formatMoney(val.taxPrice) : formatMoney(val.price)) +'/'+ val.valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ val.remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(val.taxLineTotal) +'</b></li>'
-							+		(($scope.orderInfo.vStatus!=1)?'<li class="response responseTotal"><span>答交小计：</span>'+ $currencySymbol + formatMoney(val.vTaxLineTotal) +'</li>':'')
+							+'		<li class="subtotal"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(val.taxLineTotal) +'</b></li>'
+							+		(($scope.orderInfo.vStatus!=1 && $scope.orderInfo.vStatus!=4)?'<li class="response responseTotal"><span>答交小计：</span>'+ $currencySymbol + formatMoney(val.vTaxLineTotal) +'</li>':'')
 							+'	</ul>'
 							+( $scope.orderInfo.vStatus==2 ? '<span class="edit"></span>' : '')
 							+'</div>'						
@@ -216,15 +208,14 @@ orderDajiao.prototype = {
 			});			
 		}
 		
-	    //计算分批答交总采购数量(本方总数量可以大于客户采购数量)
+	    //计算分批答交总采购数量
 	    function culcatFenPiCaiGouCount(product, subProduct) {
 	        if (!subProduct.purchaseQty) {
 	            return;
 	        }
 	        var useQty = 0;
 	        //计价数量/采购数量=比率
-	        var rate = product.valuationQty / product.
-	        ;
+	        var rate = product.valuationQty / product.purchaseQty;
 	        //分批答交列表
 	        angular.forEach(product.poSubLineList, function (val, key) {
 	            useQty += parseFloat(val.purchaseQty ? val.purchaseQty : 0);
@@ -453,10 +444,461 @@ orderDajiao.prototype = {
 	        $scope.orderInfo.vTotalAmount = orderTotal;//订单总金额
 	    };
 
+	    /*附件start*/
+	    //单头--订单附件列表
+	    function getfileList(parentid) {
+	        $scope.orderFileList = [];
+	        var param = {
+	        	"token":_vParams.token,
+	        	"secretNumber":_vParams.secretNumber,
+	        	"serviceId":"B01_findFileList",
+	            "docType": 24,//客户订单
+	            "searchType": 1,//查询类型1单头2单身
+	            "fileSource": 2,//附件类型（1-客户，2-供应商）
+	            "companyId": $scope.orderInfo.vendorId,
+	            "id": parentid
+	        };
+	        GetAJAXData('POST',param,function(data){
+				if(data.success){
+					$scope.orderFileList = [];
+					data.fileList.forEach(function(v){
+		                $scope.orderFileList.push({
+		                    "id": v.id,
+		                    "fileName": v.fileName,
+		                    "fileSize": v.fileSize,
+		                    "fileUrl": v.fileUrl,
+		                    "lineNo": v.lineNo
+		                });
+					})
+				}
+			});
+	    };
+	    //单头--客户上传的附件
+	    function getCustomerfileList(parentid) {
+	        $scope.orderCustomerFileList = [];
+	        var param = {
+	        	"token":_vParams.token,
+	        	"secretNumber":_vParams.secretNumber,
+	        	"serviceId":"B01_findFileList",
+	            "docType": 24,//客户订单
+	            "searchType": 1,//查询类型1单头2单身
+	            "fileSource": 2,//附件类型（1-客户，2-供应商）
+	            "companyId": $scope.orderInfo.vendorId,
+	            "id": parentid
+	        };
+	        GetAJAXData('POST',param,function(data){
+				if(data.success){
+					$scope.orderCustomerFileList = [];
+					data.fileList.forEach(function(v){
+		                $scope.orderCustomerFileList.push({
+		                    "id": v.id,
+		                    "fileName": v.fileName,
+		                    "fileSize": v.fileSize,
+		                    "fileUrl": v.fileUrl,
+		                    "lineNo": v.lineNo
+		                });
+					})
+				}
+			});
+	    };
+	    //单身---供应商--附件列表
+	    function getDanShenfileVendorList(product, parentid) {
+	        product.danShenfileList = [];
+	        var param = {
+	        	"token":_vParams.token,
+	        	"secretNumber":_vParams.secretNumber,
+	        	"serviceId":"B01_findFileList",
+	            "docType": 24,//客户订单
+	            "searchType": 2,//查询类型1单头2单身
+	            "fileSource": 2,//附件类型（1-客户，2-供应商）
+	            "companyId": $scope.orderInfo.vendorId,
+	            "id": parentid
+	        };	        
+	         GetAJAXData('POST',param,function(response) {
+	            if (!response.success) {
+	                return;
+	            }
+	            product.danShenfileList = [];
+	            response.fileList.forEach(function (v) {
+	                product.danShenfileList.push({
+	                    "id": v.id,
+	                    "fileName": v.fileName,
+	                    "fileSize": v.fileSize,
+	                    "fileUrl": v.fileUrl,
+	                    "lineNo": v.lineNo
+	                });
+	            });
+	        });
+	    };
+
+	    /*保存答交,
+	     * vStatus:2-保存 3-提交
+	     */
+
+	    //提交答交
+	    function submitDaJiao(){
+	        $scope.isSubmitData = true;
+	        submitForm();
+	    };
+	    //提交
+	    var isSubmiting = false;
+	    function submitForm(){
+	        // if (!$scope.orderForm.$valid) {
+	        //     return;
+	        // }
+	        if (isSubmiting) {
+	            return;
+	        }
+	        isSubmiting = true;
+
+	        var param = getParam();
+	        for (var j = 0; j < param.modiPoLineList.length; j++) {
+	            //如果有任意一个产品的分批答交不符合条件，则提示
+	            if (param.modiPoLineList[j].isErrorFenPi) {
+	                isSubmiting = false;
+	                zhlModalTip('分批答交信息不能和初始值一样，不允许此种情况的答交');
+	                return;
+	            }
+	        }
+	        //2-保存 3-提交
+	        //提交答交
+	        if ($scope.isSubmitData) {
+	            param.vStatus = 3;
+	        } else {
+	            //保存答交
+	            param.vStatus = 2;
+	        }
+
+	        popup('confirm', '', '您确定提交答交吗？', function(){
+				//取消
+			},function(){
+				//答交提交
+		        GetAJAXData('POST',param,function (json) {
+		            isSubmiting = false;
+		            if (!json.success) {
+		                popup('alert','',json.errorMsg);
+		                return;
+		            }
+		            $scope.docNo = json.poFormNo;
+		            if ($scope.isSubmitData) {
+		                $scope.submitSuccess = true;//提交成功
+						fnTip.success(2000);
+		            	setTimeout(function(){window.location.reload(true)},2000);		             
+		            } else {
+		                //保存答交
+		                $scope.saveSuccess = true;//保存成功
+		            }
+		        });
+
+			})
+	    };
+
+	    //拒绝接单
+	    function refuse(){
+			popup('confirm', '', '您确定要拒绝接单么？<br/>拒绝后的订单，将不能恢复。', function(){
+				//取消
+			},function(){
+				var vendorRefuseReceiveParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_vendorRefuseReceivePoAnswer", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()}
+				that.vendorPoAnswer(vendorRefuseReceiveParam,function(){
+					popup('alert','','拒绝订单成功','',function(){
+						goBack();
+					})
+				},true);
+			})
+	    };
+
+	    //分批答交
+	    function fenPiDaJiao(product) {
+	        product.vBatchAnswer = 1;
+	        $scope.addFenPi(product);
+	    };
+	    //新增分批答交
+	    function addFenPi(product) {
+	        product.poSubLineList = product.poSubLineList || [];
+	        product.poSubLineList.sort(function (a1, a2) {
+	            return a1.lineNo - a2.lineNo;
+	        });
+	        //客户计价数量/采购数量
+	        var rate = product.valuationQty / product.purchaseQty,
+	            useQty = 0,//其他分批答交已用采购数量
+	            defaultCaiGouQty = 0,//分批答交默认采购数量
+	            defaultJiJiaQty = 0;//分批答交默认计价数量
+	        //分批答交列表
+	        angular.forEach(product.poSubLineList, function (val, key) {
+	            useQty += parseFloat(val.purchaseQty);
+	        });
+	        defaultCaiGouQty = product.purchaseQty - useQty;
+	        defaultJiJiaQty = defaultCaiGouQty * rate;
+	        //异常值处理
+	        defaultCaiGouQty = (!defaultCaiGouQty || defaultCaiGouQty < 0) ? '' : defaultCaiGouQty;
+	        defaultJiJiaQty = (!defaultJiJiaQty || defaultJiJiaQty < 0) ? '' : parseFloat(defaultJiJiaQty);
+	        //格式化采购数量和计价数量
+	        if (defaultCaiGouQty) {
+	            defaultCaiGouQty = $filter('fmnumber')(defaultCaiGouQty, product.purchaseUnitCode);
+	            defaultJiJiaQty = $filter('fmnumber')(defaultJiJiaQty, product.valuationUnitCode);
+	        }
+
+	        //分批答交后总的采购数量
+	        product.vPurchaseQty = $filter('fmnumber')(product.defaultvPurchaseQty, product.purchaseUnitCode);
+	        product.vValuationQty = $filter('fmnumber')(product.defaultvValuationQty, product.valuationUnitCode);
+
+	        //设置默认值
+	        var len = product.poSubLineList.length;
+	        var maxLineNo = 0;
+	        if (len > 0) {
+	            maxLineNo = product.poSubLineList[len - 1].lineNo;
+	        }
+	        if (!maxLineNo) {
+	            maxLineNo = 0;
+	        }
+	        product.poSubLineList.push({
+	            "lineNo": maxLineNo + 1,
+	            "isNewAdd": true,//是否页面上新增加的
+	            "purchaseQty": defaultCaiGouQty,//采购数量
+	            "purchaseUnit": product.vAnswerUnitName,//采购单位
+	            "valuationQty": defaultJiJiaQty,//计价数量
+	            "valuationUnit": product.vValuationUnitName,//计价单位
+	            "expectedDelivery": product.vExpectedDelivery//默认使用本方的交期(本方交期的默认值已经在加载表头时设置过了)
+	        });
+	        oneProductPriceCulcalate(product);
+	        calculateCost();
+	    };
+	    //删除一个分批答交
+	    function delOneFenPiJiaoQi(product, subProduct) {
+	        product.poSubLineList = product.poSubLineList || [];
+	        product.delPoSubLineList = product.delPoSubLineList || [];
+	        zhlModalTip('您确定要删除此条答交？', function () {
+	            //计价数量/采购数量=比率
+	            var useQty = 0,
+	                rate = product.valuationQty / product.purchaseQty;
+
+	            if (subProduct.subId) {
+	                //添加到删除列表
+	                product.delPoSubLineList.push(subProduct.subId);
+	            }
+	            var idx = product.poSubLineList.indexOf(subProduct);
+	            product.poSubLineList.splice(idx, 1);
+
+	            if (product.poSubLineList.length == 0) {
+	                product.vBatchAnswer = 0;
+	                product.poSubLineList = [];//清空分批答交数组
+	                product.vPurchaseQty = product.defaultvPurchaseQty;
+	                product.vValuationQty = product.defaultvValuationQty;
+	                product.vExpectedDelivery = product.defaultvExpectedDelivery;
+	            } else {
+	                //计算，分批答交列表
+	                angular.forEach(product.poSubLineList, function (val, key) {
+	                    useQty += parseFloat(val.purchaseQty);
+	                });
+	                //分批答交后总的采购数量
+	                product.vPurchaseQty = useQty;
+	                product.vValuationQty = useQty * rate;
+	            }
+	            //计算单身
+	            oneProductPriceCulcalate(product);
+	            //计算所有
+	            calculateCost();
+	            $scope.$apply();
+	        }, function () {
+	        });
+
+	    };
+
+
+	    //重置查询参数
+	    function getParam() {
+	        $scope.orderInfo = $scope.orderInfo || [];//订单单头信息
+	        $scope.addPoOtherCostList = [];//新增的其他费用
+	        $scope.modiPoOthreCostList = [];//修改的其他费用
+	        $scope.otherCost = $scope.otherCost || [];
+	        $scope.products = $scope.products || [];
+	        $scope.fileList = $scope.fileList || [];
+
+	        //其他费用
+	        for (var i = 0, len = $scope.otherCost.length; i < len; i++) {
+	            //新增的其他费用
+	            if ($scope.otherCost[i].isNewAdd) {
+	                $scope.addPoOtherCostList.push($scope.otherCost[i]);
+	            } else if ($scope.otherCost[i].costId) {
+	                $scope.modiPoOthreCostList.push($scope.otherCost[i]);
+	            }
+	        }
+	        //产品单身明细列表
+	        var modiPoLineList = [];
+	        var productObj;
+	        //遍历产品单身明细列表
+	        for (var j = 0, jLen = $scope.products.length; j < jLen; j++) {
+	            var danshen = {};
+	            productObj = $scope.products[j];
+	            productObj.addPoLineFileList = [];//新增的单身附件列表
+	            productObj.addPoSubLineList = [];//新增的分批答交
+	            productObj.modiPoSubLineList = [];//修改的分批答交
+	            danshen.isErrorFenPi = true;  //本产品的分批答交是否 不符合条件
+
+	            //遍历子单身
+	            for (var n = 0, fLen = productObj.poSubLineList.length; n < fLen; n++) {
+	                var sub = productObj.poSubLineList[n];
+	                var newObj = {};
+
+	                if (danshen.isErrorFenPi) {
+	                    //设置了分批答交
+	                    if (productObj.vBatchAnswer == 1) {
+	                        //答交页，如果分批答交交期不变，数量总数与变更前一样，前端需要判断提示错误信息
+	                        if (sub.expectedDelivery != productObj.defaultvExpectedDelivery) {
+	                            danshen.isErrorFenPi = false;
+	                        }
+	                        if ((productObj.defaultvPurchaseQty * 1) != (productObj.vPurchaseQty * 1)) {
+	                            danshen.isErrorFenPi = false;
+	                        }
+	                    } else {
+	                        danshen.isErrorFenPi = false;
+	                    }
+	                }
+
+	                newObj.expectedDelivery = new Date(sub.expectedDelivery).getTime();
+	                newObj.purchaseQty = sub.purchaseQty;
+	                newObj.purchaseUnit = sub.purchaseUnit;
+	                newObj.valuationQty = sub.valuationQty;
+	                newObj.valuationUnit = sub.valuationUnit;
+	                newObj.lineNo = sub.lineNo;
+	                newObj.answerSubLineId = sub.subId;
+
+	                //新增的分批答交子单身
+	                if (sub.isNewAdd) {
+	                    productObj.addPoSubLineList.push(newObj);
+	                } else if (sub.subId) {
+	                    //修改的分批答交子单身
+	                    productObj.modiPoSubLineList.push(newObj);
+	                }
+	            }
+	            //无分批答交
+	            if (productObj.poSubLineList.length == 0) {
+	                danshen.isErrorFenPi = false;
+	            }
+	            //单身附件
+	            if (productObj.danShenfileList) {
+	                for (var m = 0, dsLen = productObj.danShenfileList.length; m < dsLen; m++) {
+	                    var fileDanShen = productObj.danShenfileList[m];
+	                    if (fileDanShen.isDeleted) {
+	                        productObj.delPoLineFileList.push(fileDanShen.id);
+	                    } else if (!fileDanShen.id) {
+	                        productObj.addPoLineFileList.push({
+	                            lineNo: fileDanShen.lineNo,
+	                            fileUrl: fileDanShen.fileUrl,
+	                            fileSize: fileDanShen.fileSize,
+	                            fileName: fileDanShen.fileName
+	                        });
+	                    }
+	                }
+	            }
+	            //遍历单身
+	            danshen.poAnswerLineId = productObj.id;
+	            danshen.vProdId = productObj.vProdId;
+	            danshen.vProdCode = $.trim(productObj.vProdCode);
+	            danshen.vProdDesc = $.trim(productObj.vProdDesc);
+	            danshen.vProdScale = $.trim(productObj.vProdScale);
+	            danshen.vProdName = $.trim(productObj.vProdName);
+	            danshen.isBatchAnswer = productObj.vBatchAnswer;//批次答交
+	            danshen.vPurchaseQty = productObj.vPurchaseQty;//采购数量
+	            danshen.vValuationQty = productObj.vValuationQty;//计价数量
+	            danshen.vExpectedDelivery = new Date(productObj.vExpectedDelivery).getTime();
+	            danshen.vPrice = productObj.vPrice;
+	            danshen.vTaxPrice = productObj.vTaxPrice;
+	            danshen.vRemark = productObj.vRemark;
+	            danshen.vLineAmount = productObj.vLineAmount;
+	            danshen.vTaxLineTotal = productObj.vTaxLineTotal;
+	            danshen.vAnswerUnitId = productObj.vAnswerUnitId;
+	            danshen.vAnswerUnitCode = productObj.vAnswerUnitCode;
+	            danshen.vAnswerUnitName = productObj.vAnswerUnitName;
+	            danshen.vValuationUnitId = productObj.vValuationUnitId;
+	            danshen.vValuationUnitCode = productObj.vValuationUnitCode;
+	            danshen.vValuationUnitName = productObj.vValuationUnitName;
+	            //子单身相关数据的几个列表
+	            danshen.addPoSubLineList = productObj.addPoSubLineList ? productObj.addPoSubLineList : [];
+	            danshen.modiPoSubLineList = productObj.modiPoSubLineList ? productObj.modiPoSubLineList : [];
+	            danshen.delPoSubLineList = productObj.delPoSubLineList ? productObj.delPoSubLineList : [];
+	            //供应商产品单身上传的附件的相关数据
+	            //danshen.fileCount=;
+	            danshen.vFileCount = productObj.addPoLineFileList.length;
+	            danshen.addPoLineFileList = productObj.addPoLineFileList ? productObj.addPoLineFileList : [];
+	            danshen.delPoLineFileList = productObj.delPoLineFileList ? productObj.delPoLineFileList : [];
+	            modiPoLineList.push(danshen);
+	        }
+	        //单头---订单上传的附件
+	        for (var f = 0, fiLen = $scope.orderFileList.length; f < fiLen; f++) {
+	            var fileOut = $scope.orderFileList[f];
+	            if (fileOut.isDeleted) {
+	                $scope.delPoFileList.push(fileOut.id);
+	            } else if (!fileOut.id) {
+	                $scope.addPoFileList.push({
+	                    lineNo: fileOut.lineNo,
+	                    fileUrl: fileOut.fileUrl,
+	                    fileSize: fileOut.fileSize,
+	                    fileName: fileOut.fileName
+	                });
+	            }
+	        }
+	        return {
+	            "vStatus": "3",//2-保存 3-提交
+	            "poAnswerId": $scope.poAnswerId,
+	            "vendorId": $scope.vendorId,
+	            "serviceId": "B03_saveAnswerPo",
+	            "modiPoLineList": modiPoLineList,
+	            "addPoOtherCostList": $scope.addPoOtherCostList,//添加其他费用列表
+	            "modiPoOthreCostList": $scope.modiPoOthreCostList,//修改其他花费列表
+	            "delPoOthreCostList": $scope.delPoOthreCostList, //删除其他费用主键列表
+	            "vFeeInfo": {
+	                "vTotal": $scope.orderInfo.vTotal,//供应商品无税总计
+	                "vOtherCostTotal": $scope.orderInfo.vOtherCostTotal,//供应商其他费用总计
+	                "vTaxTotal": $scope.orderInfo.vTaxTotal,//供应商品含税总计
+	                "vTotalAmount": $scope.orderInfo.vTotalAmount//供应商合计
+	            },
+	            "addPoFileList": $scope.addPoFileList,//附件列表
+	            "delPoFileList": $scope.delPoFileList,//删除文件主键
+	            "vRemark": $scope.vRemark,
+	            "lockVersion": that.orderInfo.lockVersion//锁版本
+	        };
+	    }
+
+
+		function vendorPoAnswer(addparams,callBack,noReload){
+			var that = this;
+			$.ajax({
+				type:"POST",
+	            url:config.serviceUrl,
+	            data: {
+			        "param": JSON.stringify(addparams)
+			    },
+	            success:function(data){
+	            	if(data.success){
+	                	callBack&&callBack();
+	                	if(noReload)return;
+	                	setTimeout(function(){window.location.reload(true)},2000);
+	            	}else{
+	            		popup('alert','','提交失败：'+data.errorMsg)
+	            	}
+	            }
+			})
+		}
+
+		function popup(type, title, content, closeCallBack, okCallBack){
+			new Popup({
+				type:type,
+				title:title,
+				content:content,
+				ok:'确定',
+				cancel:'取消',
+				closeCallBack:closeCallBack,
+				okCallBack:okCallBack
+			});
+		}
+
 
     	//调用
 		getOrderInfo();
 		getProductDetails();
-		getOtherCost()
+		getOtherCost();
+		getfileList($scope.orderInfo.id);
+		getCustomerfileList($scope.orderInfo.id);
 	}
 }

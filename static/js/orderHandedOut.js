@@ -354,10 +354,10 @@ OrderHandedOut.prototype = {
 			if(that.status==4||that.status==5){
 				//---》跳转至app收货单新建
 				if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
-					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":_vParams.poId}, function(responseData) {});
+					window.WebViewJavascriptBridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function(responseData) {});
 				}else{
 					setupWebViewJavascriptBridge(function(bridge) {
-						bridge.callHandler( "goodsReceive", {"param":_vParams.poId}, function responseCallback(responseData) {})
+						bridge.callHandler( "goodsReceive", {"param":that.orderInfo.poFormNo}, function responseCallback(responseData) {})
 					})
 				}
 				return false;

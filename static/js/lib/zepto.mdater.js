@@ -273,14 +273,16 @@
 					},
 					'.md_datearea li' : function(){
 						var $this = $(this);
-						if($this.hasClass('disabled')){
+						if($this.hasClass('disabled') || $this.hasClass('prevdate')){
 							return;
 						}
+
 						_this.value.date = $this.data('day');
 						//判断是否点击的是前一月或后一月的日期
 						var add = 0;
 						if($this.hasClass('nextdate')){
 							add = 1;
+
 						}
 						else if($this.hasClass('prevdate')){
 							add = -1;
@@ -292,6 +294,23 @@
 						else{
 							$this.addClass('current').siblings('.current').removeClass('current');
 						}
+
+						//改动（点击日期立即选择时间）
+						var monthValue = ~~_this.value.month + 1;
+						if(monthValue < 10){
+							monthValue = '0' + monthValue;
+						}
+						var dateValue = _this.value.date;
+						if(dateValue === ''){
+							dateValue = _this.value.date = 1;
+						}
+						if(dateValue < 10){
+							dateValue = '0' + dateValue;
+						}
+						_this.input.html(_this.value.year + '-' + monthValue + '-' + dateValue);
+						_this.input.next('input[type="hidden"]').val(_this.value.year + '-' + monthValue + '-' + dateValue);
+						_this._hidePanel();
+						/* 改动 end */
 					},
 					'.md_ok' : function(){
 						var monthValue = ~~_this.value.month + 1;

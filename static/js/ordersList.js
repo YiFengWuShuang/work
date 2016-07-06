@@ -1,3 +1,6 @@
+/*
+ *订单答交
+ */
 var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
@@ -52,22 +55,6 @@ Lists.prototype = {
 			}
 			that.editResponse(item,index);
 		})
-
-		//限制答交数量
-		// prodAnswerCon.on('input','input.int02',function(){
-		// 	var _this = $(this),
-		// 		values = 0,
-		// 		parents = _this.parents('.responseBox'),
-		// 		index = parents.attr('data-index'),
-		// 		val = _this.val();
-		// 	var Qtys = $scope.poLineList[index].valuationQty;
-
-		// 	values = that.reQtys(parents,index);
-
-		// 	if(val>(Qtys-(values-val))){
-		// 		_this.val(Qtys-(values-val))
-		// 	}
-		// })
 
 		//选择日期
 		that.dateFn();
@@ -151,6 +138,7 @@ Lists.prototype = {
 		})
 		return html;
 	},
+	//答交产品明细
 	editResponse: function(item,index){
 		var that = this,
 			lineLists = $scope.poLineList,
@@ -280,6 +268,7 @@ Lists.prototype = {
 			that.modiResponse($(this),index);
 		})
 	},
+	//显示答交div
 	itemshow: function(self,parent){
 		var idx = self.parents('.responseBox').attr('data-index');
 		self.parents('.responseBox').remove();
@@ -322,6 +311,7 @@ Lists.prototype = {
 		})
 		return html;
 	},
+	//其他费用答交
 	editResponseCost: function(item){
 		var that = this, othersCost = that._othersCost, lens = othersCost.length;
 
@@ -364,6 +354,7 @@ Lists.prototype = {
 			e.preventDefault();
 		})
 	},
+	//新增其他费用
 	addNewCost: function(){
 		var isAdd = true;
 		var cost = '<li class="addNewCost"><input type="text" /><input type="text" /><i class="btn-del"></i></li>';
@@ -415,6 +406,7 @@ Lists.prototype = {
 
 		}
 	},
+	//重置展示信息（单身明细 其他费用 答交总金额等）
 	createResponse: function(objs,sum,self,parent,type){
 		var that = this, lens = objs.length, html = '', vals = new Array(),
 			lineLists = $scope.poLineList, idx = self.parents('.responseBox').attr('data-index');
@@ -451,11 +443,6 @@ Lists.prototype = {
 			if(values!=''||values!=undefined){
 				var _subtotal = parent.find('.item-wrap').eq(idx).find('.subtotal'), _subTotalPrice = _subtotal.attr('data-total'), $prices = parent.find('.item-wrap').eq(idx).find('.price'), _taxPrice = $prices.attr('data-taxPrice'), _price = $prices.attr('data-price');
 				//重新计算子答交小计
-				// if(values==0){
-				// 	_subtotal.attr('data-vtotal',_subTotalPrice);
-				// }else{
-				// 	_subtotal.attr('data-vtotal',values*_taxPrice);
-				// }
 				var $subtotal=0;
 				if(that.orderInfo.isContainTax==1){
 					$subtotal=values*_taxPrice;
@@ -484,17 +471,6 @@ Lists.prototype = {
 		$bfline.find('em').eq(0).html($reBfline.find('input').eq(0).val());
 		$bfline.find('em').eq(1).html($reBfline.find('input').eq(1).val());
 		$bfline.find('em').eq(2).html($reBfline.find('input').eq(2).val());
-	},
-	popup: function(type, title, content, closeCallBack, okCallBack){
-		new Popup({
-			type:type,
-			title:title,
-			content:content,
-			ok:'确定',
-			cancel:'取消',
-			closeCallBack:closeCallBack,
-			okCallBack:okCallBack
-		});
 	},
 	//删除答交项
 	delResponse: function(){
@@ -532,6 +508,8 @@ Lists.prototype = {
 	//日期控件
 	dateFn: function(){
 		$('.timeBox').mdater({
+			//minDate : new Date(1970,0,1)
+			maxDate : null,//默认为空，日期格式
 			minDate : new Date()
 		});
 	},
@@ -702,7 +680,7 @@ Lists.prototype = {
 			}
 			if(that.vStatus==3){
 				//待客户确认
-				var poRemindParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_poRemindAnswer", "poId":_vParams.poAnswerId, "companyId":that.orderInfo.companyId, "commonParam":commonParam()}
+				var poRemindParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_poRemindAnswer", "poId":that.orderInfo.purchaseOrderId, "companyId":that.orderInfo.companyId, "commonParam":commonParam()}
 				that.vendorPoAnswer(poRemindParam,function(){
 					setTimeout(function(){
 						goBack();
@@ -717,7 +695,7 @@ Lists.prototype = {
 		$body.on('click','.bottom-btn-cancel',function(){
 			if(that.vStatus==1||that.vStatus==2){
 				//拒绝订单
-				that.popup('confirm', '', '您确定要拒绝订单吗？', function(){
+				that.popup('confirm', '', '您确定要拒绝接单么？<br/>拒绝后的订单，将不能恢复。', function(){
 					//取消
 				},function(){
 					var vendorRefuseReceiveParam = { "token": _vParams.token, "secretNumber":_vParams.secretNumber, "serviceId":"B03_vendorRefuseReceivePoAnswer", "poAnswerId":_vParams.poAnswerId, "vendorId":_vParams.vendorId, "commonParam":commonParam()}
