@@ -61,6 +61,9 @@ salesDetail.prototype = {
             	data = data || {};
             	if(data.success){
             		that.orderInfo = data.salesOrderInfo;
+					$currencySymbol = that.orderInfo.currencySymbol;
+					$priceDecimalNum = that.orderInfo.priceDecimalNum;
+					$amountDecimalNum = that.orderInfo.amountDecimalNum;             		
             		that.status = that.orderInfo.status;
             		that.memberId = that.orderInfo.modibyid;
             		html += '<h2 class="m-title">基础信息</h2>'
@@ -78,22 +81,6 @@ salesDetail.prototype = {
 						 +'	</ul>'
 						 +'</div>'
 					$('#orderBaseInfo').html(html);
-
-					//获取所有平台币种及小数位
-					var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
-					GetAJAXData('POST',CurrencyParam,function(unitdata){
-						if(unitdata.success){
-							$platformCurrencyList = unitdata;
-							for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
-								if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
-									$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
-									$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
-									$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
-									return false;
-								}
-							}
-						}
-					});
             	}
             }
 		})
@@ -125,10 +112,10 @@ salesDetail.prototype = {
 							+'		<li><span>本方编码：</span><b>'+ prodInfos[i].vProdCode +'</b></li>'
 							+'		<li><span>物料详细：</span><p>'+ prodInfos[i].vProdName +'  '+ prodInfos[i].vProdScale +'</p></li>'
 							+'		<li><section><span>数量：</span>'+ prodInfos[i].salesQty + prodInfos[i].salesUnitName + ((unitName) ? ('/'+ prodInfos[i].valuationQty + prodInfos[i].valuationUnitName) : '') +'</section><section><span>预交期：</span>'+ transDate(prodInfos[i].expectedDelivery) +'</section></li>'
-							+'		<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice) : formatMoney(prodInfos[i].price)) +'/'+ prodInfos[i].valuationUnitName +'</li>'
+							+'		<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice,$priceDecimalNum) : formatMoney(prodInfos[i].price,$priceDecimalNum)) +'/'+ prodInfos[i].valuationUnitName +'</li>'
 							+'		<li><span>客户备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(prodInfos[i].valuationQty*prodInfos[i].taxPrice) +'</b></li>'//bug解决后改回prodInfos[i].taxLineTotal
+							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney((prodInfos[i].valuationQty*prodInfos[i].taxPrice),$amountDecimalNum) +'</b></li>'//bug解决后改回prodInfos[i].taxLineTotal
 							+'	</ul>'
 							+'</div>'
 						that.totals+=Number(prodInfos[i].taxLineTotal);
@@ -158,10 +145,10 @@ salesDetail.prototype = {
             		var otherCostList = data.soOtherCostList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>';
             		for(var i=0, len=otherCostList.length; i<len; i++){
-            			html+='<li><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].costAmount) +'</b></li>'
+            			html+='<li><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].costAmount,$amountDecimalNum) +'</b></li>'
             			subtotal += Number(otherCostList[i].costAmount);
             		}
-            		html+='<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.vOtherCostTotal) +'</b></li>'
+            		html+='<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.vOtherCostTotal,$amountDecimalNum) +'</b></li>'
             		html+='</ul></div>';
             		that.totals+=Number(subtotal);
             		$('#otherCost').html(html);
@@ -171,7 +158,7 @@ salesDetail.prototype = {
 	},
 	start: function(){
 		var that = this;
-		$('.item-total').html('订单总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount)).show();
+		$('.item-total').html('订单总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount,$amountDecimalNum)).show();
 
 
 		//单头附件
@@ -241,7 +228,7 @@ salesDetail.prototype = {
 					+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
 			}
 			html+='</ul>'
-			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	remark: function(scrollTop){
@@ -257,7 +244,7 @@ salesDetail.prototype = {
 				 +'<div id="files" class="item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
 				 +'</div>'
-				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	popup: function(type, title, content, closeCallBack, okCallBack){

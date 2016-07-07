@@ -13,7 +13,6 @@ var $platformCurrencyList;
 var $currencySymbol = '';
 var $priceDecimalNum = '';
 var $amountDecimalNum = '';
-var $prodMapList = [];
 var $fileData;
 var $btnTxet = '分批答交';
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
@@ -36,7 +35,24 @@ Lists.prototype = {
     		container.show();
 			fnTip.hideLoading();
 		},0);
-
+		
+		//查询枚举值
+		requestFn("B02_LogisticsType",function(data){
+			if(data.errorCode=='0'){
+				that.logisticsType = data.dataSet.data.detail;
+			}
+		});
+		requestFn("B02_InvoiceType",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceType = data.dataSet.data.detail;
+			}
+		});
+		//发票信息
+		requestFn("B02_Invoice",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceInfoName = data.dataSet.data.detail;
+			}
+		});
 		that.start();
 		
 		//答交
@@ -77,6 +93,9 @@ Lists.prototype = {
             		that.memberId = that.orderInfo.poManId;
             		that.status = that.orderInfo.status;
 					that.vStatus = that.orderInfo.vStatus;
+					$currencySymbol = that.orderInfo.currencySymbol;
+					$priceDecimalNum = that.orderInfo.priceDecimalNum;
+					$amountDecimalNum = that.orderInfo.amountDecimalNum;					
             		html += '<h2 class="m-title">基础信息</h2>'
             			 +'<div class="item-wrap">'
 						 +'	<ul>'
@@ -108,27 +127,83 @@ Lists.prototype = {
             	if(data.success){
             		$scope.poLineList = data.poLineList;
             		html = '<h2 class="m-title">产品信息</h2>';
-            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
+            		$scope.poLineList.forEach(function(val,i){
+
+		                if (!val.vProdName) {
+		                    val.vPurchaseQty = val.purchaseQty;//采购数量
+		                    val.vValuationQty = val.valuationQty;//计价数量
+		                    val.vExpectedDelivery = val.expectedDelivery;
+		                    val.vAnswerUnitName = val.purchaseUnitName;//采购单位
+		                    val.vAnswerUnitId = val.purchaseUnitId;//采购单位主键
+		                    val.vAnswerUnitCode = val.purchaseUnitCode;//采购单位编码
+		                    val.vValuationUnitId = val.valuationUnitId;
+		                    val.vValuationUnitCode = val.valuationUnitCode;
+		                    val.vValuationUnitName = val.valuationUnitName;//计价单位
+		                    val.vPrice = val.price;//未税单价
+		                    val.vTaxPrice = val.taxPrice;//含税单价
+		                    val.vLineAmount = val.lineAmount;//未税总计
+		                    val.vTaxLineTotal = val.taxLineTotal;//含税总计
+
+		                    var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":val.prodCode,"commonParam":commonParam(),"customerId":that.orderInfo.companyId};
+		                    //客户和产品关系中根据客户产品获取本方关联产品
+		                    GetAJAXData('POST',params,function(vProdData){
+		                        if (vProdData.prodMap) {
+		                            val.vProdId = vProdData.prodMap.prodId;
+		                            val.vProdCode = vProdData.prodMap.prodCode;//编码
+		                            val.vProdName = vProdData.prodMap.prodName;
+		                            val.vProdScale = vProdData.prodMap.prodScale;//规格
+		                            val.vProdDesc = vProdData.prodMap.prodDesc;//描述
+		                        } else {
+		                            //无v的ProdName、ProdScale、ProdDesc，ID和CODE为空
+		                            val.vProdName = val.prodName;
+		                            val.vProdScale = val.prodScale;
+		                            val.vProdDesc = val.prodDesc;
+		                        }
+							})
+		                } else if (!val.vPurchaseQty) {
+		                    //带出默认值
+		                    val.vPurchaseQty = val.purchaseQty;//采购数量
+		                    val.vValuationQty = val.valuationQty;//计价数量
+		                    val.vExpectedDelivery = val.expectedDelivery;
+		                    val.vAnswerUnitName = val.purchaseUnitName;//采购单位
+		                    val.vAnswerUnitId = val.purchaseUnitId;//采购单位主键
+		                    val.vAnswerUnitCode = val.purchaseUnitCode;//采购单位编码
+		                    val.vValuationUnitId = val.valuationUnitId;
+		                    val.vValuationUnitCode = val.valuationUnitCode;
+		                    val.vValuationUnitName = val.valuationUnitName;//计价单位
+		                    val.vPrice = val.price;//未税单价
+		                    val.vTaxPrice = val.taxPrice;//含税单价
+		                    val.vLineAmount = val.lineAmount;//未税总计
+		                    val.vTaxLineTotal = val.taxLineTotal;//含税总计
+		                }
+
+		                //本方未税单价和含税单价
+		                if(that.orderInfo.isContainTax==1){
+		                	val._vPrice = val.vTaxPrice/(1+parseFloat(that.orderInfo.taxRate));
+		                }else{
+		                	val._vTaxPrice = val.vPrice*(1+parseFloat(that.orderInfo.taxRate));
+		                }
+
                 		html+='<div class="item-wrap" data-index="'+ i +'">'
 							+'	<ul>'
-							+'		<li class="prodCode" data-prodCode="'+ $scope.poLineList[i].prodCode +'" data-prodId="'+ $scope.poLineList[i].prodId +'"><span>物料编码：</span><b>'+ $scope.poLineList[i].prodCode +'</b></li>'
-							+'		<li><span>物料详细：</span><p>'+ $scope.poLineList[i].prodName +' '+ $scope.poLineList[i].prodScale +'</p></li>'
-							+		((that.vStatus!=4)?'<li><section><span>客户数量：</span><em>'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ $scope.poLineList[i].expectedDelivery +'</em></section></li>':'')
-							+		((that.vStatus==1)? '' : (($scope.poLineList[i].poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em class="vValuationQty">'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>交期：</span><em class="vExpectedDelivery">'+ $scope.poLineList[i].expectedDelivery +'</em></section></li>' : ''))
-						for(var j=0; j<$scope.poLineList[i].poSubLineList.length; j++){
-							html+='<li class="response'+ ((j==0) ? ' bfline' : '') +'"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em class="purchaseQty">'+ $scope.poLineList[i].poSubLineList[j].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em class="valuationQty">'+ $scope.poLineList[i].poSubLineList[j].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ $scope.poLineList[i].poSubLineList[j].expectedDelivery +'</em></section></li>'
-						}
-						html+='		<li class="price" data-taxPrice="'+ $scope.poLineList[i].taxPrice +'" data-price="'+ $scope.poLineList[i].price +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice) : formatMoney($scope.poLineList[i].price)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
-							+'		<li><span>备注：</span><p>'+ $scope.poLineList[i].remark +'</p></li>'
+							+'		<li class="prodCode" data-prodCode="'+ val.prodCode +'" data-prodId="'+ val.prodId +'"><span>物料编码：</span><b>'+ val.prodCode +'</b></li>'
+							+'		<li><span>物料详细：</span><p>'+ val.prodName +' '+ val.prodScale +'</p></li>'
+							+		((that.vStatus!=4)?'<li><section><span>客户数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>交期：</span><em>'+ val.expectedDelivery +'</em></section></li>':'')
+							+		((that.vStatus==1)? '' : ((val.poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+ val.vPurchaseQty +'</em>'+ val.vAnswerUnitName +'/<em class="vValuationQty">'+ val.vValuationQty +'</em>'+ val.vValuationUnitName +'</section><section><span>交期：</span><em class="vExpectedDelivery">'+ val.vExpectedDelivery +'</em></section></li>' : ''))
+						val.poSubLineList.forEach(function(sub,j){
+							html+='<li class="response responseBatch"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em class="purchaseQty">'+ sub.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em class="valuationQty">'+ sub.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ sub.expectedDelivery +'</em></section></li>'
+						})
+						html+='		<li class="price" data-taxPrice="'+ val.taxPrice +'" data-price="'+ val.price +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(val.taxPrice,$priceDecimalNum) : formatMoney(val.price,$priceDecimalNum)) +'/'+ val.valuationUnitName +'</li>'
+							+'		<li><span>备注：</span><p>'+ val.remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal" data-total="'+ $scope.poLineList[i].taxLineTotal +'" data-vTotal="'+ (($scope.poLineList[i].vTaxLineTotal!=''||$scope.poLineList[i].vTaxLineTotal!=0) ? $scope.poLineList[i].vTaxLineTotal : $scope.poLineList[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal) +'</b></li>'
-							+		((that.vStatus!=1&&that.vStatus!=4)?'<li class="response responseTotal" data-vLineAmount="'+ $scope.poLineList[i].vLineAmount +'" data-vTaxLineTotal="'+ $scope.poLineList[i].vTaxLineTotal +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(($scope.poLineList[i].vTaxLineTotal=='')?$scope.poLineList[i].taxLineTotal:$scope.poLineList[i].vTaxLineTotal) +'</li>':'')
+							+'		<li class="subtotal" data-total="'+ val.taxLineTotal +'" data-vTotal="'+ ((val.vTaxLineTotal!=''||val.vTaxLineTotal!=0) ? val.vTaxLineTotal : val.taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(val.taxLineTotal,$amountDecimalNum) +'</b></li>'
+							+		((that.vStatus!=1&&that.vStatus!=4)?'<li class="response responseTotal" data-vLineAmount="'+ val.vLineAmount +'" data-vTaxLineTotal="'+ val.vTaxLineTotal +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(((val.vTaxLineTotal=='')?val.taxLineTotal:val.vTaxLineTotal),$amountDecimalNum) +'</li>':'')
 							+'	</ul>'
 							+( that.vStatus==2 ? '<span class="edit"></span>' : '')
 							+'</div>'
-						that.countQtyRate($scope.poLineList[i]);
-						that.totals+=parseFloat($scope.poLineList[i].taxLineTotal);
-            		}
+						that.countQtyRate(val);
+						that.totals+=parseFloat(val.taxLineTotal);
+            		})
             		that.load = true;
             	}else{
             		fnTip.hideLoading();
@@ -169,17 +244,17 @@ Lists.prototype = {
 						+'	</li>'
 						+'	<li class="myProductInfo">'
 						+'		<span>本方：</span>'
-						+'		<p>物料编码：'+ ($prodMapList[index].prodCode||'') +'<br>'+ ($prodMapList[index].prodName||lineLists[index].prodName) +' '+ ($prodMapList[index].prodScale||lineLists[index].prodScale) +'</p>'
+						+'		<p>物料编码：'+ lineLists[index].vProdCode +'<br>'+ lineLists[index].vProdName +' '+ lineLists[index].vProdScale +'</p>'
 						+'	</li>'
 						+'	<li><span>数量：</span><em>'+ lineLists[index].purchaseQty + lineLists[index].purchaseUnitName +' /</em><em>'+ lineLists[index].valuationQty + lineLists[index].valuationUnitName +'</em><span>交期：</span><em class="em03">'+ lineLists[index].expectedDelivery +'</em></li>'
-						+'	<li class="bfline"><span>本方：</span><input type="text" class="int01_all" value="'+ mobiPoItem(0) +'"'+ ((responseLen>0)?' disabled':'') +'><input type="text" class="int02_all" value="'+ mobiPoItem(1) +'" disabled><div class="timeBox">'+ mobiPoItem(2) +'</div><input type="hidden" value="'+ mobiPoItem(2) +'"></li>'
+						+'	<li class="bfline"><span>本方：</span><input type="text" class="int01_all" value="'+ lineLists[index].vPurchaseQty +'"'+ ((responseLen>0)?' disabled':'') +'><input type="text" class="int02_all" value="'+ lineLists[index].vValuationQty +'" disabled><div class="timeBox">'+ lineLists[index].vExpectedDelivery +'</div><input type="hidden" value="'+ lineLists[index].vExpectedDelivery +'"></li>'
 						+	newResponseItem()
 						+'</ul>'
 						+'<div class="btnBox"><a href="javascript:;" class="addResponse">'+$btnTxet+'</a></div>'
 						+'<ul class="responseBox2">'
-						+'	<li><span>单价：</span>¥'+((that.orderInfo.isContainTax===1) ? formatMoney(lineLists[index].taxPrice) : formatMoney(lineLists[index].price)) +'/'+ lineLists[index].valuationUnitName +'</li>'
+						+'	<li><span>单价：</span>¥'+((that.orderInfo.isContainTax===1) ? formatMoney(lineLists[index].taxPrice,$priceDecimalNum) : formatMoney(lineLists[index].price,$priceDecimalNum)) +'/'+ lineLists[index].valuationUnitName +'</li>'
 						+'	<li><span>备注：</span><p>'+ lineLists[index].remark +'</p></li>'
-						+'	<li class="subtotal"><span>小记：</span><b>'+ $currencySymbol + formatMoney(lineLists[index].taxLineTotal) +'</b></li>'
+						+'	<li class="subtotal"><span>小记：</span><b>'+ $currencySymbol + formatMoney(lineLists[index].taxLineTotal,$amountDecimalNum) +'</b></li>'
 						+'</ul>'
 						+'<div class="btns">'
 						+'	<a class="btn-cancel" href="javascript:;">取消</a>'
@@ -263,9 +338,9 @@ Lists.prototype = {
 		//确定
 		$('.btn-save').eq(0).on('click',function(e){
 			e.preventDefault();
-			that.save($(this),prodAnswerCon);
 			//重置单身明细
-			that.modiResponse($(this),index);
+			that.modiResponse($(this),index);			
+			that.save($(this),prodAnswerCon);
 		})
 	},
 	//显示答交div
@@ -291,16 +366,16 @@ Lists.prototype = {
             		that._othersCost = otherCostList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=otherCostList.length; i<len; i++){
-            			html+='<li class="mobiCostItem costItem" data-costName="'+ otherCostList[i].costName +'" data-costAmount="'+ otherCostList[i].costAmount +'" data-vCostAmount="'+ otherCostList[i].vCostAmount +'"><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].costAmount) +'</b>'+ ((that.vStatus==1||(that.vStatus==4)) ? '' : '<b class="dj"><em class="money" data-money="'+ (otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount) +'">'+ (otherCostList[i].vCostAmount=='' ? formatMoney(otherCostList[i].costAmount) : formatMoney(otherCostList[i].vCostAmount)) +'</em></b>') +'</li>';
+            			html+='<li class="mobiCostItem costItem" data-costName="'+ otherCostList[i].costName +'" data-costAmount="'+ otherCostList[i].costAmount +'" data-vCostAmount="'+ otherCostList[i].vCostAmount +'"><span>'+ otherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(otherCostList[i].costAmount,$amountDecimalNum) +'</b>'+ ((that.vStatus==1||(that.vStatus==4)) ? '' : '<b class="dj"><em class="money" data-money="'+ (otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount) +'">'+ (otherCostList[i].vCostAmount=='' ? formatMoney(otherCostList[i].costAmount,$amountDecimalNum) : formatMoney(otherCostList[i].vCostAmount,$amountDecimalNum)) +'</em></b>') +'</li>';
             			subtotal += parseFloat(otherCostList[i].costAmount=='' ? 0 : otherCostList[i].costAmount);
             			resubtotal += parseFloat(otherCostList[i].vCostAmount=='' ? otherCostList[i].costAmount : otherCostList[i].vCostAmount);
             			if(otherCostList[i].vCostAmount!=''){
             				_responseCost = true;
             			}
             		}
-            		html+=((that.vStatus!=4)?'<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>客户小计：</span><b>'+ $currencySymbol + formatMoney(subtotal) +'</b></li>':'')
+            		html+=((that.vStatus!=4)?'<li id="othersCostSubtotal" class="subtotal" data-total="'+ subtotal +'" data-vTotal="'+ (_responseCost ? resubtotal : subtotal) +'"><span>客户小计：</span><b>'+ $currencySymbol + formatMoney(subtotal,$amountDecimalNum) +'</b></li>':'')
             		if(that.vStatus!=1){
-            			html+='<li id="changeCost" class="response" data-otherMoney="'+ resubtotal +'"><span>本方小计：</span>'+ $currencySymbol + formatMoney(resubtotal) +'</li>'            			
+            			html+='<li id="changeCost" class="response" data-otherMoney="'+ resubtotal +'"><span>本方小计：</span>'+ $currencySymbol + formatMoney(resubtotal,$amountDecimalNum) +'</li>'            			
             		}
             		html+='</ul>'
             		html+=( that.vStatus==2 ? '<span class="edit editOther"></span>' : '' )
@@ -358,7 +433,7 @@ Lists.prototype = {
 	addNewCost: function(){
 		var isAdd = true;
 		var cost = '<li class="addNewCost"><input type="text" /><input type="text" /><i class="btn-del"></i></li>';
-		$body.on('click','.addCost',function(){
+		$('.addCost').on('click',function(){
 			var _this = $(this),
 				$responseCost = _this.parents('.responseBox').find('.responseCost'),
 				inputs = $responseCost.find('li:last-child').find('input');
@@ -422,7 +497,7 @@ Lists.prototype = {
 				vals[i][j] = thisVal;
 			}
 		}
-		//拼接答交内容
+		//拼接答交明细
 		for(var k=0; k<lens; k++){
 			if(type=='isProdAnswer'){
 				html+='<li class="response responseBatch"><section><span'+ ((k==0)?' class="nth0"':'') +'>分批答交：</span><em class="purchaseQty">'+ vals[k][0] +'</em>'+lineLists[idx].purchaseUnitName+'/<em class="valuationQty">'+ vals[k][1] +'</em>'+lineLists[idx].valuationUnitName+'</section><section><span>交期：</span><em class="expectedDelivery">'+ vals[k][2] +'</em></section></li>'
@@ -431,18 +506,25 @@ Lists.prototype = {
 			}
 		}
 		that.itemshow(self,parent);
+
+		//拼接答交明细前 先把原先明细移除
 		parent.find('.item-wrap').eq(idx).find('.response').remove();
+		parent.find('.item-wrap').eq(idx).find('.bfline').remove();
 		if(type=='isProdAnswer'){
+
+			//移除原先明细后 添加新的答交明细
 			if(lens>0){
 				parent.find('.item-wrap').eq(idx).find('.bfline').hide();
-				parent.find('.item-wrap').eq(idx).find('.price').before(html);				
+				parent.find('.item-wrap').eq(idx).find('.price').before(html);
 			}else{
 				parent.find('.item-wrap').eq(idx).find('.bfline').show();
+				parent.find('.item-wrap').eq(idx).find('.price').before('<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+$scope.poLineList[idx].vPurchaseQty+'</em>'+$scope.poLineList[idx].purchaseUnitName+'/<em class="vValuationQty">'+$scope.poLineList[idx].vValuationQty+'</em>'+$scope.poLineList[idx].valuationUnitName+'</section><section><span>交期：</span><em class="vExpectedDelivery">'+$scope.poLineList[idx].vExpectedDelivery+'</em></section></li>');
 			}
+
+			//重新计算子答交小计
 			var values = that.reQtys(self.parents('.responseBox'),idx);
 			if(values!=''||values!=undefined){
 				var _subtotal = parent.find('.item-wrap').eq(idx).find('.subtotal'), _subTotalPrice = _subtotal.attr('data-total'), $prices = parent.find('.item-wrap').eq(idx).find('.price'), _taxPrice = $prices.attr('data-taxPrice'), _price = $prices.attr('data-price');
-				//重新计算子答交小计
 				var $subtotal=0;
 				if(that.orderInfo.isContainTax==1){
 					$subtotal=values*_taxPrice;
@@ -451,7 +533,7 @@ Lists.prototype = {
 				}
 				_subtotal.attr('data-vtotal',$subtotal);
 				//重新计算子答交金额
-				parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal" data-vLineAmount="'+ values*_price +'" data-vTaxLineTotal="'+ values*_taxPrice +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(($subtotal)) +'</li>')
+				parent.find('.item-wrap').eq(idx).find('ul').append('<li class="response responseTotal" data-vLineAmount="'+ values*_price +'" data-vTaxLineTotal="'+ values*_taxPrice +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney($subtotal,$amountDecimalNum) +'</li>')
 			}
 		}else{
 			$('#othersCostSubtotal').before(html);
@@ -462,15 +544,15 @@ Lists.prototype = {
 			})
 
 			$('#othersCostSubtotal').attr('data-vtotal',moneys);
-			$('#othersCostSubtotal').after('<li id="changeCost" class="response" data-otherMoney="'+ moneys +'"><span>本方小计：</span>'+ $currencySymbol + formatMoney(moneys) +'</li>');
+			$('#othersCostSubtotal').after('<li id="changeCost" class="response" data-otherMoney="'+ moneys +'"><span>本方小计：</span>'+ $currencySymbol + formatMoney(moneys,$amountDecimalNum) +'</li>');
 		}
-		$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol + formatMoney(that.reCostTotalFn())).show();
+		$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol + formatMoney(that.reCostTotalFn(),$amountDecimalNum)).show();
 	},
 	modiResponse: function(self,index){
-		var that = this, $bfline = prodAnswerCon.find('.item-wrap').eq(index).find('.bfline'), $reBfline = self.parents('.responseBox').eq(0).find('.bfline').eq(0);
-		$bfline.find('em').eq(0).html($reBfline.find('input').eq(0).val());
-		$bfline.find('em').eq(1).html($reBfline.find('input').eq(1).val());
-		$bfline.find('em').eq(2).html($reBfline.find('input').eq(2).val());
+		var $reBfline = self.parents('.responseBox').eq(0).find('.bfline').eq(0);
+		$scope.poLineList[index].vPurchaseQty = $reBfline.find('input').eq(0).val();
+		$scope.poLineList[index].vValuationQty = $reBfline.find('input').eq(1).val();
+		$scope.poLineList[index].vExpectedDelivery = $reBfline.find('input').eq(2).val();
 	},
 	//删除答交项
 	delResponse: function(){
@@ -484,7 +566,7 @@ Lists.prototype = {
 					if($responseBox1.find('.myResponse').length==0){
 						$responseBox.removeClass('batchBox');
 						$responseBox1.find('.int01_all').prop('disabled',false);
-						$responseBox1.find('.int02_all').prop('disabled',false);
+						//$responseBox1.find('.int02_all').prop('disabled',false);
 						$responseBox1.find('.int01_all').val($scope.poLineList[i].purchaseQty);
 						$responseBox1.find('.int02_all').val($scope.poLineList[i].valuationQty);
 						return false;
@@ -553,27 +635,12 @@ Lists.prototype = {
 	start: function(){
 		var that = this;
 		orderAnswerCon.html(that.orderBaseInfo());
-		//获取所有平台币种及小数位
-		var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
-		GetAJAXData('POST',CurrencyParam,function(unitdata){
-			if(unitdata.success){
-				$platformCurrencyList = unitdata;
-				for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
-					if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
-						$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
-						$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
-						$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
-						return false;
-					}
-				}
-			}
-		});
 		prodAnswerCon.html(that.prodAnswerInfo());
 		othersCostCon.html(that.othersCost());
 
-		$('.item-total').html('订单总金额：'+$currencySymbol + formatMoney(that.orderInfo.cTotalAmount)).show();
+		$('.item-total').html('订单总金额：'+$currencySymbol + formatMoney(that.orderInfo.cTotalAmount,$amountDecimalNum)).show();
 		if(that.vStatus!=1&&that.vStatus!=4){
-			$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount||that.orderInfo.cTotalAmount)).show();			
+			$('.item-total-dj').attr('data-vTotalAmount',that.reCostTotalFn()).html('答交总金额：'+$currencySymbol+formatMoney((that.orderInfo.vTotalAmount||that.orderInfo.cTotalAmount),$amountDecimalNum)).show();			
 		}
 
 
@@ -596,8 +663,6 @@ Lists.prototype = {
 					}
 				},true)
         	})
-        	// console.log(JSON.stringify($scope.poLineList))
-        	// console.log(JSON.stringify($scope.poLineList))
         }
         getObFileList();
 
@@ -608,18 +673,6 @@ Lists.prototype = {
 				$fileData = fileData;
 			}
 		},true)
-
-		function getProdByCustomerProd(){
-			for(var i=0, l=$scope.poLineList.length; i<l; i++){
-				var params = {"serviceId":"B01_getProdByCustomerProd","token":_vParams.token,"secretNumber":_vParams.secretNumber,"vendorId":_vParams.vendorId,"cProdCode":$scope.poLineList[i].prodCode,"commonParam":commonParam(),"customerId":that.orderInfo.companyId};
-				GetAJAXData('POST',params,function(vProdData){
-					if(vProdData.success){
-						$prodMapList.push(vProdData.prodMap);
-					}
-				})
-			}
-		}
-		getProdByCustomerProd();
 
 		//通用底部
 		if(that.load){
@@ -711,28 +764,21 @@ Lists.prototype = {
 	},
 	payInfo: function(scrollTop){
 		var that = this, infos = that.orderInfo;
-		//查询枚举值
-		requestFn("B02_LogisticsType",function(data){
-			if(data.errorCode=='0'){
-				that.logisticsType = data.dataSet.data.detail;
-			}
-		});
-		requestFn("B02_InvoiceType",function(data){
-			if(data.errorCode=='0'){
-				that.invoiceType = data.dataSet.data.detail;
-			}
-		});
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
-			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+		if(infos.invoice==1){
+			html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+		}else{
+			html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+				+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+				+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+		}
+		html+='</ul>'
+			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	remark: function(scrollTop){
@@ -882,54 +928,25 @@ Lists.prototype = {
             }
             //遍历单身
             danshen.poAnswerLineId = productObj.id;
-            if(!productObj.vProdName){
+            danshen.vProdId = productObj.vProdId;
+            danshen.vProdCode = $.trim(productObj.vProdCode);
+            danshen.vProdDesc = $.trim(productObj.vProdDesc);
+            danshen.vProdScale = $.trim(productObj.vProdScale);
+            danshen.vProdName = $.trim(productObj.vProdName);
+            danshen.vPurchaseQty = productObj.vPurchaseQty;//采购数量
+            danshen.vValuationQty = productObj.vValuationQty;//计价数量
+            danshen.vExpectedDelivery = new Date(productObj.vExpectedDelivery).getTime();
+            danshen.vPrice = productObj.vPrice;
+            danshen.vTaxPrice = productObj.vTaxPrice;
+            danshen.vLineAmount = formatMoney(productObj.vValuationQty*((that.orderInfo.isContainTax==1)?productObj._vPrice:productObj.vPrice),$amountDecimalNum);
+            danshen.vTaxLineTotal = formatMoney(productObj.vValuationQty*((that.orderInfo.isContainTax==1)?productObj.vTaxPrice:productObj._vTaxPrice),$amountDecimalNum);
+            danshen.vAnswerUnitId = productObj.vAnswerUnitId;
+            danshen.vAnswerUnitCode = productObj.vAnswerUnitCode;
+            danshen.vAnswerUnitName = productObj.vAnswerUnitName;
+            danshen.vValuationUnitId = productObj.vValuationUnitId;
+            danshen.vValuationUnitCode = productObj.vValuationUnitCode;
+            danshen.vValuationUnitName = productObj.vValuationUnitName;
 
-            	//根据客户产品信息获取本方产品信息
-        		if($prodMapList[j].prodCode){
-		            danshen.vProdId = $prodMapList[j].prodId;
-		            danshen.vProdCode = $prodMapList[j].prodCode;
-		            danshen.vProdDesc = $prodMapList[j].prodDesc;
-		            danshen.vProdScale = $prodMapList[j].prodScale;
-		            danshen.vProdName = $prodMapList[j].prodName;
-        		}else{
-        			danshen.vProdDesc = productObj.prodDesc;
-		            danshen.vProdScale = productObj.prodScale;
-		            danshen.vProdName = productObj.prodName;
-        		}
-
-	            danshen.vPurchaseQty = $mobisponseItem.find('.vPurchaseQty').html();//供应商答交数量
-	            danshen.vValuationQty = $mobisponseItem.find('.vValuationQty').html();//供应商计价数量
-	            danshen.vExpectedDelivery = new Date($mobisponseItem.find('.vExpectedDelivery').html()).getTime();
-	            danshen.vPrice = productObj.price.toString();
-	            danshen.vTaxPrice = productObj.taxPrice.toString();
-	            danshen.vLineAmount = ($mobisponseItem.find('.vValuationQty').html()*productObj.price).toString();//供应商无税小计
-	            danshen.vTaxLineTotal = ($mobisponseItem.find('.vValuationQty').html()*productObj.taxPrice).toString();//供应商含税小计
-	            danshen.vAnswerUnitId = productObj.purchaseUnitId;
-	            danshen.vAnswerUnitCode = productObj.purchaseUnitCode;
-	            danshen.vAnswerUnitName = productObj.purchaseUnitName;
-	            danshen.vValuationUnitId = productObj.valuationUnitId;
-	            danshen.vValuationUnitCode = productObj.valuationUnitCode;
-	            danshen.vValuationUnitName = productObj.valuationUnitName;
-            }else{
-	            danshen.vProdId = productObj.vProdId;
-	            danshen.vProdCode = $.trim(productObj.vProdCode);
-	            danshen.vProdDesc = $.trim(productObj.vProdDesc);
-	            danshen.vProdScale = $.trim(productObj.vProdScale);
-	            danshen.vProdName = $.trim(productObj.vProdName);
-	            danshen.vPurchaseQty = productObj.vPurchaseQty;//采购数量
-	            danshen.vValuationQty = productObj.vValuationQty;//计价数量
-	            danshen.vExpectedDelivery = new Date(productObj.vExpectedDelivery).getTime();
-	            danshen.vPrice = productObj.vPrice;
-	            danshen.vTaxPrice = productObj.vTaxPrice;
-	            danshen.vLineAmount = productObj.vLineAmount;
-	            danshen.vTaxLineTotal = productObj.vTaxLineTotal;
-	            danshen.vAnswerUnitId = productObj.vAnswerUnitId;
-	            danshen.vAnswerUnitCode = productObj.vAnswerUnitCode;
-	            danshen.vAnswerUnitName = productObj.vAnswerUnitName;
-	            danshen.vValuationUnitId = productObj.vValuationUnitId;
-	            danshen.vValuationUnitCode = productObj.vValuationUnitCode;
-	            danshen.vValuationUnitName = productObj.vValuationUnitName;
-            }
             danshen.isBatchAnswer = ((_isBatchAnswer) ? 1 : productObj.vBatchAnswer);//批次答交
             danshen.vRemark = productObj.vRemark;
             //子单身相关数据的几个列表
@@ -973,10 +990,10 @@ Lists.prototype = {
             "modiPoOthreCostList": modiPoOthreCostList,//修改其他花费列表
             "delPoOthreCostList": delPoOthreCostList, //删除其他费用主键列表
             "vFeeInfo": {
-                "vTotal": that.vTotal().toString(),//供应商品无税总计
-                "vOtherCostTotal": vOtherCostTotal,//供应商其他费用总计
-                "vTaxTotal": vTaxTotal.toString(),//供应商品含税总计
-                "vTotalAmount": vTotalAmount//供应商合计
+                "vTotal": formatMoney(that.vTotal(),$amountDecimalNum),//供应商品无税总计
+                "vOtherCostTotal": formatMoney(vOtherCostTotal,$amountDecimalNum),//供应商其他费用总计
+                "vTaxTotal": formatMoney(vTaxTotal,$amountDecimalNum),//供应商品含税总计
+                "vTotalAmount": formatMoney(vTotalAmount,$amountDecimalNum)//供应商合计
             },
             "addPoFileList": addPoFileList,//附件列表
             "delPoFileList": delPoFileList,//删除文件主键

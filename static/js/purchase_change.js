@@ -4,6 +4,7 @@ var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
+var $fileData = {};
 var $currencySymbol = '';
 var $priceDecimalNum = '';
 var $amountDecimalNum = '';
@@ -13,7 +14,6 @@ var Lists = function(){
 Lists.prototype = {
 	init: function(){
 		var that = this;
-		that._files = [];
 		that._lineLists = [];
 		that._othersCost = [];
 		that.totals = 0;
@@ -45,7 +45,12 @@ Lists.prototype = {
 				that.invoiceType = data.dataSet.data.detail;
 			}
 		});
-
+		//发票信息
+		requestFn("B02_Invoice",function(data){
+			if(data.errorCode=='0'){
+				that.invoiceInfoName = data.dataSet.data.detail;
+			}
+		});
 		that.start();
 
 	},
@@ -61,6 +66,9 @@ Lists.prototype = {
             	data = data || {};
             	if(data.success){
             		that.orderInfo = data.poChange;
+					$currencySymbol = that.orderInfo.currencySymbol;
+					$priceDecimalNum = that.orderInfo.priceDecimalNum;
+					$amountDecimalNum = that.orderInfo.amountDecimalNum;             		
             		html +='<h2 class="m-title">变更信息</h2><div class="item-wrap">'
 						 +'	<ul>'
 						 +'		<li><span>内部采购单号：</span><b>'+ that.orderInfo.poInsideNo +'</b></li>'
@@ -72,51 +80,10 @@ Lists.prototype = {
 						 +'		<li><span>变更备注：</span>'+ that.orderInfo.remark +'</li>'
 						 +'	</ul>'
 						 +'</div>'
-
-						//获取所有平台币种及小数位
-						var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
-						GetAJAXData('POST',CurrencyParam,function(unitdata){
-							if(unitdata.success){
-								$platformCurrencyList = unitdata;
-								for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
-									if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
-										$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
-										$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
-										$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
-										return false;
-									}
-								}
-							}
-						});
             	}
             }
 		})
 		return html;
-	},
-	//附件
-	fileList: function(){
-		var that = this;
-		if(!that.load)return;
-		//fileSource附件类型（1-客户，2-供应商)  searchType查询类型1单头2单身
-		var params = {"secretNumber":_vParams.secretNumber,"token":_vParams.token,"serviceId":"B01_findFileList","companyId":_vParams.companyId,"commonParam": commonParam(),"fileSource":"2","searchType":"1","id":_vParams.id,"docType":25}
-		$.ajax({
-			type:"POST",
-            url:config.serviceUrl,
-            data:'param='+JSON.stringify(params),
-            success:function(data){
-            	data = data || {};
-            	if(data.success){
-            		var file = data.fileList;
-            		for(var i=0, len=file.length; i<len; i++){
-            			//that._files.push(file[i]);
-            			if(file[i].fileName!=''){
-            				$('.files').eq(i).html('<span>附件：</span><a href="'+ file[i].fileUrl +'"><i class=i-'+ (_reg.test(file[i].fileName) ? "image" : "word") +'></i>'+ file[i].fileName +'</a>').show();
-            			}
-            		}
-            		that._files = file;
-            	}
-            }
-		})
 	},
 	prodBodyInfo: function(){
 		var that = this, html = '';
@@ -137,12 +104,13 @@ Lists.prototype = {
 							+'	<ul>'
 							+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
 							+'		<li><span>物料名称：</span><p>'+ lineList[i].prodName + ' ' + lineList[i].prodScale +'</p></li>'
-							+'		<li><section><span>数量：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
-							// +'		<li class="changeItem"><section><span>变更：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
-							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + formatMoney(lineList[i].taxPrice) +'/'+ lineList[i].valuationUnitName +'</li>'
+							+'		<li><section><span>变更前：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
+							+'		<li class="changeItem"><section><span>变更后：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
+							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(lineList[i].taxPrice,$priceDecimalNum) : formatMoney(lineList[i].price,$priceDecimalNum)) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
-							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal) +'</b></li>'
+							+'		<li class="subtotal"><span>小计：</span>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal,$amountDecimalNum) +'</li>'
+							+'		<li class="changeItem"><span>变更小计：</span>'+ $currencySymbol + formatMoney(lineList[i].changeTaxLineTotal,$amountDecimalNum) +'</li>'
 							+'	</ul>'
 							+'</div>'
 						that.totals+=parseInt(lineList[i].taxLineTotal,10);
@@ -176,10 +144,10 @@ Lists.prototype = {
             		that._othersCost = costList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=costList.length; i<len; i++){
-            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol+formatMoney(costList[i].costAmount) +'</b><b class="dj"><em class="money"></em></b></li>';
+            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol+formatMoney(costList[i].costAmount,$amountDecimalNum) +'</b><b class="dj"><em class="money"></em></b></li>';
             			subtotal += Number(costList[i].costAmount=='' ? 0 : costList[i].costAmount);
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol+formatMoney(subtotal) +'</b></li>'
+            		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol+formatMoney(subtotal,$amountDecimalNum) +'</b></li>'
             			+'</ul>'
             			+'</div>';
             		$('#othersCost').html(html);
@@ -193,13 +161,21 @@ Lists.prototype = {
 		var prodBodyInfo = document.getElementById('prodBodyInfo');
 		orderHeadInfo.innerHTML = that.orderBaseInfo();
 		prodBodyInfo.innerHTML = that.prodBodyInfo();
-		that.fileList();
 		that.othersCost();
 
-		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount)).show();
+		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount,$amountDecimalNum)).show();
+		$('.item-total-dj').html('变更后总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount,$amountDecimalNum)).show();
+
+		//单头附件
+		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"11","fileSource":1,"searchType":1};//searchType查询类型1单头2单身
+		GetAJAXData('POST',fileParam,function(fileData){
+			if(fileData.success){
+				$fileData = fileData;
+			}
+		},true)
 
 		//通用底部
-		// bottomBar(['share'],that.orderInfo.mobile,true);
+		bottomBar(['share'],that.orderInfo.poManId,true);
 
 		//订单维护
 		container.on('click','a.item-link',function(){
@@ -230,11 +206,15 @@ Lists.prototype = {
 			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +((infos.logisticsType=='3') ? '（自提点：'+ infos.address +'）':'')+'</p></li>'
 			+'<li><span>收货地址：</span><p>'+ infos.address +'；'+ ( (infos.mobile=='') ? '' : '<br>电话：'+ infos.mobile) +'</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
-			+'<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
-			+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
-			+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'
-			+'</ul>'
-			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+		if(infos.invoice==1){
+			html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
+		}else{
+			html+='<li><span>发票类型：</span><p>'+ enumFn(that.invoiceType,infos.invoiceType) +'</p></li>'
+				+'<li><span>发票抬头：</span><p>'+ infos.invoiceHeader +'</p></li>'
+				+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
+		}
+			html+='</ul>'
+			+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	remark: function(scrollTop){
@@ -249,11 +229,14 @@ Lists.prototype = {
 				 +'</div>'
 				 +'<div id="files" class="item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
-		for(var i=0; i<that._files.length;i++){
-			html+='<p><a href="'+ that._files[i].fileUrl +'"><i class=i-'+ (_reg.test(that._files[i].fileName) ? "image" : "word") +'></i>'+ that._files[i].fileName +'</a></p>'
+		if($fileData.fileList.length==0){
+			html+='<p><b>0个附件</b></p>'
+		}
+		for(var i=0; i<$fileData.fileList.length;i++){
+			html+='<p><a href="'+ $fileData.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileData.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileData.fileList[i].fileName +'</a></p>'
 		}
 			html +='</div>'
-				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	}
 }

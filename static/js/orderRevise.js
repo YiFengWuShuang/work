@@ -86,6 +86,9 @@ orderRevise.prototype = {
             	data = data || {};
             	if(data.success){
             		that.orderInfo = data.poAnswerOrderInfo;
+					$currencySymbol = that.orderInfo.currencySymbol;
+					$priceDecimalNum = that.orderInfo.priceDecimalNum;
+					$amountDecimalNum = that.orderInfo.amountDecimalNum;       
             		that.memberId = that.orderInfo.poManId;
             		html += '<h2 class="m-title">基础信息</h2>'
             			 +'<div class="item-wrap">'
@@ -100,9 +103,6 @@ orderRevise.prototype = {
 						 +'	</ul>'
 						 +' <span name="headInfos" class="edit"></span>'
 						 +'</div>'
-					
-					// $('#j-dealType').val(that.orderInfo.conditionName);
-					// $('#j-checkoutType').val(that.orderInfo.payWayName);
             	}
             }
 		})
@@ -252,52 +252,11 @@ orderRevise.prototype = {
 	start: function(){
 		var that = this;
 		orderAnswerCon.html(that.orderBaseInfo());
-
-		//获取所有平台币种及小数位
-		var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
-		GetAJAXData('POST',CurrencyParam,function(unitdata){
-			if(unitdata.success){
-				if( !isEmpty(unitdata.platformCurrencyList[0]) ){
-					$platformCurrencyList = unitdata;
-					for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
-						if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
-							$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
-							$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
-							$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
-							return false;
-						}
-					}					
-				}
-			}
-		});
 		that.prodAnswerInfo();
 		that.othersCost();
 
 		$('.item-total').html('订单总金额：'+$currencySymbol+formatMoney(that.orderInfo.vTotalAmount,$amountDecimalNum)).show();
 
-		//单身附件
-    //     function getObFileList(){
-    //     	var list;
-    //     	$scope.poLineList.forEach(function(val,i){
-    //     		list = '';
-    //     		val.vFileList = [];
-				// var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":val.id, "commonParam":commonParam(), "docType":"24","fileSource":1,"searchType":2};//searchType查询类型1单头2单身
-				// GetAJAXData('POST',param,function(fileListData){
-				// 	if(fileListData.success){
-				// 		for(var j=0; j<fileListData.fileList.length; j++){
-				// 			list += '<a href="'+ fileListData.fileList[j].fileUrl +'"><i class=i-'+ (_reg.test(fileListData.fileList[j].fileName) ? "image" : "word") +'></i>'+ fileListData.fileList[j].fileName +'</a>';
-				// 		}
-				// 		if(fileListData.fileList.length>0){
-				// 			prodAnswerCon.find('.files').eq(i).html('<span>附件：</span><p>' + list +'</p>').show();
-				// 		}
-				// 		val.vFileList = fileListData.fileList;
-				// 	}
-				// },true)
-    //     	})
-    //     	$scope.poLineList = $scope.poLineList;
-    //     	//console.log(JSON.stringify($scope.poLineList))
-    //     }
-        //getObFileList();
 
         //物流方式 默认值
         $logisticsType.currValue = enumFn(that.logisticsType,that.orderInfo.logisticsType)

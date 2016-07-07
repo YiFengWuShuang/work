@@ -69,6 +69,11 @@ Lists.prototype = {
             	data = data || {};
             	if(data.success){
             		that.orderInfo = data.purchaseOrderInfo;
+            		//币种符号、价格小数位、金额小数位
+					$currencySymbol = that.orderInfo.currencySymbol;
+					$priceDecimalNum = that.orderInfo.priceDecimalNum;
+					$amountDecimalNum = that.orderInfo.amountDecimalNum;  
+
             		if(data.purchaseOrderInfo.status==3){
             			that.changeType = '1'
             		}else if(data.purchaseOrderInfo.status==8){
@@ -284,11 +289,11 @@ Lists.prototype = {
 							}else{
 								html+='<li class=""><section><span>变更：</span><em>'+ data.poLineList[i].vPurchaseQty +'</em>'+ data.poLineList[i].vAnswerUnitName +'/<em>'+ data.poLineList[i].vValuationQty +'</em>'+ data.poLineList[i].vValuationUnitName +'</section><section><span>预交期：</span><em>'+ data.poLineList[i].vExpectedDelivery +'</em></section></li>'
 							}	
-							html+='		<li class="price"><span>变更前单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(data.poLineList[i].taxPrice) : formatMoney(data.poLineList[i].price)) +'/'+ data.poLineList[i].valuationUnitName +'</li>'
-								+'		<li><span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(data.poLineList[i].vTaxPrice) : formatMoney(data.poLineList[i].vPrice)) +'/'+ data.poLineList[i].valuationUnitName +'</li>'
+							html+='		<li class="price"><span>变更前单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(data.poLineList[i].taxPrice,$priceDecimalNum) : formatMoney(data.poLineList[i].price,$priceDecimalNum)) +'/'+ data.poLineList[i].valuationUnitName +'</li>'
+								+'		<li><span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(data.poLineList[i].vTaxPrice,$priceDecimalNum) : formatMoney(data.poLineList[i].vPrice,$priceDecimalNum)) +'/'+ data.poLineList[i].valuationUnitName +'</li>'
 								+'		<li class="files"><span>附件：</span></li>'
-								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney(data.poLineList[i].taxLineTotal) +'</b></li>'
-								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(data.poLineList[i].vTaxLineTotal) +'</li>'			
+								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney(data.poLineList[i].taxLineTotal,$amountDecimalNum) +'</b></li>'
+								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(data.poLineList[i].vTaxLineTotal,$amountDecimalNum) +'</li>'			
 								+'	</ul>'
 								+'</div>'
 
@@ -302,10 +307,10 @@ Lists.prototype = {
 								+'		<li><span>物料名称：</span><p>'+ $scope.poLineList[i].prodName + ' ' + $scope.poLineList[i].prodScale +'</p></li>'
 								+'		<li><section><span>变更前：</span><em>'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate($scope.poLineList[i].expectedDelivery) +'</em></section></li>'
 								+'		<li class="changeItem"><section><span>变更后：</span><em>0</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>0</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate($scope.poLineList[i].expectedDelivery) +'</em></section></li>'	
-								+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice) : formatMoney($scope.poLineList[i].price)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
+								+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice,$priceDecimalNum) : formatMoney($scope.poLineList[i].price,$priceDecimalNum)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
 								+'		<li class="files"><span>附件：</span></li>'
-								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal) +'</b></li>'
-								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(0) +'</li>'			
+								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal,$amountDecimalNum) +'</b></li>'
+								+'		<li class="changeItem changeLineTotal"><span>变更后小计：</span>'+ $currencySymbol + formatMoney(0,$amountDecimalNum) +'</li>'			
 								+'	</ul>'
 								+'</div>'
 
@@ -319,11 +324,11 @@ Lists.prototype = {
 								+'		<li><span>物料名称：</span><p>'+ $scope.poLineList[i].prodName + ' ' + $scope.poLineList[i].prodScale +'</p></li>'
 								+'		<li><section><span>数量：</span><em>'+ $scope.poLineList[i].purchaseQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].valuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate($scope.poLineList[i].expectedDelivery) +'</em></section></li>'
 								+'		<li class="changeQty_'+ i +'"><section><span>变更：</span><em>'+ $scope.poLineList[i].changeQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].changeValuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ $scope.poLineList[i].changeExpectedDeliveryStr +'</em></section></li>'
-								+'		<li class="price"><span>变更前单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice) : formatMoney($scope.poLineList[i].price)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
-								+'		<li class="changePrice_'+ i +'"><span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].changeTaxPrice) : formatMoney($scope.poLineList[i].changePrice)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'				
+								+'		<li class="price"><span>变更前单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].taxPrice,$priceDecimalNum) : formatMoney($scope.poLineList[i].price,$priceDecimalNum)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'
+								+'		<li class="changePrice_'+ i +'"><span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].changeTaxPrice,$priceDecimalNum) : formatMoney($scope.poLineList[i].changePrice,$priceDecimalNum)) +'/'+ $scope.poLineList[i].valuationUnitName +'</li>'				
 								+'		<li class="files"><span>附件：</span></li>'
-								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal) +'</b></li>'
-								+'		<li class="changeItem changeLineTotal changeLineTotal_'+ i +'"><span>变更后小计：</span>'+ $currencySymbol + formatMoney($scope.poLineList[i].changeTaxLineTotal) +'</li>'		
+								+'		<li class="subtotal"><span>变更前小计：</span><b>'+ $currencySymbol + formatMoney($scope.poLineList[i].taxLineTotal,$amountDecimalNum) +'</b></li>'
+								+'		<li class="changeItem changeLineTotal changeLineTotal_'+ i +'"><span>变更后小计：</span>'+ $currencySymbol + formatMoney($scope.poLineList[i].changeTaxLineTotal,$amountDecimalNum) +'</li>'		
 								+'	</ul>'
 								+'	<span name="bodyInfos" class="edit"></span>'
 								+'</div>'
@@ -383,11 +388,11 @@ Lists.prototype = {
 
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>';
             		for(var i=0, len=$scope.poOtherCostList.length; i<len; i++){
-            			html+='<li><span>'+ $scope.poOtherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney($scope.poOtherCostList[i].costAmount) +'</b><b class="dj"><em class="money">'+ formatMoney($scope.poOtherCostList[i].vCostAmount) +'</em></b></li>';
+            			html+='<li><span>'+ $scope.poOtherCostList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney($scope.poOtherCostList[i].costAmount,$amountDecimalNum) +'</b><b class="dj"><em class="money">'+ formatMoney($scope.poOtherCostList[i].vCostAmount,$amountDecimalNum) +'</em></b></li>';
             			resubtotal += $scope.poOtherCostList[i].vCostAmount;
             		}
-            		html+='<li id="othersCostSubtotal" class="subtotal"><span>变更前：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.cOtherCostTotal) +'</b></li>'
-            			+'<li id="changeCost" class="response changeLineTotal"><span>变更后：</span>'+ $currencySymbol + (formatMoney(resubtotal)) +'</li>'
+            		html+='<li id="othersCostSubtotal" class="subtotal"><span>变更前：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.cOtherCostTotal,$amountDecimalNum) +'</b></li>'
+            			+'<li id="changeCost" class="response changeLineTotal"><span>变更后：</span>'+ $currencySymbol + formatMoney(resubtotal,$amountDecimalNum) +'</li>'
             			+'</ul>'
             			+((that.changeType==4) ? '<span name="otherCostInfos" class="edit editOther"></span>' : '')
             			+'</div>';
@@ -415,23 +420,6 @@ Lists.prototype = {
 		var that = this;
 		that.orderBaseInfo();
 		that.dateFn();
-
-		//获取所有平台币种及小数位
-		var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
-		GetAJAXData('POST',CurrencyParam,function(unitdata){
-			if(unitdata.success){
-				$platformCurrencyList = unitdata;
-				for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
-					if(unitdata.platformCurrencyList[i].currencyCode == that.orderInfo.pCurrencyCode){
-						$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
-						$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
-						$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
-						return false;
-					}
-				}
-			}
-		});
-
 		that.prodBodyInfo();
 		that.othersCost();
 
@@ -521,13 +509,13 @@ Lists.prototype = {
 	        that.addval_taxTotal = orderTaxTotal;  
 	        //订单总金额
 	        that.addval_totalAmount = parseFloat(that.addval_taxTotal)+parseFloat(that.addval_otherCostTotal);
-	        $('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount));
+	        $('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount,$amountDecimalNum));
 	    }
 	    //改变订单明细的数量，交期，单价的显示值
 	    function countChangeShowVal(i){
 	    	$('.changeQty_'+i).html('<section><span>变更后：</span><em>'+ $scope.poLineList[i].changeQty +'</em>'+ $scope.poLineList[i].purchaseUnitName +'/<em>'+ $scope.poLineList[i].changeValuationQty +'</em>'+ $scope.poLineList[i].valuationUnitName +'</section><section><span>预交期：</span><em>'+ $scope.poLineList[i].changeExpectedDeliveryStr +'</em></section>');
-	    	$('.changePrice_'+i).html('<span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].changeTaxPrice) : formatMoney($scope.poLineList[i].changePrice)) +'/'+ $scope.poLineList[i].valuationUnitName);
-	    	$('.changeLineTotal_'+i).html('<span>变更后小计：</span>'+ $currencySymbol + formatMoney($scope.poLineList[i].changeTaxLineTotal));
+	    	$('.changePrice_'+i).html('<span>变更后单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney($scope.poLineList[i].changeTaxPrice,$priceDecimalNum) : formatMoney($scope.poLineList[i].changePrice,$priceDecimalNum)) +'/'+ $scope.poLineList[i].valuationUnitName);
+	    	$('.changeLineTotal_'+i).html('<span>变更后小计：</span>'+ $currencySymbol + formatMoney($scope.poLineList[i].changeTaxLineTotal,$amountDecimalNum));
 	    }
 
 	    //其他费用中输入框值改变
@@ -547,12 +535,12 @@ Lists.prototype = {
 	        that.addval_otherCostTotal = otherTotal;//其他费用总金额
 	        //订单总金额
 	        that.addval_totalAmount = parseFloat(that.addval_taxTotal)+parseFloat(that.addval_otherCostTotal);
-	        $('#changeCost').html('<span>变更后：</span>'+ $currencySymbol + formatMoney(that.addval_otherCostTotal));
-	        $('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount));
+	        $('#changeCost').html('<span>变更后：</span>'+ $currencySymbol + formatMoney(that.addval_otherCostTotal,$amountDecimalNum));
+	        $('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount,$amountDecimalNum));
 	    };
 
-		$('.item-total').html('变更前商品总金额：'+$currencySymbol+formatMoney(that.orderInfo.cTotalAmount)).show();
-		$('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount)).show();
+		$('.item-total').html('变更前商品总金额：'+$currencySymbol+formatMoney(that.orderInfo.cTotalAmount,$amountDecimalNum)).show();
+		$('.item-total-dj').html('变更后商品总金额：'+$currencySymbol+formatMoney(that.addval_totalAmount,$amountDecimalNum)).show();
 
 		//通用底部
 		bottomBar(['share'],that.orderInfo.vAuditid,'','提交变更');
@@ -672,7 +660,7 @@ Lists.prototype = {
 		var that = this, html = '';
 		html+='<div class="m-item"><h2 class="m-title">其他费用变更</h2><div class="item-wrap item-wrap-change"><ul>'
 		$scope.poOtherCostList.forEach(function(val){
-			html+='<li><span>'+ val.costName +'：</span>'+ $currencySymbol + formatMoney(val.costAmount) +'<i class="gap"></i>'+$currencySymbol+'<input type="text" value="'+ val.vCostAmount +'" /></b></li>'
+			html+='<li><span>'+ val.costName +'：</span>'+ $currencySymbol + formatMoney(val.costAmount,$amountDecimalNum) +'<i class="gap"></i>'+$currencySymbol+'<input type="text" value="'+ val.vCostAmount +'" /></b></li>'
 		})
 		html+='</ul></div></div><div class="btn-wrap"><a href="javascript:;" id="changeCostInfo" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 		return html;
@@ -693,7 +681,7 @@ Lists.prototype = {
 				+'<li><span>发票类容：</span><p>'+ infos.invoiceContent +'</p></li>'			
 		}
 			html+='</ul>'
-				+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+				+'<div class="btn-wrap"><a href="javascript:;" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	remark: function(scrollTop){
@@ -712,7 +700,7 @@ Lists.prototype = {
 			html+='<p><a href="'+ $fileListData1.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileListData1.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileListData1.fileList[i].fileName +'</a></p>'
 		}
 			html +='</div>'
-				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	popup: function(type, title, content, closeCallBack, okCallBack){

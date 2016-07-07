@@ -11,9 +11,9 @@ var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var privateDefultUser;
 var $scope = {};
 var $platformCurrencyList;
-var $currencySymbol;
-var $priceDecimalNum;//单价小数位数
-var $amountDecimalNum;//金额小数位数
+var $currencySymbol = '';//币种符号
+var $priceDecimalNum = '';//单价小数位
+var $amountDecimalNum = '';//金额小数位
 var $fileListData1;
 var $logisticsType = {};
 var $change = {};
@@ -87,6 +87,9 @@ returnSale.prototype = {
 			if(data.success){
 				success = true;
 				$scope.pocNoticeInfo = data.pocNoticeInfo;
+				$currencySymbol = $scope.pocNoticeInfo.currencySymbol;
+				$priceDecimalNum = $scope.pocNoticeInfo.priceDecimalNum;
+				$amountDecimalNum = $scope.pocNoticeInfo.amountDecimalNum;				
 				var html = '';
         		html +='<h2 class="m-title">变更信息</h2><div class="item-wrap">'
 					 +'	<ul>'
@@ -133,22 +136,6 @@ returnSale.prototype = {
 					 +'	</ul>'
 					 +'</div>'
 				$('#orderHeadInfo').html(html);
-
-				//获取所有平台币种及小数位
-				var CurrencyParam = {"serviceId":"B01_queryAllPlatformCurrency", "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()};
-				GetAJAXData('POST',CurrencyParam,function(unitdata){
-					if(unitdata.success){
-						$platformCurrencyList = unitdata;
-						for(var i=0, l=unitdata.platformCurrencyList.length; i<l; i++){
-							if(unitdata.platformCurrencyList[i].currencyCode == $scope.orderInfo.pCurrencyCode){
-								$currencySymbol = unitdata.platformCurrencyList[i].currencySymbol;
-								$priceDecimalNum = unitdata.platformCurrencyList[i].priceDecimalNum;
-								$amountDecimalNum = unitdata.platformCurrencyList[i].amountDecimalNum;
-								return false;
-							}
-						}
-					}
-				});
 			}
 		});
 
@@ -165,10 +152,10 @@ returnSale.prototype = {
         			+'<li><span>产品名称：</span>'+val.prodName+' '+ val.prodScale +'</li>'
         			+'<li><section><span>采购数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(val.expectedDelivery) +'</em></section></li>'
         			+'<li class="changeItem"><section><span>变更后：</span><em>'+ val.changeQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.changeValuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(val.changeExpectedDelivery) +'</em></section></li>'
-        			+'<li><span>单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax==1) ? formatMoney(val.taxPrice) : formatMoney(val.price)) +'/'+ val.valuationUnitName +'</li>'
-        			+'<li class="changeItem"><span>变更单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax==1) ? formatMoney(val.changeTaxPrice) : formatMoney(val.changePrice)) +'/'+ val.valuationUnitName +'</li>'
-        			+'<li><span>小计：</span>'+ $currencySymbol + formatMoney(val.taxLineTotal)+'</li>'
-        			+'<li class="changeItem"><span>变更小计：</span>'+ $currencySymbol + formatMoney(val.changeTaxLineTotal)+'</li>'
+        			+'<li><span>单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax==1) ? formatMoney(val.taxPrice,$priceDecimalNum) : formatMoney(val.price,$priceDecimalNum)) +'/'+ val.valuationUnitName +'</li>'
+        			+'<li class="changeItem"><span>变更单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax==1) ? formatMoney(val.changeTaxPrice,$priceDecimalNum) : formatMoney(val.changePrice,$priceDecimalNum)) +'/'+ val.valuationUnitName +'</li>'
+        			+'<li><span>小计：</span>'+ $currencySymbol + formatMoney(val.taxLineTotal,$amountDecimalNum)+'</li>'
+        			+'<li class="changeItem"><span>变更小计：</span>'+ $currencySymbol + formatMoney(val.changeTaxLineTotal,$amountDecimalNum)+'</li>'
         			+'</ul></div>'
 
         			f_init_l_file(val);
@@ -187,17 +174,17 @@ returnSale.prototype = {
 				var html = '';
         		html +='<h2 class="m-title">其他费用</h2><div class="item-wrap"><ul>'
         		$scope.costList.forEach(function(val){
-        			html+='<li><span>'+ val.costName +'：</span><b>'+ $currencySymbol + formatMoney(val.costAmount) +'</b><b class="dj"><em class="money">'+ formatMoney(val.changeCostAmount) +'</em></b></li>'
+        			html+='<li><span>'+ val.costName +'：</span><b>'+ $currencySymbol + formatMoney(val.costAmount,$amountDecimalNum) +'</b><b class="dj"><em class="money">'+ formatMoney(val.changeCostAmount,$amountDecimalNum) +'</em></b></li>'
         		})
-        		html+='<li id="othersCostSubtotal" class="subtotal"><span>变更前：</span><b>'+ $currencySymbol + formatMoney($scope.pocNoticeInfo.poOtherCostTotal) +'</b></li>'
-        			+'<li id="changeCost" class="response changeLineTotal"><span>变更后：</span>'+ $currencySymbol + formatMoney($scope.pocNoticeInfo.otherCostTotal) +'</li>'
+        		html+='<li id="othersCostSubtotal" class="subtotal"><span>变更前：</span><b>'+ $currencySymbol + formatMoney($scope.pocNoticeInfo.poOtherCostTotal,$amountDecimalNum) +'</b></li>'
+        			+'<li id="changeCost" class="response changeLineTotal"><span>变更后：</span>'+ $currencySymbol + formatMoney($scope.pocNoticeInfo.otherCostTotal,$amountDecimalNum) +'</li>'
 					+'</ul></div></div>'
 				$('#othersCost').html(html);
 			}
 		});
 
-		$('.item-total').html('变更前订单总金额：'+$currencySymbol+formatMoney($scope.pocNoticeInfo.poTotalAmount)).show();
-		$('.item-total-dj').html('变更后订单总金额：'+$currencySymbol+formatMoney($scope.pocNoticeInfo.totalAmount)).show();
+		$('.item-total').html('变更前订单总金额：'+$currencySymbol+formatMoney($scope.pocNoticeInfo.poTotalAmount,$amountDecimalNum)).show();
+		$('.item-total-dj').html('变更后订单总金额：'+$currencySymbol+formatMoney($scope.pocNoticeInfo.totalAmount,$amountDecimalNum)).show();
 
 
 
