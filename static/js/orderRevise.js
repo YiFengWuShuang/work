@@ -97,7 +97,7 @@ orderRevise.prototype = {
 						 +'		<li><span>客户单号：</span><b>'+ that.orderInfo.poInsideNo +'</b></li>'
 						 +'		<li><span>所属公司：</span>'+ that.orderInfo.vendorName +'</li>'
 						 +'		<li><span>客户：</span>'+ that.orderInfo.companyAbbr +'</li>'
-						 +'		<li class="currencyName"><span>交易币别：</span>'+ that.orderInfo.currencyName +'</li>'
+						 +'		<li class="currencyName"><span>交易币别：</span></li>'
 						 +'		<li id="taxName"><span>交易税别：</span><em>'+ that.orderInfo.taxName +'</em><label class="checkbox'+ ((that.orderInfo.isContainTax==1) ? ' on':'') +'"><input type="checkbox" checked="checked" disabled>含税'+ that.orderInfo.taxRate*100 +'%</label></li>'
 						 +'		<li><span>销售日期：</span>'+ transDate(new Date().getTime()) +'</li>'
 						 +'	</ul>'
@@ -264,47 +264,92 @@ orderRevise.prototype = {
 
 		
 		//交易币别 默认值
-		$currencyData.currencyInfo = {
-			"id":that.orderInfo.currencyId,
-			"currencyCode":that.orderInfo.currencyCode,
-			"currencyName":that.orderInfo.currencyName
-		}
-		//根据平台币种获取企业币种
-		var currencyParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_getCompCurrencyByPCurrency", "companyId":_vParams.companyId,"currencyCodeP":that.orderInfo.pCurrencyCode,"commonParam":commonParam()};
-		GetAJAXData('POST',currencyParam,function(currencyData){
-			if(currencyData.success){
-				if(!isEmpty(currencyData.currencyInfo.currencyName)){
-					$currencyData.currencyInfo = currencyData.currencyInfo;
-					orderAnswerCon.find('.currencyName').html('<span>交易币别：</span>'+ currencyData.currencyInfo.currencyName);					
-				}
-			}
-			var _currencyInfo = currencyData.currencyInfo;
-			//判断是否需要显示本位币和汇率
-            that.isDisplayRate = false;
-            if( _currencyInfo.isBase == 0 || isEmpty(_currencyInfo.currencyName) ){
-                that.isDisplayRate = true;
-            }
-            //获取本位币以及汇率
-			if(_currencyInfo.isBase==1){
-                that.addval_localCurrencyId = _currencyInfo.id;
-                that.addval_localCurrencyCode = _currencyInfo.currencyCode;
-                that.addval_localCurrencyName = _currencyInfo.currencyName;
-                that.addval_exchangeRate = "1";
-			}else{
-				//ExchangeRate
-				var ExchangeRateParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_getExchangeRateByCurrency", "companyId":that.orderInfo.vendorId.toString(),"commonParam":commonParam(),"currencyId":$currencyData.currencyInfo.id.toString()};//如不填币种ID, 则查公司的本位币
-				GetAJAXData('POST',ExchangeRateParam,function(ExchangeRateData){
-					if(ExchangeRateData.success){
-						$ExchangeRateData = ExchangeRateData;
-		                that.addval_localCurrencyId = ExchangeRateData.baseCurrencyId;
-		                that.addval_localCurrencyCode = ExchangeRateData.baseCurrencyCode;
-		                that.addval_localCurrencyName = ExchangeRateData.baseCurrencyName;
-		                that.addval_exchangeRate = ExchangeRateData.exchangeRate;
+        $currencyData.currencyInfo = {
+            "currencyCodeP":"",
+            "currencyNameP":"",
+            "id":"",
+            "currencyCode":"",
+            "currencyName":"",
+            "currencySymbol":that.orderInfo.currencySymbol,
+            "defultCurrencyName":that.orderInfo.currencyName
+        };
+		//根据平台币种获取企业币种	
+	    function getCurrencyDefult(){
+	        if( that.orderInfo.pCurrencyCode == "" ){
+	            console.log('B01_getCompCurrencyByPCurrency：获取交易币别默认值 入参为空！');
+	            return;
+	        }
+			
+			var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_getCompCurrencyByPCurrency", "companyId":_vParams.companyId,"currencyCodeP":that.orderInfo.pCurrencyCode,"commonParam":commonParam()};
+			GetAJAXData('POST',param,function(currencyData){
+				if(currencyData.success){
+					if(!isEmpty(currencyData.currencyInfoList[0])){
+						$currencyData.currencyInfo = currencyData.currencyInfoList[0];
+						orderAnswerCon.find('.currencyName').html('<span>交易币别：</span>'+ $currencyData.currencyInfo.currencyName);
 					}
-				})					
-			}
+				}
+				var currencyInfo = currencyData.currencyInfoList[0];
+	            if( !isEmpty(currencyInfo) ){
+	                $currencyData.currencyInfo = {
+	                    "currencyCodeP":currencyInfo.currencyCodeP,
+	                    "currencyNameP":currencyInfo.currencyNameP,
+	                    "id":currencyInfo.id,
+	                    "currencyCode":currencyInfo.currencyCode,
+	                    "currencyName":currencyInfo.currencyName,
+	                    "currencySymbol":currencyInfo.currencySymbol,
+	                    "isBase":currencyInfo.isBase
+	                };
+	                $scope.privateDefultCurrencyId = currencyInfo.id;
+	                getLocalCurrency();
+	            }else{
+	                $currencyData.currencyInfo.currencyCodeP = "";
+	                $currencyData.currencyInfo.currencyNameP = "";
+	                $currencyData.currencyInfo.id = "";
+	                $currencyData.currencyInfo.currencyCode = "";
+	                $currencyData.currencyInfo.currencyName = "";
 
-		})
+	                getLocalCurrency();
+	            }
+			})
+	    };
+	    getCurrencyDefult();
+  
+
+	    //改变币别 获取本位币以及汇率
+	    function getLocalCurrency(){
+	        if( $currencyData.currencyInfo.isBase == 1 ){
+	            that.addval_localCurrencyId = $currencyData.currencyInfo.id;        
+	            that.addval_localCurrencyCode = $currencyData.currencyInfo.currencyCode;        
+	            that.addval_localCurrencyName = $currencyData.currencyInfo.currencyName;   
+	            that.addval_exchangeRate = "1";  
+	        }else{
+				//ExchangeRate
+				var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_getExchangeRateByCurrency", "companyId":that.orderInfo.vendorId.toString(),"commonParam":commonParam(),"currencyId":that.orderInfo.currencyId};//如不填币种ID, 则查公司的本位币
+				GetAJAXData('POST',param,function(data){
+					if(data.success){
+						$ExchangeRateData = data;
+		                that.addval_localCurrencyId = data.baseCurrencyId;
+		                that.addval_localCurrencyCode = data.baseCurrencyCode;
+		                that.addval_localCurrencyName = data.baseCurrencyName;
+		                that.addval_exchangeRate = data.exchangeRate;
+					}
+				})
+	        }
+	    };
+
+	    //企业所有交易币别
+	    function getCurrencyList(){
+	    	GetAJAXData('POST',{ "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findCurrencyList", "companyId":that.orderInfo.vendorId,"commonParam":commonParam()},function(data){
+				if(data.success){
+					$scope.currencyList = data.currencyList;
+					$scope.currencyName = [];
+					data.currencyList.forEach(function(val){
+						$scope.currencyName.push(val.currencyName);
+					})
+				}
+			})
+	    }
+	    getCurrencyList();
 
 		//默认交易税别
 		$taxData.taxInfo = {
@@ -323,7 +368,7 @@ orderRevise.prototype = {
 					$taxData.taxInfo = taxData;					
 				}
 			}
-		},true)
+		})
 
 		//本方所有税别
 		var taxListParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findTaxList", "companyId":that.orderInfo.vendorId,"taxStyle":2,"commonParam":commonParam()};
@@ -333,12 +378,28 @@ orderRevise.prototype = {
 					$taxListData = taxListData;
 				}
 			}
-		},true)
+		})
 
-		//默认交易条件
-		$conditionJson.conditionName = that.orderInfo.conditionName;
-        $conditionJson.id = that.orderInfo.conditionId;
-        $conditionJson.conditionCode = that.orderInfo.conditionCode;
+	    //交易条件 默认值
+	    function getConditionDefult(){
+	        $scope.privateDefultConditionName = that.orderInfo.conditionName;
+	        $scope.privateDefultConditionId = "";
+
+	        if( that.orderInfo.companyId == "" || that.orderInfo.conditionId == ""  ){
+	            console.log("获取交易条件默认值 入参为空！");
+	            return;
+	        }
+			GetAJAXData('POST',{ "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_getConditionByCustomerCondition", "companyId":that.orderInfo.vendorId, "customerId":that.orderInfo.companyId, "cConditionId":that.orderInfo.conditionId},function(conditionJson){
+				if(conditionJson.success){
+					if( !isEmpty(conditionJson.conditionName) ){
+						$scope.privateDefultConditionName=conditionJson.conditionName;
+					}
+					$scope.privateDefultConditionId = conditionJson.id;
+				}
+			})
+	    };
+	    getConditionDefult();
+
 		//本方所有交易条件
 		var conditionParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findCompanyConditionList", "companyId":_vParams.companyId,"conditionType":"2"};//交易条件类型（1-采购；2-销售）
 		GetAJAXData('POST',conditionParam,function(conditionData){
@@ -347,17 +408,7 @@ orderRevise.prototype = {
 					$conditionData = conditionData;
 				}
 			}
-		},true)
-
-		//根据客户交易条件获取本方默认交易条件
-		var conditionParam2 = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_getConditionByCustomerCondition", "companyId":that.orderInfo.vendorId, "customerId":that.orderInfo.companyId, "cConditionId":that.orderInfo.conditionId};
-		GetAJAXData('POST',conditionParam2,function(conditionJson){
-			if(conditionJson.success){
-				if( !isEmpty(conditionJson.conditionName) ){
-					$conditionJson = conditionJson;
-				}
-			}
-		},true)
+		})
 
 		//收货地址 默认值
         that.privateDefultAddrName = that.orderInfo.logisticsAddrName;
@@ -471,18 +522,25 @@ orderRevise.prototype = {
 			bottomBar(['share'],that.memberId,'','确定转销售');
 		}
 
-
 		//订单维护
 		container.on('click','span.edit, a.item-link',function(){
 			var _this = $(this), parent = _this.parents('.item-wrap'), name = _this.attr('name'), scrollTop = $body.scrollTop();
 			switch(name){
 				case 'headInfos':
 					orderReviseInfoCon.html(that.editHeadInfo(scrollTop));
-					if(that.isDisplayRate){
-						$('.curSelect').html('本位币：' + that.addval_localCurrencyName + '&nbsp;&nbsp;&nbsp;&nbsp;汇率：').show();
-					}
 					setTimeout(function(){
-						that.taxTypeSelect3();
+						that.currencyListSelect();
+						that.taxTypeSelect();
+						orderReviseInfoCon.on('change','#currencyName',function(){
+							if(that.addval_localCurrencyName!=$(this).select3('value')){
+								$('.curSelect').html('本位币：' + that.addval_localCurrencyName + '&nbsp;&nbsp;&nbsp;&nbsp;汇率：<input type="text" id="exchangeRate" />').show();
+							}else{
+								$('.curSelect').hide();
+							}
+						})
+						if((that.addval_localCurrencyName!=$('#currencyName').select3('value')) && !isEmpty($('#currencyName').select3('value'))){
+							$('.curSelect').html('本位币：' + that.addval_localCurrencyName + '&nbsp;&nbsp;&nbsp;&nbsp;汇率：<input type="text" id="exchangeRate" />').show();
+						}
 					},300)
 					break;
 				case 'bodyInfos':
@@ -537,7 +595,6 @@ orderRevise.prototype = {
 			var _this = $(this);
 			if(_this.is('#saveHeadInfo')){
 				//维护单头信息
-				//$('#taxName em').html($('#taxType').select3('value'));
 				if($taxData.taxInfo.taxName != $('#taxType').select3('value')){
             		$taxData.taxInfo.taxName = $('#taxType').select3('value')
             		if($taxListData.success){
@@ -545,6 +602,21 @@ orderRevise.prototype = {
             		}
             		addval_taxInfo = true;
             	}
+            	$currencyData.currencyInfo.currencyName = $('#currencyName').select3('value');
+            	orderAnswerCon.find('.currencyName').html('<span>交易币别：</span>'+ ($currencyData.currencyInfo.currencyName||''));
+            	that.addval_exchangeRate = $('#exchangeRate').val()||undefined;
+            	$scope.currencyList.forEach(function(val){
+            		if(val.currencyName==$currencyData.currencyInfo.currencyName){
+            			$currencyData.currencyInfo = {
+		                    "currencyCodeP":val.currencyCodeP,
+		                    "currencyNameP":val.currencyNameP,
+		                    "id":val.id,
+		                    "currencyCode":val.currencyCode,
+		                    "currencyName":val.currencyName,
+		                    "currencySymbol":val.currencySymbol
+		                };
+            		}
+            	})        	
 			}
 			if(_this.is('#saveBodyInfo')){
 				//维护单身信息
@@ -565,11 +637,11 @@ orderRevise.prototype = {
 			}
 			if(_this.is('#savePayInfo')){
 				//维护支付信息
-            	if($conditionJson.conditionName != $('#dealType').select3('value')){
-            		$conditionJson.conditionName = $('#dealType').select3('value')
+            	if($scope.privateDefultConditionName != $('#dealType').select3('value')){
+            		$scope.privateDefultConditionName = $('#dealType').select3('value')
             		if($conditionData.success){
 	            		$conditionData.conditionList.forEach(function(val){
-	            			if(val.conditionName==$conditionJson.conditionName){
+	            			if(val.conditionName==$scope.privateDefultConditionName){
 	            				$conditionJson.id=val.id;
 	            				$conditionJson.conditionCode=val.conditionCode;
 	            			}
@@ -667,7 +739,7 @@ orderRevise.prototype = {
 			+'	<ul>'
 			+'		<li><span>客户单号：</span><b>'+ that.orderInfo.poInsideNo +'</b></li>'
 			+'		<li><span>客户：</span>'+ that.orderInfo.companyAbbr +'</li>'
-			+'		<li><span>交易币种：</span><em id="currencyId">'+ $currencyData.currencyInfo.currencyName +'</em></li>'
+			+'		<li><span>交易币别：</span><em id="currencyId">'+ ($currencyData.currencyInfo.currencyName||'') +'</em></li>'
 			+'		<li><span>交易税种：</span><em id="currTax" class="currTax">'+ $taxData.taxInfo.taxName +'</em><label class="checkbox'+ ((that.orderInfo.isContainTax==1) ? ' on':'') +'"><input type="checkbox" checked="checked" disabled>含税'+ that.orderInfo.taxRate*100 +'%</label></li>'
 			+'		<li><span>销售日期：</span><em id="poFormDate">'+ transDate(new Date().getTime()) +'</li>'
 			+'	</ul>'
@@ -676,10 +748,10 @@ orderRevise.prototype = {
 			+'<div class="m-item">'
 			+'	<h2 class="m-title">销售订单信息维护</h2>'
 			+'	<div class="item-wrap">'
-			+'		<section class="clearfix">'
-			+'			<span class="c-label">交易币种：</span>'
+			+'		<section class="m-select clearfix">'
+			+'			<span class="c-label">交易币别：</span>'
 			+'			<div id="currency" class="c-cont">'
-			+'				<p class="c-txt">'+ $currencyData.currencyInfo.currencyName +'</p>'
+			+'				<div id="currencyName" class="select3-input"></div>'
 			+'				<div class="curSelect"></div>'
 			+'			</div>'
 			+'		</section>'
@@ -697,7 +769,7 @@ orderRevise.prototype = {
 			+'</div>'
 		return html;
 	},
-	taxTypeSelect3: function(){
+	taxTypeSelect: function(){
 		var that = this, options = [];
 		//本方所有税别
     	if($taxListData.success){
@@ -717,6 +789,16 @@ orderRevise.prototype = {
     	}
 		that.initSelect3('#taxType',options,$taxData.taxInfo.taxName);
 
+	},
+	currencyListSelect: function(){
+		var that = this, options = [];
+    	if($scope.currencyName.length>0){
+    		options = $scope.currencyName;
+    		//$scope.currencyList
+    	}else{
+    		options.push($currencyData.currencyInfo.currencyName);
+    	}
+		that.initSelect3('#currencyName',options,$currencyData.currencyInfo.currencyName);
 	},
 	editBodyInfo: function(idx,scrollTop){
 		var that = this, html = '', list = $scope.poLineList[idx], itemLen = list.poSubLineList.length;
@@ -846,8 +928,9 @@ orderRevise.prototype = {
 		html='<div id="payInfoList" class="m-item">'
 			+'	<div class="item-wrap">'
 			+'		<ul>'
-			+'			<li><span>交易条件：</span><p id="jyCurrVal">'+ $conditionJson.conditionName +'</p></li>'
+			+'			<li><span>交易条件：</span><p id="jyCurrVal">'+ $scope.privateDefultConditionName +'</p></li>'
 			+'			<li><span>物流方式：</span><p><em id="logisticsVal">'+ $logisticsType.currValue +'</em></p></li>'
+			+'			<li><span>物流商：</span><p>'+ infos.logisticsName +'</p></li>'
 			+'			<li><span>'+ (($logisticsType.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 			+'			<li><span>收款条件：</span><p id="payWayName">'+ $payWayTypeData.payWayName +'</p></li>'
 			if(infos.invoice==1){
@@ -886,33 +969,6 @@ orderRevise.prototype = {
 			+'				<div id="checkoutType" class="select3-input"></div>'
 			+'			</div>'
 			+'		</section>'
-		// if(infos.invoice==1){
-		// html+='		<section class="clearfix">'
-		// 	+'			<span class="c-label">发票信息：</span>'
-		// 	+'			<div class="c-cont">'
-		// 	+'				<p class="c-txt">'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p>'
-		// 	+'			</div>'
-		// 	+'		</section>'
-		// }else{
-		// html+='		<section class="clearfix">'
-		// 	+'			<span class="c-label">发票类型：</span>'
-		// 	+'			<div class="c-cont">'
-		// 	+'				<p class="c-txt">'+ enumFn(that.invoiceType,infos.invoiceType) +'</p>'
-		// 	+'			</div>'
-		// 	+'		</section>'
-		// 	+'		<section class="clearfix">'
-		// 	+'			<span class="c-label">开票抬头：</span>'
-		// 	+'			<div class="c-cont">'
-		// 	+'				<p class="c-txt">'+ infos.invoiceHeader +'</p>'
-		// 	+'			</div>'					
-		// 	+'		</section>'
-		// 	+'		<section class="clearfix">'
-		// 	+'			<span class="c-label">发票内容：</span>'
-		// 	+'			<div class="c-cont">'
-		// 	+'				<p class="c-txt">'+ infos.invoiceContent +'</p>'
-		// 	+'			</div>'					
-		// 	+'		</section>'			
-		// }
 			+'	</div>'
 			+'</div>'
 			+'<div class="btn-wrap"><a href="javascript:;" id="savePayInfo" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
@@ -924,18 +980,18 @@ orderRevise.prototype = {
         //本方所有交易条件
     	if($conditionData.success){
     		if($conditionData.conditionList.length==0){
-    			options.push($conditionJson.conditionName);
-    			that.initSelect3('#dealType',options,$conditionJson.conditionName);
+    			options.push($scope.privateDefultConditionName);
+    			that.initSelect3('#dealType',options,$scope.privateDefultConditionName);
     			return false;
     		}
     		var len = $conditionData.conditionList.length;
     		for(var i=0; i<len; i++){
     			options.push($conditionData.conditionList[i].conditionName);
     		}
-    		that.initSelect3('#dealType',options,$conditionJson.conditionName);
+    		that.initSelect3('#dealType',options,$scope.privateDefultConditionName);
     	}else{
-    		options.push($conditionJson.conditionName);
-    		that.initSelect3('#dealType',options,$conditionJson.conditionName);
+    		options.push($scope.privateDefultConditionName);
+    		that.initSelect3('#dealType',options,$scope.privateDefultConditionName);
     	}
 	},
 	//物流方式
@@ -1025,11 +1081,11 @@ orderRevise.prototype = {
 
         //交易条件
         if(addval_conditionInfo){
-	        var addval_conditionName = $conditionJson.conditionName;
+	        var addval_conditionName = $scope.privateDefultConditionName;
 	        var addval_conditionId = $conditionJson.id;
 	        var addval_conditionCode = $conditionJson.conditionCode;
         }else{
-	        var addval_conditionName = $conditionJson.conditionName;
+	        var addval_conditionName = $scope.privateDefultConditionName;
 	        var addval_conditionId = "";
 	        var addval_conditionCode = "";
         }
@@ -1114,13 +1170,12 @@ orderRevise.prototype = {
             "currencyId": $currencyData.currencyInfo.id,
             "currencyCode": $currencyData.currencyInfo.currencyCode,	    
             "currencyName": $currencyData.currencyInfo.currencyName,
-            //企业
+            "pCurrencyCode":$currencyData.currencyInfo.currencyCodeP,
+            "pCurrencyName":$currencyData.currencyInfo.currencyNameP,
+            "currencySymbol":$currencyData.currencyInfo.currencySymbol,            
             "localCurrencyCode":that.addval_localCurrencyCode,
-            "localCurrencyId":that.addval_localCurrencyId,	
+            "localCurrencyId":that.addval_localCurrencyId,
             "localCurrencyName":that.addval_localCurrencyName,
-            //平台
-            "pCurrencyCode":that.orderInfo.pCurrencyCode,
-            "pCurrencyName":that.orderInfo.pCurrencyName,
 			"exchangeRate":that.addval_exchangeRate,
 
             "taxId":addval_taxId,
@@ -1143,12 +1198,11 @@ orderRevise.prototype = {
             "soManId":addval_soManId,	             
             "soManName":addval_soManName,	         
             "soManPid":addval_soManPid,
-            //新增
-            "currencySymbol":that.orderInfo.currencySymbol,
+            //新增      
             "priceDecimalNum":that.orderInfo.priceDecimalNum,
             "amountDecimalNum":that.orderInfo.amountDecimalNum,
             "lockVersion":that.orderInfo.lockVersion
-        }; 
+        };
         //支付信息
         var addval_payInfo = {
             "logisticsCode":addval_logisticsCode,
@@ -1305,29 +1359,29 @@ orderRevise.prototype = {
             return;
         }
         if( addval_baseInfo.currencyName == "" ){
-            that.popup('alert','','交易币种名称 为空！');
+            that.popup('alert','','交易币别 为空！');
             return;
         }
-        if( addval_baseInfo.localCurrencyCode == "" ){
-            that.popup('alert','','企业本币编码 为空！');
-            return;
-        }
-        if( addval_baseInfo.localCurrencyId == "" ){
-            that.popup('alert','','企业本币ID 为空！');
-            return;
-        }
-        if( addval_baseInfo.localCurrencyName == "" ){
-            that.popup('alert','','企业本币名称 为空！');
-            return;
-        }
-        if( addval_baseInfo.pCurrencyCode == "" ){
-            that.popup('alert','','平台币种编码 为空！');
-            return;
-        }
-        if( addval_baseInfo.pCurrencyName == "" ){
-            that.popup('alert','','平台币种名称 为空！');
-            return;
-        }
+        // if( addval_baseInfo.localCurrencyCode == "" ){
+        //     that.popup('alert','','企业本币编码 为空！');
+        //     return;
+        // }
+        // if( addval_baseInfo.localCurrencyId == "" ){
+        //     that.popup('alert','','企业本币ID 为空！');
+        //     return;
+        // }
+        // if( addval_baseInfo.localCurrencyName == "" ){
+        //     that.popup('alert','','企业本币名称 为空！');
+        //     return;
+        // }
+        // if( addval_baseInfo.pCurrencyCode == "" ){
+        //     that.popup('alert','','平台币种编码 为空！');
+        //     return;
+        // }
+        // if( addval_baseInfo.pCurrencyName == "" ){
+        //     that.popup('alert','','平台币种名称 为空！');
+        //     return;
+        // }
         if( addval_baseInfo.isContainTax != 0 && addval_baseInfo.isContainTax != 1 ){
             that.popup('alert','','是否含税 不正确！');
             return;
@@ -1352,10 +1406,10 @@ orderRevise.prototype = {
             that.popup('alert','','物流方式 为空！');
             return;
         }
-        if( addval_payInfo.logisticsType != 3 && addval_payInfo.logisticsName == "" ){
-            that.popup('alert','','物流商 为空！');
-            return;
-        } 
+        // if( addval_payInfo.logisticsType != 3 && addval_payInfo.logisticsName == "" ){
+        //     that.popup('alert','','物流商 为空！');
+        //     return;
+        // } 
         if( addval_payInfo.conditionName == "" ){
             that.popup('alert','','交易条件名称 为空！');
             return;
@@ -1373,7 +1427,7 @@ orderRevise.prototype = {
             "baseInfo" : addval_baseInfo, 
             "prodDetailList" : addval_prodDetailList, 
             "payInfo" : addval_payInfo, 
-            "appendContact" : addval_appendContact, 
+            "appendContact" : addval_appendContact,
             "otherCostList" : addval_otherCostList,
             "serviceId":"B03_poAnswerToSalesOrder",
             "commonParam":commonParam(),
@@ -1381,7 +1435,7 @@ orderRevise.prototype = {
             "secretNumber":_vParams.secretNumber
         }
 
-		//console.log(JSON.stringify(param_info));
+		console.log(JSON.stringify(param_info));
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,
@@ -1400,7 +1454,7 @@ orderRevise.prototype = {
                 		goBack();
                 	},2000);
             	}else{
-            		that.popup('alert','','操作失败：'+data.errorMsg); 
+            		that.popup('alert','','错误提示信息：'+data.errorMsg);
             	}
             }
 		})

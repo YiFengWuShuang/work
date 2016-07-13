@@ -105,28 +105,32 @@ Lists.prototype = {
             		that._lineLists = lineList;
             		html = '<h2 class="m-title">采购明细</h2>';
             		for(var i=0, len=lineList.length; i<len; i++){
+            			lineList[i].unitName = true;
+						if(lineList[i].purchaseUnitName==lineList[i].valuationUnitName){
+							lineList[i].unitName = false;
+						}            			
                 		html+='<div class="item-wrap" data-index="'+ i +'">'
 							+'	<ul>'
 							+'		<li class="prodCode"><span>物料编码：</span><b>'+ lineList[i].prodCode +'</b></li>'
-							+'		<li><span>物料名称：</span><p>'+ lineList[i].prodName + ' ' +lineList[i].prodScale + ' ' +lineList[i].prodDesc +'</p></li>'
-							+'		<li><section><span>数量：</span><em>'+ lineList[i].purchaseQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].valuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
-							+'		<li class="changeItem"><section><span>变更：</span><em>'+ lineList[i].changeQty +'</em>'+ lineList[i].purchaseUnitName +'/<em>'+ lineList[i].changeValuationQty +'</em>'+ lineList[i].valuationUnitName +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
-							+'		<li class="price"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax==1) ? formatMoney(lineList[i].taxPrice,$priceDecimalNum) : formatMoney(lineList[i].price,$priceDecimalNum)) +'/'+ lineList[i].valuationUnitName +'</li>'
+							+'		<li><span>物料名称：</span><p>'+ lineList[i].prodName + ' ' +lineList[i].prodScale + '</p></li>'
+							+'		<li><section><span>数量：</span><em>'+ lineList[i].purchaseQty + lineList[i].purchaseUnitName +'</em>'+ ((lineList[i].unitName)?('/<em>'+ lineList[i].valuationQty + lineList[i].valuationUnitName +'</em>'):'') +'</section><section><span>交期：</span><em>'+ transDate(lineList[i].expectedDelivery) +'</em></section></li>'
+							+'		<li><section><span>变更：</span><em'+ ((lineList[i].changeQty!=lineList[i].purchaseQty||lineList[i].changeValuationQty!=lineList[i].valuationQty)?' class="red"':'') +'>'+ lineList[i].changeQty +lineList[i].purchaseUnitName +'</em>'+ ((lineList[i].unitName)?('/<em>'+ lineList[i].changeValuationQty +lineList[i].valuationUnitName +'</em>'):'') +'</section><section><span>交期：</span><em'+ ((lineList[i].changeExpectedDelivery!=lineList[i].expectedDelivery)?' class="red"':'') +'>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
+							+'		<li class="price'+ ((lineList[i].changePrice!=lineList[i].price||lineList[i].changeTaxPrice!=lineList[i].taxPrice)?' red':'') +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax==1) ? formatMoney(lineList[i].changeTaxPrice,$priceDecimalNum) : formatMoney(lineList[i].changePrice,$priceDecimalNum)) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
 							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal,$amountDecimalNum) +'</b></li>'
-							+'		<li class="changeItem changeLineTotal"><span>变更金额：</span>'+ $currencySymbol + formatMoney(lineList[i].changeTaxLineTotal,$amountDecimalNum) +'</li>'
+							+'		<li'+ ((lineList[i].changeTaxLineTotal!=lineList[i].taxLineTotal||lineList[i].changeLineAmount!=lineList[i].lineAmount)?' class="red"':'') +'><span>变更金额：</span><b>'+ $currencySymbol + formatMoney(lineList[i].changeTaxLineTotal,$amountDecimalNum) +'</b></li>'
 							+'	</ul>'
 							+'</div>'
             		}
             		that.load = true;
+            		$('#prodBodyInfo').html(html);
             	}else{
             		container.show().html('<p style="text-align:center;">'+ data.errorMsg +'</p>');
 					fnTip.hideLoading();
             	}
             }
 		})
-		return html;
 	},
 	othersCost: function(){
 		var that=this, html='';
@@ -144,10 +148,10 @@ Lists.prototype = {
             		that._othersCost = costList;
             		html = '<h2 class="m-title">其他费用</h2><div class="item-wrap" data-index="0"><ul>';
             		for(var i=0, len=costList.length; i<len; i++){
-            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount,$amountDecimalNum) +'</b><b class="dj"><em class="money">'+ formatMoney(costList[i].changeCostAmount,$amountDecimalNum) +'</em></b></li>';
+            			html+='<li><span>'+ costList[i].costName +'：</span><b>'+ $currencySymbol + formatMoney(costList[i].costAmount,$amountDecimalNum) +'</b><b class=""><em class="money">'+ formatMoney(costList[i].changeCostAmount,$amountDecimalNum) +'</em></b></li>';
             		}
             		html+='<li id="othersCostSubtotal" class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.poOtherCostTotal,$amountDecimalNum) +'</b></li>'
-            			+'<li id="changeCost" class="response changeLineTotal"><span>变更费用：</span>'+ $currencySymbol + formatMoney(that.orderInfo.otherCostTotal,$amountDecimalNum) +'</li>'
+            			+'<li id="changeCost"'+ ((that.orderInfo.otherCostTotal!=that.orderInfo.poOtherCostTotal)?' class="red"':'') +'><span>变更费用：</span><b>'+ $currencySymbol + formatMoney(that.orderInfo.otherCostTotal,$amountDecimalNum) +'</b></li>'
             			+'</ul>'
             			+'</div>';
             		$('#othersCost').html(html);
@@ -158,9 +162,8 @@ Lists.prototype = {
 	start: function(){
 		var that = this;
 		var orderHeadInfo = document.getElementById('orderHeadInfo');
-		var prodBodyInfo = document.getElementById('prodBodyInfo');
 		orderHeadInfo.innerHTML = that.orderBaseInfo();
-		prodBodyInfo.innerHTML = that.prodBodyInfo();
+		that.prodBodyInfo();
 		that.othersCost();
 		$('.item-total').html('变更前总金额：'+$currencySymbol+formatMoney(that.orderInfo.poTotalAmount,$amountDecimalNum)).show();
 		$('.item-total-dj').html('变更后总金额：'+$currencySymbol+formatMoney(that.orderInfo.totalAmount,$amountDecimalNum)).show();

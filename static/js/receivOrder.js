@@ -102,6 +102,7 @@ receivOrder.prototype = {
 							+'		<li><span>收货数量：</span>'+ ($scope.roLineList[i].receiveQty||0) + $scope.roLineList[i].receiveUnitName + (unitName ? ('/'+ ($scope.roLineList[i].receiveValuationQty||0) + $scope.roLineList[i].valuationUnitName):'') +'</li>'
 							+'		<li><span>验退数量：</span>'+ ($scope.roLineList[i].prQty||0) + $scope.roLineList[i].receiveUnitName + (unitName ? ('/'+ ($scope.roLineList[i].prValuationQty||0) + $scope.roLineList[i].valuationUnitName):'') +'</li>'
 							+'		<li><span>收货仓库：</span>'+ $scope.roLineList[i].invName +'</li>'
+							+'		<li><span>收货库位：</span>'+ $scope.roLineList[i].locationName +'</li>'
 							+'		<li><span>备注：</span><p>'+ $scope.roLineList[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
 							+'	</ul>'

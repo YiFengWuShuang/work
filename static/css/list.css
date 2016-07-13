@@ -47,6 +47,7 @@
 .responseCost li input:last-child{ float: right;}
 .responseBox li.myResponse,.responseBox li.addNewCost{ position: relative;}
 .responseBox li.myResponse span{ color: #f45252;}
+.hidden,.hidden .int02{ visibility: hidden;}
 .responseBox li i.btn-del{ position: absolute; right: -.2rem; top: 0}
 .responseBox li.addNewCost i.btn-del{ right: 0;}
 .responseCost li.addNewCost input:nth-child(2){ float: right;}
@@ -56,7 +57,7 @@
 .btns .btn-save{ background-color: #0179D1;}
 
 /* 其他费用 */
-#othersCost .item-wrap li b:nth-child(2){ display: inline-block; width: 4.5rem;}
+#othersCost .item-wrap li b:nth-child(2){ display: inline-block; width: 6rem;}
 
 /* 答交 */
 .orderCheckCon #prodAnswerInfo .response section span{ color: transparent;}

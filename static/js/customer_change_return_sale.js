@@ -5,7 +5,6 @@ var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var $myRemark = '';
 var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var privateDefultUser;
@@ -147,11 +146,15 @@ returnSale.prototype = {
 				var html = '';
         		html +='<h2 class="m-title">产品明细</h2>'
         		$scope.lineList.forEach(function(val){
+        			val.unitName = true;
+					if(val.purchaseUnitName==val.valuationUnitName){
+						val.unitName = false;
+					}         			
         			html+='<div class="item-wrap"><ul>'
         			+'<li><span>产品编号：</span>'+val.prodCode+'</li>'
         			+'<li><span>产品名称：</span>'+val.prodName+' '+ val.prodScale +'</li>'
-        			+'<li><section><span>采购数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(val.expectedDelivery) +'</em></section></li>'
-        			+'<li class="changeItem"><section><span>变更后：</span><em>'+ val.changeQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.changeValuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>预交期：</span><em>'+ transDate(val.changeExpectedDelivery) +'</em></section></li>'
+        			+'<li><section><span>采购数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName + (val.unitName?('/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName):'') +'</section><section><span>预交期：</span><em>'+ transDate(val.expectedDelivery) +'</em></section></li>'
+        			+'<li class="changeItem"><section><span>变更后：</span><em>'+ val.changeQty +'</em>'+ val.purchaseUnitName + (val.unitName?('/<em>'+ val.changeValuationQty +'</em>'+ val.valuationUnitName):'') +'</section><section><span>预交期：</span><em>'+ transDate(val.changeExpectedDelivery) +'</em></section></li>'
         			+'<li><span>单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax==1) ? formatMoney(val.taxPrice,$priceDecimalNum) : formatMoney(val.price,$priceDecimalNum)) +'/'+ val.valuationUnitName +'</li>'
         			+'<li class="changeItem"><span>变更单价：</span>'+ $currencySymbol + (($scope.orderInfo.isContainTax==1) ? formatMoney(val.changeTaxPrice,$priceDecimalNum) : formatMoney(val.changePrice,$priceDecimalNum)) +'/'+ val.valuationUnitName +'</li>'
         			+'<li><span>小计：</span>'+ $currencySymbol + formatMoney(val.taxLineTotal,$amountDecimalNum)+'</li>'
@@ -217,10 +220,10 @@ returnSale.prototype = {
 		function payInfo(scrollTop){
 			var html='<div id="rePayInfoList" class="m-item">'
 					+'	<div class="item-wrap">'
-					+'		<section class="m-select clearfix">'
+					+'		<section class="clearfix">'
 					+'			<span class="c-label">物流方式：</span>'
 					+'			<div class="c-cont">'
-					+'				<div id="logisticsType" class="select3-input"></div>'
+					+'				<p class="c-txt">'+ enumFn(that.logisticsType,$scope.pocNoticeInfo.logisticsType) +'</p>'
 					+'			</div>'
 					+'		</section>'
 					+'		<section id="address" class="clearfix">'
@@ -256,7 +259,7 @@ returnSale.prototype = {
 					+'			</div>'					
 					+'		</section>'			
 			}
-			html+='</div></div><div class="btn-wrap"><a href="javascript:;" id="savePayInfo" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
+			html+='</div></div><div class="btn-wrap"><a href="javascript:;" id="savePayInfo" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 			return html;
 		}
 
@@ -272,9 +275,13 @@ returnSale.prototype = {
 					 +'<div id="files" class="item-wrap attachment">'
 					 +'	<h2>客户附件：</h2>'
 					 +'</div>'
-					 +'<div class="item-wrap int-remarks">'
-					 +'<textarea name="" id="myRemarks" placeholder="填写我方备注"></textarea>'
+					 +'<div class="item-wrap">'
+					 +'	<h2>本方备注：</h2>'
+					 +'	<p>'+ $change.changeRemark +'</p>'
 					 +'</div>'
+					 +'<div id="vFiles" class="item-wrap attachment">'
+					 +'	<h2>本方附件：</h2>'
+					 +'</div>'					 
 					 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 			return html;
 		}
@@ -294,7 +301,6 @@ returnSale.prototype = {
 					break;
 				case 'remark':
 					orderReviseInfoCon.html(remark(scrollTop));
-					$('#myRemarks').val($myRemark);
 					break;
 			}
 			$body.scrollTop(0);
@@ -321,7 +327,7 @@ returnSale.prototype = {
 			}
 
 			if(_this.is('#saveRemark')){
-				$myRemark = $('#myRemarks').val();
+				
 			}
 
 			container.removeClass('contarinEdit');
@@ -466,7 +472,7 @@ returnSale.prototype = {
 	        param_return_sale.soChangeInfo.billStatus = 1;
 
 	        param_return_sale.soChangeInfo.cRemark = $scope.pocNoticeInfo.poRemark;//客户备注
-	        param_return_sale.soChangeInfo.vRemark = $myRemark;//本方备注
+	        param_return_sale.soChangeInfo.vRemark = $scope.pocNoticeInfo.remark;//本方备注
 	        param_return_sale.soChangeInfo.remark = $change.changeRemark;
 
 	        //新增

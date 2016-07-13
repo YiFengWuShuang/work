@@ -24,6 +24,7 @@
 
 .hideItemCon b.dj{ margin-left: 2rem;}
 .hideItemCon input[type="text"]{ border: 1px solid #b0b0b0;border-radius: .25rem;padding: .3rem;width: 7.2rem;}
+.curSelect input[type="text"]{ width: 3rem; padding: .2rem;}
 
 /* btns */
 .btns{ display: -webkit-box; display: box; width: 80%; margin: .5rem 0; text-align: center;}

@@ -14,7 +14,7 @@ function bottomBar(offItems, memberId, noBtn, confirmBtn, cancelBtn){
 	if(cancelBtn==undefined||cancelBtn==''){
 		bottomDom+='</div>' + ((!!noBtn)? '' : '<a href="javascript:;" class="bottom-btn bottom-btn-confirm">'+confirmBtn+'</a>') + '</div>'
 	}else{
-		bottomDom+='</div>' + ((!!noBtn)? '' : '<div class="m-bottom-btn"><a href="javascript:;" class="bottom-btn bottom-btn-confirm">'+confirmBtn+'</a><a href="javascript:;" class="bottom-btn bottom-btn-cancel">'+cancelBtn+'</a></div>') + '</div>'
+		bottomDom+='</div>' + ((!!noBtn)? '' : '<div class="m-bottom-btn"><a href="javascript:;" class="bottom-btn bottom-btn-confirm'+ ((confirmBtn.length>=6)?' bottom-btn-w1':'') +'">'+confirmBtn+'</a><a href="javascript:;" class="bottom-btn bottom-btn-cancel">'+cancelBtn+'</a></div>') + '</div>'
 	}
 	$body.append(bottomDom);
 	btnEvens(memberId);

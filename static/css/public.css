@@ -98,6 +98,7 @@ button.btnBig{ border: 0 none;}
 .item-wrap .edit{ position: absolute; right: 0; top: 0; width: 1.8rem; height: 1.9rem; background: url(../img/public/edit.png) no-repeat center; background-size: .85rem .9rem;}
 b.dj{ color: #f45252;}
 input.int-search{ border: 1px solid #b0b0b0; padding-left: 1.4rem; padding-right: .5rem; /*background: url(../img/public/icon-search.png) no-repeat .25rem center;*/ background-size: 20px 20px; border-radius: .3rem; height: 1.4rem;}
+.red,.item-wrap li.red,.item-wrap li.red b{ color: #f45252!important;}
 
 .m-item-select{ padding: .5rem 0;}
 .m-item-select .m-title{ display: inline-block; padding:0 0 0 .5rem;}
@@ -137,6 +138,10 @@ label input{ margin-right: .15rem;}
 .m-bottom-btn{ float: right;}
 .m-bottom-btn .bottom-btn{ width: 4.5rem;}
 .m-bottom-btn .bottom-btn-cancel{ background-color: #37B6EB;}
+.m-bottom-btn .bottom-btn-w1{ width: 5.5rem;}
+.m-bottom-btn .bottom-btn-w2{ width: 6rem;}
+.m-bottom-btn .bottom-btn-w3{ width: 6.5rem;}
+.m-bottom-btn .bottom-btn-w4{ width: 7rem;}
 
 /* 产品开窗 */
 .MProdList{}
