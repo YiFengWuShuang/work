@@ -1,5 +1,6 @@
 var $body = $(document.body);
-
+var _vParams = JSON.parse(decodeURIComponent(getQueryString('param')));
+var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var config = {
     serviceUrl:"",
     ossConfigUrl:"",
@@ -284,3 +285,19 @@ function goBack(){
 		})
 	}
 }
+
+
+//download
+function FileDownload(fileUrl,token,secretNumber){
+	return decodeURIComponent(fileUrl) + "&token="+token+"&secretNumber="+secretNumber;
+}
+//download
+$body.on('click','.vfiles a, .files a',function(e){
+	var _this = $(this),
+		fileUrl = _this.attr('href');
+	if(isEmpty(_vParams.token)||isEmpty(_vParams.secretNumber)){
+		e.preventDefault();
+		return false;
+	};		
+	_this.attr('href',FileDownload(fileUrl, _vParams.token, _vParams.secretNumber));
+})

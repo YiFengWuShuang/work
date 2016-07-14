@@ -1,9 +1,7 @@
 /*
 收货单详情
 */
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var container = $('.contarin');
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $scope = {};
 var $fileData = {};
 var receivOrder = function(){

@@ -1,10 +1,8 @@
 /*
 出货单详情
 */
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $scope = {};
 var $fileData = {};
 var deliveryOrder = function(){
@@ -97,6 +95,7 @@ deliveryOrder.prototype = {
 							+'		<li><span>出货数量：</span><p>'+ $scope.doLineList[i].deliveryQty + $scope.doLineList[i].deliveryUnitName + (unitName ? ('/'+ $scope.doLineList[i].deliveryValuationQty + $scope.doLineList[i].valuationUnitName) : '') +'</p></li>'
 							+'		<li><span>批号：</span>'+ $scope.doLineList[i].batchNo +'</li>'
 							+'		<li><span>出货仓库：</span>'+ $scope.doLineList[i].invName +'</li>'
+							+'		<li><span>出货库位：</span>'+ $scope.doLineList[i].locationName +'</li>'
 							+'		<li><span>签收数量：</span>'+ $scope.doLineList[i].receiveQty + $scope.doLineList[i].deliveryUnitName + (unitName ? ('/'+ $scope.doLineList[i].receiveValuationQty + $scope.doLineList[i].valuationUnitName) : '') +'</li>'
 							+'		<li><span>销退数量：</span>'+ $scope.doLineList[i].srQty + $scope.doLineList[i].deliveryUnitName + (unitName ? ('/'+ $scope.doLineList[i].srValuationQty + $scope.doLineList[i].valuationUnitName) : '') +'</li>'
 							+'		<li><span>备注：</span><p>'+ $scope.doLineList[i].remark +'</p></li>'

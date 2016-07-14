@@ -1,4 +1,4 @@
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
+
 var container = $('.contarin');
 var prodAnswerCon = $('#prodListsInfo');
 var $platformCurrencyList;
@@ -7,9 +7,9 @@ var $priceDecimalNum = '';
 var $amountDecimalNum = '';
 var $totalAmount = 0;
 var $vTotalAmount = 0;
-var $fileData;
+var $fileData = [];
+var $fileData2 = [];
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var OrderHandedOut = function(){
 	this.init();
 }
@@ -100,14 +100,33 @@ OrderHandedOut.prototype = {
 	prodsInfo: function(){
 		var that = this, html = '';
 
-		//加载单身附件
+		//加载客户 单身附件
 		function f_init_l_file(line){
 		    line.cFileList = [];
 
-		    GetAJAXData('POST',{"serviceId":"B01_findFileList", "docType":10, "companyId":_vParams.companyId, "searchType":2, "id":line.id, "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()},function(data){
+		    GetAJAXData('POST',{"serviceId":"B01_findFileList", "docType":10, "companyId":_vParams.companyId, "fileSource":1, "searchType":2, "id":line.id, "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()},function(data){
 				if(data.success){
 					data.fileList.forEach(function(v){
 		                line.cFileList.push({
+		                    "id": v.id,
+		                    "fileName":v.fileName,
+		                    "fileSize":v.fileSize,
+		                    "fileUrl": v.fileUrl,
+		                    "lineNo": v.lineNo
+		                });
+		            });
+				}
+			});	
+		}
+
+		//加载供应商 单身附件
+		function f_init_l_vfile(line){
+		    line.vFileList = [];
+
+		    GetAJAXData('POST',{"serviceId":"B01_findFileList", "docType":10, "companyId":_vParams.companyId, "fileSource":2, "searchType":2, "id":line.id, "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()},function(data){
+				if(data.success){
+					data.fileList.forEach(function(v){
+		                line.vFileList.push({
 		                    "id": v.id,
 		                    "fileName":v.fileName,
 		                    "fileSize":v.fileSize,
@@ -160,6 +179,7 @@ OrderHandedOut.prototype = {
 						html+=		((that.status==4||that.status==5)?'':'<li><span class="price">单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(prodInfos[i].taxPrice,$priceDecimalNum) : formatMoney(prodInfos[i].price,$priceDecimalNum)) +'/'+ prodInfos[i].valuationUnitName +'</li>')
 							+'		<li><span>备注：</span><p>'+ prodInfos[i].remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
+							+		((that.status==4)?'':'<li class="vfiles"><span>答交附件：</span></li>')
 							+		((that.status==4||that.status==5)?'':'<li class="subtotal" data-total="'+ prodInfos[i].taxLineTotal +'" data-vTotal="'+ ((prodInfos[i].vTaxLineTotal!='') ? prodInfos[i].vTaxLineTotal : prodInfos[i].taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(prodInfos[i].taxLineTotal,$amountDecimalNum) +'</b></li>')
 							+		((that.status==3)?'<li class="response changeLineTotal" data-changeTotal="'+ ((prodInfos[i].vTaxLineTotal=='')?0:prodInfos[i].vTaxLineTotal) +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(prodInfos[i].vTaxLineTotal,$amountDecimalNum) +'</li>':'')
 							+'	</ul>'
@@ -167,10 +187,12 @@ OrderHandedOut.prototype = {
 						$totalAmount+=parseFloat(prodInfos[i].taxLineTotal);
 						$vTotalAmount+=parseFloat(prodInfos[i].vTaxLineTotal);
 						f_init_l_file(prodInfos[i]);
+						f_init_l_vfile(prodInfos[i]);
             		}
             		that.load = true;
             		prodAnswerCon.html(html);
     				prodInfos.forEach(function(line,idx){
+    					//客户
 						var fileHTML = '<p>'
 						line.cFileList.forEach(function(val){
 							fileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
@@ -179,7 +201,17 @@ OrderHandedOut.prototype = {
 						if(line.cFileList.length>0){
 							prodAnswerCon.find('.files').eq(idx).html('<span>附件：</span>'+fileHTML).show();
 						}
-					})					
+
+						//供应商
+						var vfileHTML = '<p>'
+						line.vFileList.forEach(function(val){
+							vfileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
+						})
+						vfileHTML += '</p>'
+						if(line.vFileList.length>0){
+							prodAnswerCon.find('.vfiles').eq(idx).html('<span>答交附件：</span>'+vfileHTML).show();
+						}										
+					})									
             	}else{
             		fnTip.hideLoading();
             		container.show().html('<p style="line-height:2rem; text-align:center">'+ data.errorMsg +'</p>')
@@ -235,7 +267,7 @@ OrderHandedOut.prototype = {
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
+			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) + ((infos.logisticsType!=3)?'（物流商名称：'+ infos.logisticsName +'）':'') +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType=='3') ? '自提点':'收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>(收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +')</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
 			if(infos.invoice==1){
@@ -259,13 +291,25 @@ OrderHandedOut.prototype = {
 				 +'	<h2>备注信息：</h2>'
 				 +'	<p>'+ that.orderInfo.remark +'</p>'
 				 +'</div>'
-				 +'<div id="files" class="item-wrap attachment">'
+				 +'<div class="files item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
-		for(var i=0; i<$fileData.fileList.length;i++){
-			html+='<p><a href="'+ $fileData.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileData.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileData.fileList[i].fileName +'</a></p>'
+		for(var i=0; i<$fileData.length;i++){
+			html+='<p><a href="'+ $fileData[i].fileUrl +'"><i class=i-'+ (_reg.test($fileData[i].fileName) ? "image" : "word") +'></i>'+ $fileData[i].fileName +'</a></p>'
 		}
 			html +='</div>'
-				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
+		if(that.vStatus!=1&&that.vStatus!=2){
+				html +='<div class="files item-wrap attachment">'
+					 +'	<h2>答交附件：</h2>'
+			for(var j=0; j<$fileData2.length;j++){
+				html+='<p><a href="'+ $fileData2[j].fileUrl +'"><i class=i-'+ (_reg.test($fileData2[j].fileName) ? "image" : "word") +'></i>'+ $fileData2[j].fileName +'</a></p>'
+			}
+			html +='</div>'
+				 +'<div class="item-wrap">'
+				 +'	<h2>答交备注：</h2>'
+				 +'	<p>'+ that.orderInfo.vRemark +'</p>'
+				 +'</div>'				
+		}
+				html +='</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},
 	popup: function(type, title, content, closeCallBack, okCallBack){
@@ -326,11 +370,17 @@ OrderHandedOut.prototype = {
 		}
 
 
-		//客户单头附件
-		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":_vParams.poId, "commonParam":commonParam(), "docType":"10","fileSource":1,"searchType":1};//searchType查询类型1单头2单身
+		//单头附件
+		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":_vParams.poId, "commonParam":commonParam(), "docType":"10","searchType":1};//searchType查询类型1单头2单身
 		GetAJAXData('POST',fileParam,function(fileData){
 			if(fileData.success){
-				$fileData = fileData;
+				fileData.fileList.forEach(function(val){
+					if(val.fileSource==1){
+						$fileData.push(val);
+					}else{
+						$fileData2.push(val);
+					}
+				});
 			}
 		},true)
 

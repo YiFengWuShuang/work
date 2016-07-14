@@ -5,8 +5,6 @@ var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var privateDefultUser;
 var $scope = {};
 var $platformCurrencyList;
@@ -272,16 +270,10 @@ returnSale.prototype = {
 					 +'	<h2>客户备注：</h2>'
 					 +'	<p>'+ $change.changeRemark +'</p>'
 					 +'</div>'
-					 +'<div id="files" class="item-wrap attachment">'
-					 +'	<h2>客户附件：</h2>'
-					 +'</div>'
 					 +'<div class="item-wrap">'
 					 +'	<h2>本方备注：</h2>'
 					 +'	<p>'+ $change.changeRemark +'</p>'
-					 +'</div>'
-					 +'<div id="vFiles" class="item-wrap attachment">'
-					 +'	<h2>本方附件：</h2>'
-					 +'</div>'					 
+					 +'</div>'				 
 					 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">完成</a></div>'
 			return html;
 		}

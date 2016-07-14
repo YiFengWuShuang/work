@@ -2,13 +2,11 @@
 转销售订单
 */
 var formTip = '<div id="formTip" class="formTip"></div>';
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
 var orderAnswerCon = $('#orderAnswerInfo');
 var prodAnswerCon = $('#prodAnswerInfo');
 var othersCostCon = $('#othersCost');
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $scope = {};
 var $currencyData = {};
 var $taxData = {};
@@ -187,13 +185,13 @@ orderRevise.prototype = {
             		$scope.poLineList = lineList;
             		that.load = true;
 
-            		lineList.forEach(function(line,idx){
+            		$scope.poLineList.forEach(function(line,idx){
 						var fileHTML = '<p>'
 						line.vFileList.forEach(function(val){
 							fileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
 						})
 						fileHTML += '</p>'
-						$('.receivOrderOrderDetail .files').eq(idx).html('<span>附件：</span>'+fileHTML).show();
+						prodAnswerCon.find('.files').eq(idx).html('<span>附件：</span>'+fileHTML).show();
 					})
             	}else{
             		fnTip.hideLoading();
@@ -509,7 +507,7 @@ orderRevise.prototype = {
 		},true)
 
 		//单头附件
-		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"24","fileSource":1,"searchType":1};//searchType查询类型1单头2单身
+		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.companyId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"24","searchType":1};//searchType查询类型1单头2单身
 		GetAJAXData('POST',fileParam,function(fileData){
 			if(fileData.success){
 				$fileData = fileData;
@@ -1030,7 +1028,7 @@ orderRevise.prototype = {
 				 +'	<p>'+ that.orderInfo.remark +'</p>'
 				 +'</div>'
 				 +'<div id="files" class="item-wrap attachment">'
-				 +'	<h2>订单附件：</h2>'
+				 +'	<h2>附件：</h2>'
 		if($fileData.fileList.length==0){
 			html+='<p><b>0个附件</b></p>'
 		}
@@ -1150,7 +1148,7 @@ orderRevise.prototype = {
         });
         //费用
         var addval_orderTotalAmount = {
-            "vOtherCostTotal": that.orderInfo.vOtherCostTotal,   
+            "vOtherCostTotal": that.orderInfo.vOtherCostTotal||0,   
             "vTotalAmount": that.orderInfo.vTotalAmount,   
             "vTaxTotal": that.orderInfo.vTaxTotal,   
             "vTotal": that.orderInfo.vTotal   
@@ -1435,7 +1433,7 @@ orderRevise.prototype = {
             "secretNumber":_vParams.secretNumber
         }
 
-		console.log(JSON.stringify(param_info));
+		//console.log(JSON.stringify(param_info));
 		$.ajax({
 			type:"POST",
             url:config.serviceUrl,

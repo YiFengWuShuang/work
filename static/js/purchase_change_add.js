@@ -5,8 +5,6 @@ var orderReviseInfoCon = $('#orderReviseInfoCon');
 var changeCauseVal1 = $('#changeCauseVal1');
 var changeCauseVal2 = $('#changeCauseVal2');
 var $changeCauseVal = '';
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var privateDefultUser;
 var $PoLineList;
 var $scope = {};
@@ -124,25 +122,6 @@ Lists.prototype = {
 	//采购明细-----------------------------------------------------------------------
 	prodBodyInfo: function(){
 		var that = this, html = '';
-
-	    //加载单身附件
-		// function f_init_l_file(line){
-		//     line.vFileList = [];
-
-		//     GetAJAXData('POST',{"serviceId":"B01_findFileList", "docType":10, "companyId":_vParams.companyId, "searchType":2, "id":line.id, "token":_vParams.token, "secretNumber":_vParams.secretNumber,"commonParam":commonParam()},function(data){
-		// 		if(data.success){
-		// 			data.fileList.forEach(function(v){
-		//                 line.vFileList.push({
-		//                     "id": v.id,
-		//                     "fileName":v.fileName,
-		//                     "fileSize":v.fileSize,
-		//                     "fileUrl": v.fileUrl,
-		//                     "lineNo": v.lineNo
-		//                 });
-		//             });
-		// 		}
-		// 	});	
-		// }
 
 		var params = {"serviceId": "B03_findPoLineList","companyId":_vParams.companyId,"poId": _vParams.poId,"commonParam": commonParam(),"token":_vParams.token,"secretNumber":_vParams.secretNumber};
 		$.ajax({
@@ -303,7 +282,6 @@ Lists.prototype = {
 								+'	</ul>'
 								+'</div>'
 
-							//f_init_l_file($scope.poLineList[i]);
 	            		}            			
             		}else if(that.changeType==2){
 	            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
@@ -320,7 +298,6 @@ Lists.prototype = {
 								+'	</ul>'
 								+'</div>'
 
-							//f_init_l_file($scope.poLineList[i]);
 	            		}
             		}else if(that.changeType==4){
 	            		for(var i=0, len=$scope.poLineList.length; i<len; i++){
@@ -344,22 +321,11 @@ Lists.prototype = {
 								+'	<span name="bodyInfos" class="edit"></span>'
 								+'</div>'
 
-							//f_init_l_file($scope.poLineList[i]);
 	            		}             			
             		}
 
             		$('#prodBodyInfo').html(html);
             		that.load = true;
-    				//$scope.poLineList.forEach(function(line,idx){
-					// 	var fileHTML = '<p>'
-					// 	line.vFileList.forEach(function(val){
-					// 		fileHTML += '<a href="'+ val.fileUrl +'"><i class=i-'+ (_reg.test(val.fileName) ? "image" : "word") +'></i>'+ val.fileName +'</a>'
-					// 	})
-					// 	fileHTML += '</p>'
-					// 	if(line.vFileList.length>0){
-					// 		$('#prodBodyInfo .files').eq(idx).html('<span>附件：</span>'+fileHTML).show();
-					// 	}
-					// })
             	}else{
             		container.show().html('<p style="text-align:center;">'+ data.errorMsg +'</p>');
 					fnTip.hideLoading();
@@ -478,7 +444,7 @@ Lists.prototype = {
 	    //计算 不含税单价=含税单价/（1+税率）
 	    function countChangePrice( item ){
 	        item.changePrice = parseFloat(item.changeTaxPrice)/( 1+parseFloat(that.orderInfo.taxRate) );
-	        item.changePrice = parseFloat( item.changePrice.toFixed($priceDecimalNum) );
+	        //item.changePrice = parseFloat( item.changePrice.toFixed($priceDecimalNum) );
 	        countLineTotal( item );
 	    };
 	    //计算 含税单价=不含税单价*（1+税率）
@@ -487,7 +453,7 @@ Lists.prototype = {
 	            return;                                             
 	        }
 	        item.changeTaxPrice = parseFloat(item.changePrice)*( 1+parseFloat(that.orderInfo.taxRate) );
-	        item.changeTaxPrice = parseFloat( item.changeTaxPrice.toFixed($priceDecimalNum) )
+	        //item.changeTaxPrice = parseFloat( item.changeTaxPrice.toFixed($priceDecimalNum) )
 	        countLineTotal( item );
 	    };
 	    //计算订单各种地方的金额
@@ -685,7 +651,7 @@ Lists.prototype = {
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
+			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) + ((infos.logisticsType!=3)?'（物流商：'+ infos.logisticsName +'）':'') +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType=='3') ? '自提点':'收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>(收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +')</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
 		if(infos.invoice==1){
@@ -709,12 +675,6 @@ Lists.prototype = {
 				 +'	<h2>备注信息：</h2>'
 				 +'	<p>'+ that.orderInfo.remark +'</p>'
 				 +'</div>'
-				 +'<div id="files" class="item-wrap attachment">'
-				 +'	<h2>订单附件：</h2>'
-		for(var i=0; i<$fileListData1.fileList.length;i++){
-			html+='<p><a href="'+ $fileListData1.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileListData1.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileListData1.fileList[i].fileName +'</a></p>'
-		}
-			html +='</div>'
 				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;
 	},

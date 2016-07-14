@@ -2,8 +2,6 @@ var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $currencySymbol = '';
 var $priceDecimalNum = '';
 var $amountDecimalNum = '';
@@ -204,7 +202,7 @@ Lists.prototype = {
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
+			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) + ((infos.logisticsType!=3)?'（物流商：'+ infos.logisticsName +'）':'') +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
 			if(infos.invoice==1){

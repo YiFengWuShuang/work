@@ -1,7 +1,6 @@
 /*
 到货通知详情
 */
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
 var container = $('.contarin');
 var $scope = {};
 var arrivalOrder = function(){

@@ -2,8 +2,6 @@ var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $currencySymbol = '';//币种符号
 var $priceDecimalNum = '';//单价小数位
 var $amountDecimalNum = '';//金额小数位
@@ -13,7 +11,6 @@ var Lists = function(){
 Lists.prototype = {
 	init: function(){
 		var that = this;
-		that._files = [];
 		that._lineLists = [];
 		that._othersCost = [];
 		that.load = false;
@@ -117,7 +114,6 @@ Lists.prototype = {
 							+'		<li><section><span>变更：</span><em'+ ((lineList[i].changeQty!=lineList[i].purchaseQty||lineList[i].changeValuationQty!=lineList[i].valuationQty)?' class="red"':'') +'>'+ lineList[i].changeQty +lineList[i].purchaseUnitName +'</em>'+ ((lineList[i].unitName)?('/<em>'+ lineList[i].changeValuationQty +lineList[i].valuationUnitName +'</em>'):'') +'</section><section><span>交期：</span><em'+ ((lineList[i].changeExpectedDelivery!=lineList[i].expectedDelivery)?' class="red"':'') +'>'+ transDate(lineList[i].changeExpectedDelivery) +'</em></section></li>'
 							+'		<li class="price'+ ((lineList[i].changePrice!=lineList[i].price||lineList[i].changeTaxPrice!=lineList[i].taxPrice)?' red':'') +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax==1) ? formatMoney(lineList[i].changeTaxPrice,$priceDecimalNum) : formatMoney(lineList[i].changePrice,$priceDecimalNum)) +'/'+ lineList[i].valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ lineList[i].remark +'</p></li>'
-							+'		<li class="files"><span>附件：</span></li>'
 							+'		<li class="subtotal"><span>小计：</span><b>'+ $currencySymbol + formatMoney(lineList[i].taxLineTotal,$amountDecimalNum) +'</b></li>'
 							+'		<li'+ ((lineList[i].changeTaxLineTotal!=lineList[i].taxLineTotal||lineList[i].changeLineAmount!=lineList[i].lineAmount)?' class="red"':'') +'><span>变更金额：</span><b>'+ $currencySymbol + formatMoney(lineList[i].changeTaxLineTotal,$amountDecimalNum) +'</b></li>'
 							+'	</ul>'
@@ -233,7 +229,7 @@ Lists.prototype = {
 		var that = this, infos = that.orderInfo;
 
 		var html = '<div class="item-wrap"><ul>'
-			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
+			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) + ((infos.logisticsType!=3)?'（物流商：'+ infos.logisticsName +'）':'') +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 		if(infos.invoice==1){
 			html+='<li><span>发票信息：</span><p>'+ enumFn(that.invoiceInfoName,infos.invoice) +'</p></li>'
@@ -255,9 +251,6 @@ Lists.prototype = {
 				 +'<div id="taRemarks" class="item-wrap taRemarks">'
 				 +'	<h2>备注信息：</h2>'
 				 +'	<p>'+ that.orderInfo.poRemark +'</p>'
-				 +'</div>'
-				 +'<div id="files" class="item-wrap attachment">'
-				 +'	<h2>订单附件：</h2>'
 				 +'</div>'
 				 +'</div></div><div class="btn-wrap"><a href="javascript:;" id="saveRemark" class="btnB" data-scrollTop="'+scrollTop+'">返回</a></div>'
 		return html;

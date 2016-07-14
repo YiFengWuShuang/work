@@ -13,10 +13,9 @@ var $platformCurrencyList;
 var $currencySymbol = '';
 var $priceDecimalNum = '';
 var $amountDecimalNum = '';
-var $fileData;
+var $fileData = [];
+var $fileData2 = [];
 var $btnTxet = '分批答交';
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var Lists = function(){
 	this.init();
 }
@@ -199,13 +198,13 @@ Lists.prototype = {
 							+'		<li><span>物料详细：</span><p>'+ val.prodName +' '+ val.prodScale +'</p></li>'
 						if(val.unitName){
 							html+=((that.vStatus!=4)?'<li><section><span>客户数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em>'+ val.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span>交期：</span><em>'+ val.expectedDelivery +'</em></section></li>':'')
-								+		((that.vStatus==1)? '' : ((val.poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+ val.vPurchaseQty +'</em>'+ val.vAnswerUnitName +'/<em class="vValuationQty">'+ val.vValuationQty +'</em>'+ val.vValuationUnitName +'</section><section><span>交期：</span><em class="vExpectedDelivery">'+ val.vExpectedDelivery +'</em></section></li>' : ''))
+								+((that.vStatus==1)? '' : ((val.poSubLineList.length==0) ? '<li class="'+((that.vStatus==4)?'':'bfline')+'"><section><span>本方数量：</span><em class="vPurchaseQty">'+ val.vPurchaseQty +'</em>'+ val.vAnswerUnitName +'/<em class="vValuationQty">'+ val.vValuationQty +'</em>'+ val.vValuationUnitName +'</section><section><span>交期：</span><em class="vExpectedDelivery">'+ val.vExpectedDelivery +'</em></section></li>' : ''))
 							val.poSubLineList.forEach(function(sub,j){
 								html+='<li class="response responseBatch"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em class="purchaseQty">'+ sub.purchaseQty +'</em>'+ val.purchaseUnitName +'/<em class="valuationQty">'+ sub.valuationQty +'</em>'+ val.valuationUnitName +'</section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ sub.expectedDelivery +'</em></section></li>'
 							})
 						}else{
 							html+=((that.vStatus!=4)?'<li><section><span>客户数量：</span><em>'+ val.purchaseQty +'</em>'+ val.purchaseUnitName +'<em class="hidden">'+ val.valuationQty +'</em></section><section><span>交期：</span><em>'+ val.expectedDelivery +'</em></section></li>':'')
-								+		((that.vStatus==1)? '' : ((val.poSubLineList.length==0) ? '<li class="bfline"><section><span>本方数量：</span><em class="vPurchaseQty">'+ val.vPurchaseQty +'</em>'+ val.vAnswerUnitName +'<em class="hidden vValuationQty">'+ val.vValuationQty +'</em></section><section><span>交期：</span><em class="vExpectedDelivery">'+ val.vExpectedDelivery +'</em></section></li>' : ''))
+								+((that.vStatus==1)? '' : ((val.poSubLineList.length==0) ? '<li class="'+((that.vStatus==4)?'':'bfline')+'"><section><span>本方数量：</span><em class="vPurchaseQty">'+ val.vPurchaseQty +'</em>'+ val.vAnswerUnitName +'<em class="hidden vValuationQty">'+ val.vValuationQty +'</em></section><section><span>交期：</span><em class="vExpectedDelivery">'+ val.vExpectedDelivery +'</em></section></li>' : ''))
 							val.poSubLineList.forEach(function(sub,j){
 								html+='<li class="response responseBatch"><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>分批答交：</span><em class="purchaseQty">'+ sub.purchaseQty +'</em>'+ val.purchaseUnitName +'<em class="hidden valuationQty">'+ sub.valuationQty +'</em></section><section><span'+ ((j==0) ? ' class="nth0"' : '') +'>交期：</span><em class="expectedDelivery">'+ sub.expectedDelivery +'</em></section></li>'
 							})
@@ -214,6 +213,7 @@ Lists.prototype = {
 						html+='		<li class="price" data-taxPrice="'+ val.taxPrice +'" data-price="'+ val.price +'"><span>单价：</span>'+ $currencySymbol + ((that.orderInfo.isContainTax===1) ? formatMoney(val.taxPrice,$priceDecimalNum) : formatMoney(val.price,$priceDecimalNum)) +'/'+ val.valuationUnitName +'</li>'
 							+'		<li><span>备注：</span><p>'+ val.remark +'</p></li>'
 							+'		<li class="files"><span>附件：</span></li>'
+							+'		<li class="vfiles"><span>答交附件：</span></li>'
 							+'		<li class="subtotal" data-total="'+ val.taxLineTotal +'" data-vTotal="'+ ((val.vTaxLineTotal!=''||val.vTaxLineTotal!=0) ? val.vTaxLineTotal : val.taxLineTotal) +'"><span>含税小计：</span><b>'+ $currencySymbol + formatMoney(val.taxLineTotal,$amountDecimalNum) +'</b></li>'
 							+		((that.vStatus!=1&&that.vStatus!=4)?'<li class="response responseTotal" data-vLineAmount="'+ val.vLineAmount +'" data-vTaxLineTotal="'+ val.vTaxLineTotal +'"><span>答交金额：</span>'+ $currencySymbol + formatMoney(((val.vTaxLineTotal=='')?val.taxLineTotal:val.vTaxLineTotal),$amountDecimalNum) +'</li>':'')
 							+'	</ul>'
@@ -680,31 +680,47 @@ Lists.prototype = {
 
 		//单身附件
         function getObFileList(){
-        	var list;
+        	var list, vList;
         	$scope.poLineList.forEach(function(val,i){
-        		list = '';
+        		list = '', vList = '';
+        		val.cFileList = [];
         		val.vFileList = [];
-				var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":that.orderInfo.companyId, "id":val.id, "commonParam":commonParam(), "docType":"24","fileSource":1,"searchType":2};//searchType查询类型1单头2单身
+				var param = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.vendorId, "id":val.id, "commonParam":commonParam(), "docType":"24","searchType":2};//searchType查询类型1单头2单身
 				GetAJAXData('POST',param,function(fileListData){
 					if(fileListData.success){
-						for(var j=0; j<fileListData.fileList.length; j++){
-							list += '<a href="'+ fileListData.fileList[j].fileUrl +'"><i class=i-'+ (_reg.test(fileListData.fileList[j].fileName) ? "image" : "word") +'></i>'+ fileListData.fileList[j].fileName +'</a>';
-						}
-						if(fileListData.fileList.length>0){
-							prodAnswerCon.find('.files').eq(i).html('<span>附件：</span><p>' + list +'</p>').show();
-						}
-						val.vFileList = fileListData.fileList;
+						fileListData.fileList.forEach(function(v){
+							if(v.fileSource==1){
+								list += '<a href="'+ v.fileUrl +'"><i class=i-'+ (_reg.test(v.fileName) ? "image" : "word") +'></i>'+ v.fileName +'</a>';
+								val.cFileList.push(v);
+							}else{
+								vList += '<a href="'+ v.fileUrl +'"><i class=i-'+ (_reg.test(v.fileName) ? "image" : "word") +'></i>'+ v.fileName +'</a>';
+								val.vFileList.push(v);
+							}
+						})
 					}
-				},true)
+				});
+				if(val.cFileList.length>0){
+					prodAnswerCon.find('.files').eq(i).html('<span>附件：</span><p>' + list +'</p>').show();
+				}
+				if(val.vFileList.length>0){
+					prodAnswerCon.find('.vfiles').eq(i).html('<span>答交附件：</span><p>' + vList +'</p>').show();
+				}
+				
         	})
         }
         getObFileList();
 
 		//单头附件
-		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.vendorId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"24","fileSource":2,"searchType":1};//searchType查询类型1单头2单身
+		var fileParam = { "token":_vParams.token, "secretNumber":_vParams.secretNumber,"serviceId":"B01_findFileList", "companyId":_vParams.vendorId, "id":that.orderInfo.id, "commonParam":commonParam(), "docType":"24","searchType":1};//searchType查询类型1单头2单身
 		GetAJAXData('POST',fileParam,function(fileData){
 			if(fileData.success){
-				$fileData = fileData;
+				fileData.fileList.forEach(function(val){
+					if(val.fileSource==1){
+						$fileData.push(val);
+					}else{
+						$fileData2.push(val);
+					}
+				});
 			}
 		},true)
 
@@ -801,7 +817,7 @@ Lists.prototype = {
 
 		var html = '<ul class="payInfoList">'
 			+'<li><span>交易条件：</span><p>'+ infos.conditionName +'</p></li>'
-			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) +'</p></li>'
+			+'<li><span>物流方式：</span><p>'+ enumFn(that.logisticsType,infos.logisticsType) + ((infos.logisticsType!=3)?'（物流商：'+ infos.logisticsName +'）':'') +'</p></li>'
 			+'<li><span>'+ ((infos.logisticsType==3) ? '自提点' : '收货地址') +'：</span><p>'+ infos.provinceName + infos.cityName + infos.districtName + infos.address + '<br>收货人：'+ infos.contactPerson +'，电话：'+ infos.mobile +'</p></li>'
 			+'<li><span>付款条件：</span><p>'+ infos.payWayName +'</p></li>'
 		if(infos.invoice==1){
@@ -825,15 +841,20 @@ Lists.prototype = {
 				 +'	<h2>备注信息：</h2>'
 				 +'	<p>'+ that.orderInfo.remark +'</p>'
 				 +'</div>'
-				 +'<div id="files" class="item-wrap attachment">'
+				 +'<div class="files item-wrap attachment">'
 				 +'	<h2>订单附件：</h2>'
-		if($fileData.fileList.length==0){
-			html+='<p><b>0个附件</b></p>'
-		}
-		for(var i=0; i<$fileData.fileList.length;i++){
-			html+='<p><a href="'+ $fileData.fileList[i].fileUrl +'"><i class=i-'+ (_reg.test($fileData.fileList[i].fileName) ? "image" : "word") +'></i>'+ $fileData.fileList[i].fileName +'</a></p>'
+		for(var i=0; i<$fileData.length;i++){
+			html+='<p><a href="'+ $fileData[i].fileUrl +'"><i class=i-'+ (_reg.test($fileData[i].fileName) ? "image" : "word") +'></i>'+ $fileData[i].fileName +'</a></p>'
 		}
 			html +='</div>'
+		if(that.vStatus!=1&&that.vStatus!=2){
+				html +='<div class="files item-wrap attachment">'
+					 +'	<h2>答交附件：</h2>'
+			for(var j=0; j<$fileData2.length;j++){
+				html+='<p><a href="'+ $fileData2[j].fileUrl +'"><i class=i-'+ (_reg.test($fileData2[j].fileName) ? "image" : "word") +'></i>'+ $fileData2[j].fileName +'</a></p>'
+			}
+				html +='</div>'
+		}
 		if(that.vStatus==2){
 			html +='<div class="item-wrap int-remarks">'
 				 +'	<textarea name="" id="intRemarks" placeholder="填写本方备注"></textarea>'
@@ -841,7 +862,7 @@ Lists.prototype = {
 		}
 		if(that.vStatus!=1&&that.vStatus!=2){
 			html +='<div class="item-wrap">'
-				 +'	<h2>本方备注：</h2>'
+				 +'	<h2>答交备注：</h2>'
 				 +'	<p>'+ that.orderInfo.vRemark +'</p>'
 				 +'</div>'
 		}

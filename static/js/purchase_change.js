@@ -2,8 +2,6 @@ var formTip = '<div id="formTip" class="formTip"></div>';
 var $itemTips = $('.item-tips');
 var container = $('.contarin');
 var orderReviseInfoCon = $('#orderReviseInfoCon');
-var _vParams = JSON.parse(decodeURI(getQueryString('param')));
-var _reg = /^(\s|\S)+(jpg|jpeg|png|gif|bmp|JPG|JPEG|PNG|GIF|BMP)+$/;
 var $fileData = {};
 var $currencySymbol = '';
 var $priceDecimalNum = '';
