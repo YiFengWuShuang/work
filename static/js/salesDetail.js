@@ -11,8 +11,10 @@ var orderReviseInfoCon = $('#orderReviseInfoCon');
 var salesDetail = function(){
 	this.init();
 }
-salesDetail.prototype = {
-	init: function(){
+salesDetail.prototype = 
+{
+	init: function()
+	{
 		var that = this;
 		that.commonParam = JSON.stringify(commonParam());
 		that.tokens = '"token":"'+ _vParams.token +'","secretNumber":"'+ _vParams.secretNumber +'"';
@@ -199,13 +201,23 @@ salesDetail.prototype = {
 		if(that.load){
 			//status 1：待出货，2：部分出货
 			if(that.status==1||that.status==2){
-				bottomBar(['share'],that.memberId,'','出货');
+				bottomBar([''],that.memberId,'','出货');
 			}else{
 				bottomBar(['share'],that.memberId,true);
 			}
 		}
 
-		//
+		//点击分享
+		var btn = document.getElementById('btn-share');
+		btn.onclick = function(h){
+			h=$('#orderBaseInfoCon').html()
+			console.log(h)
+			return h;
+		}
+
+
+		// console.log(btn)
+		
 		container.on('click','a.item-link',function(){
 			var _this = $(this), name = _this.attr('name'), scrollTop = $body.scrollTop();
 			switch(name){
@@ -294,3 +306,5 @@ salesDetail.prototype = {
 		});
 	}
 }
+
+// console.log(h);

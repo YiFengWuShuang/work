@@ -11,12 +11,39 @@
 	<!-- QQ强制竖屏 -->
 	<meta name="x5-orientation" content="portrait">
 	<link rel="stylesheet" href="../css/public.css">
+	<link rel="stylesheet" href="../css/public.css">
+	<link rel="stylesheet" href="../css/popup.css">
+	<link rel="stylesheet" href="../css/list.css" class="shareCss" data-cssname="list">
 	<title></title>
+	<style type="text/css">
+		#jBottom{
+			display: none;
+		}
+	</style>
 </head>
 <body>
 	<div class="contarin">
-
+		<div id="orderBaseInfoCon" class="showItemCon">
+			<div id="orderBaseInfo" class="m-item"></div>
+			<div id="prodListInfo" class="m-item m-item2"></div>
+			<div id="otherCost" class="m-item"></div>
+			<div class="item-wrap item-total"></div>
+			<div class="item-wrap item-total-dj"></div>
+			<a href="#" class="item-wrap item-link" name="payInfo">物流和发票信息<span class="arrow_down"></span></a>
+			<a href="#" class="item-wrap item-link" name="remark">补充条款、备注和附件<span class="arrow_down"></span></a>
+		</div>
+		<div id="orderReviseInfoCon" class="hideItemCon"></div>
 	</div>
+
+
 	<script src="../js/lib/zepto-min.js"></script>
+	<script src="../js/public/public.js"></script>
+	<script>fnTip.loading()</script>
+	<script src="../js/lib/popup.js"></script>
+	<script src="../js/salesDetail.js"></script>
+	<script src="../js/bottom.js"></script>
+	<script>
+		new salesDetail();
+	</script>
 </body>
 </html>
