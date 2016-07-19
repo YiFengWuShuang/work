@@ -77,7 +77,7 @@ Lists.prototype = {
 						 +'		<li><span>供应商：</span><b>'+ that.orderInfo.vendorName +'</b></li>'
 						 +'		<li><span>变更单状态：</span><strong>'+ enumFn(that.POCStatus,that.orderInfo.status) +'</strong></li>'
 						 +'		<li><span>变更类型：</span>'+ enumFn(that.changeType,that.orderInfo.changeType) +'</li>'
-						 +'		<li><span>变更日期：</span>'+ transDate(that.orderInfo.pocFormDate) +'</li>'
+						 +'		<li><span>变更日期：</span>'+ that.orderInfo.pocFormDate +'</li>'
 						 +'		<li><span>变更原因：</span>'+ enumFn(that.changeReasons,that.orderInfo.changeReason) +'</li>'
 						 +'		<li><span>变更备注：</span>'+ that.orderInfo.remark +'</li>'
 						 +'	</ul>'

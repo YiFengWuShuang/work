@@ -739,7 +739,7 @@ orderRevise.prototype = {
 			+'		<li><span>客户：</span>'+ that.orderInfo.companyAbbr +'</li>'
 			+'		<li><span>交易币别：</span><em id="currencyId">'+ ($currencyData.currencyInfo.currencyName||'') +'</em></li>'
 			+'		<li><span>交易税种：</span><em id="currTax" class="currTax">'+ $taxData.taxInfo.taxName +'</em><label class="checkbox'+ ((that.orderInfo.isContainTax==1) ? ' on':'') +'"><input type="checkbox" checked="checked" disabled>含税'+ that.orderInfo.taxRate*100 +'%</label></li>'
-			+'		<li><span>销售日期：</span><em id="poFormDate">'+ transDate(new Date().getTime()) +'</li>'
+			+'		<li><span>销售日期：</span><em id="poFormDate">'+ transDate(new Date().getTime()) +'</em></li>'
 			+'	</ul>'
 			+'</div>'
 			+'</div>'
@@ -1423,7 +1423,7 @@ orderRevise.prototype = {
             "saleOrderFile" : addval_saleOrderFile, 
             "orderTotalAmount" : addval_orderTotalAmount, 
             "baseInfo" : addval_baseInfo, 
-            "prodDetailList" : addval_prodDetailList, 
+            "prodDetailList" : addval_prodDetailList,
             "payInfo" : addval_payInfo, 
             "appendContact" : addval_appendContact,
             "otherCostList" : addval_otherCostList,

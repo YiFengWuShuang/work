@@ -121,7 +121,7 @@ function getQueryString(name) {
 //时间戳转换日期
 function transDate(tm){
 	if(!tm)return '';
-    var d = new Date(tm);
+    var d = new Date(parseFloat(tm));
     var year = d.getFullYear();
     var month = d.getMonth() + 1;
     var day = d.getDate();
@@ -275,13 +275,13 @@ function webViewTitle(title){
 	}	
 }
 
-//调用Native返回上一级
+//调用Native返回/退出
 function goBack(){
 	if(isAndroidMobileDevice() && window.WebViewJavascriptBridge){
-		window.WebViewJavascriptBridge.callHandler( "back", {"param":""}, function(responseData) {});
+		window.WebViewJavascriptBridge.callHandler( "exit", {"param":""}, function(responseData) {});
 	}else{
 		setupWebViewJavascriptBridge(function(bridge) {
-			bridge.callHandler( "back", {"param":""}, function responseCallback(responseData) {})
+			bridge.callHandler( "exit", {"param":""}, function responseCallback(responseData) {})
 		})
 	}
 }
