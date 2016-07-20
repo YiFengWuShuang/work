@@ -19,6 +19,7 @@
 		#jBottom{
 			display: none;
 		}
+
 	</style>
 </head>
 <body>
@@ -29,8 +30,8 @@
 			<div id="otherCost" class="m-item"></div>
 			<div class="item-wrap item-total"></div>
 			<div class="item-wrap item-total-dj"></div>
-			<a href="#" class="item-wrap item-link" name="payInfo">物流和发票信息<span class="arrow_down"></span></a>
-			<a href="#" class="item-wrap item-link" name="remark">补充条款、备注和附件<span class="arrow_down"></span></a>
+			<div class="m-item" id="payInfo"></div>
+			<div class="m-item" id="remark"></div>
 		</div>
 		<div id="orderReviseInfoCon" class="hideItemCon"></div>
 	</div>
@@ -40,10 +41,11 @@
 	<script src="../js/public/public.js"></script>
 	<script>fnTip.loading()</script>
 	<script src="../js/lib/popup.js"></script>
-	<script src="../js/salesDetail.js"></script>
+	<script src="../js/share.js"></script>
 	<script src="../js/bottom.js"></script>
 	<script>
 		new salesDetail();
+
 	</script>
 </body>
 </html>
